@@ -1,0 +1,16 @@
+server:
+  port: 18081
+
+info:
+  application:
+    name: racket user Application
+    version: 1.0.0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info, health
+  info:
+    env:
+      enabled: true
