@@ -7,36 +7,66 @@ plugins {
 	kotlin("plugin.spring") version "1.6.21"
 }
 
-group = "com.commerce"
-version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_17
+allprojects {
+	group = "com.commerce"
+	version = "0.0.1-SNAPSHOT"
 
-configurations {
-	compileOnly {
-		extendsFrom(configurations.annotationProcessor.get())
+	repositories {
+		mavenCentral()
 	}
 }
 
-repositories {
-	mavenCentral()
-}
+subprojects {
+	apply(plugin = "kotlin")
+	apply(plugin = "kotlin-spring")
 
-dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	compileOnly("org.projectlombok:lombok")
-	annotationProcessor("org.projectlombok:lombok")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-}
+	apply(plugin = "io.spring.dependency-management")
+	apply(plugin = "org.springframework.boot")
+	apply(plugin = "org.jetbrains.kotlin.plugin.spring")
 
-tasks.withType<KotlinCompile> {
-	kotlinOptions {
-		freeCompilerArgs = listOf("-Xjsr305=strict")
-		jvmTarget = "17"
+	dependencies {
+		//spring boot
+		implementation("org.springframework.boot:spring-boot-starter-web")
+		implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+		implementation("org.springframework.boot:spring-boot-starter-actuator")
+
+		//kotlin
+		implementation("org.jetbrains.kotlin:kotlin-reflect")
+		implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+
+		//lombok
+		compileOnly("org.projectlombok:lombok")
+		annotationProcessor("org.projectlombok:lombok")
+
+		//test
+		testImplementation("org.springframework.boot:spring-boot-starter-test")
+		testImplementation("org.springframework.security:spring-security-test")
 	}
-}
 
-tasks.withType<Test> {
-	useJUnitPlatform()
+	dependencyManagement {
+		imports {
+			mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+		}
+
+		dependencies {
+			dependency("net.logstash.logback:logstash-logback-encoder:6.6")
+		}
+	}
+
+	tasks.withType<KotlinCompile> {
+		kotlinOptions {
+			freeCompilerArgs = listOf("-Xjsr305=strict")
+			jvmTarget = "17"
+		}
+	}
+
+	tasks.withType<Test> {
+		useJUnitPlatform()
+	}
+
+	configurations {
+		compileOnly {
+			extendsFrom(configurations.annotationProcessor.get())
+		}
+	}
 }
