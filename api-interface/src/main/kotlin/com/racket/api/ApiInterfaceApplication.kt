@@ -1,4 +1,4 @@
-package com.commerce.racket.api.`interface`
+package com.racket.api
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
