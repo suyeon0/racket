@@ -27,12 +27,12 @@ subprojects {
 	dependencies {
 		//spring boot
 		implementation("org.springframework.boot:spring-boot-starter-web")
-		implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 		implementation("org.springframework.boot:spring-boot-starter-actuator")
 
 		//kotlin
 		implementation("org.jetbrains.kotlin:kotlin-reflect")
 		implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+		implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
 		//lombok
 		compileOnly("org.projectlombok:lombok")
@@ -41,6 +41,12 @@ subprojects {
 		//test
 		testImplementation("org.springframework.boot:spring-boot-starter-test")
 		testImplementation("org.springframework.security:spring-security-test")
+
+		//DB
+		implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+		implementation ("com.mysql:mysql-connector-j")
+		implementation("org.javassist:javassist:3.29.2-GA")
+
 	}
 
 	dependencyManagement {
