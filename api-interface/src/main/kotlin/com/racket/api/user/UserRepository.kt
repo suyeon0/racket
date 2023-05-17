@@ -1,17 +1,12 @@
 package com.racket.api.user
 
+import com.racket.api.user.domain.User
+import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
 
 @Repository
-class UserRepository(
-    @PersistenceContext
-    private val em: EntityManager
-) {
-    fun save(user: User) {
-        em.persist(user)
-    }
+interface UserRepository: CrudRepository<User, Long> {
+    fun findByEmail(email: String): User?
 }
 
 
