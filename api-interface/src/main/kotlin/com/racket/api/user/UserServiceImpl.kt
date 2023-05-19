@@ -1,120 +1,121 @@
 package com.racket.api.user
 
+import com.racket.api.common.vo.Address
+import com.racket.api.common.vo.Mobile
 import com.racket.api.user.domain.User
 import com.racket.api.user.domain.UserGrade
+import com.racket.api.user.domain.UserRepository
 import com.racket.api.user.domain.UserStatus
 import com.racket.api.user.exception.DuplicateUserException
 import com.racket.api.user.exception.InvalidUserStatusException
 import com.racket.api.user.exception.NotFoundUserException
-import com.racket.api.user.request.UserCreateRequestCommand
 import com.racket.api.user.request.UserUpdateRequestCommand
+import com.racket.api.user.response.UserAdditionalResponseView
 import com.racket.api.user.response.UserResponseView
 import org.springframework.stereotype.Service
+import javax.transaction.Transactional
 
 
 @Service
-internal class UserServiceImpl(private val userRepository: UserRepository)
-    : UserService {
+@Transactional
+class UserServiceImpl(private val userRepository: UserRepository) : UserService {
 
     /**
      * 회원 등록
      */
-    override fun registerUser(request: UserCreateRequestCommand): UserResponseView {
-        this.checkDuplicateEmail(request.email)
+    override fun registerUser(userRegisterDTO: UserRegisterDTO): UserResponseView {
+        this.checkDuplicateEmail(userRegisterDTO.email)
 
-        val user = this.userRepository.save(this.createUserEntity(request))
+        val user = this.userRepository.save(this.createUserEntity(userRegisterDTO))
         return this.makeUserResponseViewFromUser(user)
     }
 
     /**
      * 상태 변경
      */
-    override fun updateUserStatus(id: Long, status: UserStatus): UserResponseView {
-        val user: User = this.findByIdOrThrow(id)
-
-        user.changeStatus(status)
-        return this.makeUserResponseViewFromUser(user)
-    }
-
+    override fun updateUserStatus(id: Long, status: UserStatus) =
+        this.makeUserResponseViewFromUser(this.getUserEntity(id).updateStatus(status))
 
     /**
      * 등급 변경
      */
-    override fun updateUserGrade(id: Long, grade: UserGrade): UserResponseView {
-        val user: User = this.findByIdOrThrow(id)
-
-        user.changeGrade(grade)
-        return this.makeUserResponseViewFromUser(user)
-    }
+    override fun updateUserGrade(id: Long, grade: UserGrade) =
+        this.makeUserResponseViewFromUser(this.getUserEntity(id).updateGrade(grade))
 
     /**
      * 회원 조회
      */
     override fun getUser(id: Long): UserResponseView {
-        val user: User = this.findByIdOrThrow(id)
-        if (user.status == UserStatus.DELETED) {
-            throw InvalidUserStatusException()
-        }
+        val user = this.getUserEntity(id)
 
-        return makeUserResponseViewFromUser(user)
+        if (user.isDeleted()) {
+            throw InvalidUserStatusException()
+        } else {
+            return this.makeUserResponseViewFromUser(user)
+        }
     }
 
     /**
      * 회원 정보 수정
      */
-    override fun updateUserInfo(id: Long, request: UserUpdateRequestCommand): UserResponseView? {
-        val user: User = this.findByIdOrThrow(id)
-
-        user.updateUserInfo(request.userName, request.password, request.mobile, request.address)
-        return makeUserResponseViewFromUser(user)
-    }
+    override fun updateUserInfo(id: Long, request: UserUpdateRequestCommand) =
+        this.makeUserResponseViewFromUser(
+            this.getUserEntity(id).updateUserInfo(request.userName, request.password)
+        )
 
     /**
      * 회원 삭제
      */
-    override fun deleteUser(id: Long): UserResponseView? {
-        val user: User = this.findByIdOrThrow(id)
+    override fun deleteUser(id: Long) =
+        this.makeUserResponseViewFromUser(this.getUserEntity(id).updateStatus(UserStatus.DELETED))
 
-        user.delete()
-        return makeUserResponseViewFromUser(user)
-    }
+    /**
+     * 회원 추가 정보 등록
+     */
+    override fun registerAdditionalUserInformation(id: Long, mobile: Mobile?, address: Address?)
+        = this.makeUserAdditionalResponseViewFromUser(this.getUserEntity(id).updateUserAdditionalInfo(mobile, address))
+
 
     /**
      * 이메일 중복 체크
      */
     private fun checkDuplicateEmail(email: String) {
-        if (this.userRepository.findByEmail(email) != null) {
+        if (this.userRepository.findByEmail(email).isPresent) {
             throw DuplicateUserException()
         }
     }
 
-    private fun findByIdOrThrow(id: Long): User {
-        return this.userRepository.findById(id)
-            .orElseThrow { NotFoundUserException() }
-    }
+    private fun getUserEntity(id: Long) =
+        this.userRepository.findById(id).orElseThrow { NotFoundUserException() }
 
-    fun createUserEntity(request: UserCreateRequestCommand): User {
-        return User(
-            userName = request.userName,
-            email = request.email,
-            mobile = request.mobile,
-            password = request.password,
-            address = request.address
+    fun createUserEntity(registerDTO: UserRegisterDTO) =
+         User(
+            userName = registerDTO.userName,
+            password = registerDTO.password,
+            email = registerDTO.email,
+            mobile = null,
+            address = null
+         )
+
+    fun makeUserResponseViewFromUser(user: User) =
+        UserResponseView(
+            id = user.id!!,
+            userName = user.userName,
+            email = user.email,
+            status = user.status,
+            grade = user.grade
         )
-    }
 
-    fun makeUserResponseViewFromUser(user: User): UserResponseView {
-        user.id?.let { id ->
-            return UserResponseView(
-                id = id,
-                userName = user.userName,
-                email = user.email,
-                mobile = user.mobile,
-                address = user.address,
-                status = user.status,
-                grade = user.grade
-            )
-        }
-        throw Exception("id is null")
-    }
+    fun makeUserAdditionalResponseViewFromUser(user: User) =
+        UserAdditionalResponseView(
+            id = user.id!!,
+            mobile = user.mobile,
+            address = user.address
+        )
+
+    data class UserRegisterDTO(
+        val userName: String,
+        val email: String,
+        val password: String,
+    )
 }

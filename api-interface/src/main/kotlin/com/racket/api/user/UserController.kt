@@ -1,87 +1,76 @@
 package com.racket.api.user
 
-import com.racket.api.annotation.UserIdFormat
+import com.racket.api.annotation.UserIdInputValidator
 import com.racket.api.user.domain.UserGrade
 import com.racket.api.user.domain.UserStatus
+import com.racket.api.user.request.UserAdditionalInfoCreateRequestCommand
 import com.racket.api.user.request.UserCreateRequestCommand
 import com.racket.api.user.request.UserUpdateRequestCommand
+import com.racket.api.user.response.UserAdditionalResponseView
 import com.racket.api.user.response.UserResponseView
 import lombok.extern.slf4j.Slf4j
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import javax.validation.Valid
-import javax.validation.Validator
 
 @Slf4j
 @RestController
 @RequestMapping("/user")
-class UserController(private val userService: UserService, val validator: Validator) {
+class UserController(private val userService: UserService) {
 
     @PostMapping
-    fun post(@Valid @RequestBody request: UserCreateRequestCommand): ResponseEntity<UserResponseView> {
-        val userCreateResponse: UserResponseView = this.userService.registerUser(request)
+    fun post(@RequestBody request: UserCreateRequestCommand): ResponseEntity<UserResponseView> {
+        request.validate()
+        val userRegisterDTO = UserServiceImpl.UserRegisterDTO(
+            userName = request.userName,
+            email = request.email,
+            password = request.password
+        )
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(
-                userCreateResponse
-            )
+            .body(this.userService.registerUser(userRegisterDTO))
     }
 
-    @UserIdFormat
+    @UserIdInputValidator
+    @PutMapping("/{id}/additional-info")
+    fun putAdditionalInfo(
+        @PathVariable id: Long,
+        @RequestBody request: UserAdditionalInfoCreateRequestCommand): ResponseEntity<UserAdditionalResponseView> {
+        request.validate()
+        return ResponseEntity.ok(
+            this.userService.registerAdditionalUserInformation(id, request.mobile, request.address)
+        )
+    }
+
+    @UserIdInputValidator
     @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): ResponseEntity<UserResponseView> {
-        val userResponse = this.userService.getUser(id)
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(
-                userResponse
-            )
-    }
+    fun get(@PathVariable id: Long) = ResponseEntity.ok(this.userService.getUser(id))
 
-    @UserIdFormat
-    @PatchMapping("/{id}/status")
+    @UserIdInputValidator
+    @PutMapping("/{id}/status")
     fun patchStatus(
         @PathVariable id: Long,
         @RequestParam status: UserStatus
-    ): ResponseEntity<UserResponseView> {
-        val patchUserStatusResponse: UserResponseView = this.userService.updateUserStatus(id, status)
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(
-                patchUserStatusResponse
-            )
-    }
+    ) = ResponseEntity.ok(this.userService.updateUserStatus(id, status))
 
-    @UserIdFormat
-    @PatchMapping("/{id}/grade")
+    @UserIdInputValidator
+    @PutMapping("/{id}/grade")
     fun patchGrade(
         @PathVariable id: Long,
         @RequestParam grade: UserGrade
-    ): ResponseEntity<UserResponseView> {
-        val patchUserGradeResponse: UserResponseView = this.userService.updateUserGrade(id, grade)
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(
-                patchUserGradeResponse
-            )
-    }
+    ) = ResponseEntity.ok(this.userService.updateUserGrade(id, grade))
 
-    @UserIdFormat
+    @UserIdInputValidator
     @PutMapping("/{id}/info")
     fun patchInfo(
         @PathVariable id: Long,
-        @Valid @RequestBody request: UserUpdateRequestCommand
+        @RequestBody request: UserUpdateRequestCommand
     ): ResponseEntity<UserResponseView> {
-        val patchUserInfoResponse: UserResponseView? = this.userService.updateUserInfo(id, request)
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(
-                patchUserInfoResponse
-            )
+        request.validate()
+        return ResponseEntity.ok(this.userService.updateUserInfo(id, request))
     }
 
-    @UserIdFormat
+    @UserIdInputValidator
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long): ResponseEntity<UserResponseView> {
-        val deleteUserInfoResponse: UserResponseView? = this.userService.deleteUser(id)
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(deleteUserInfoResponse)
-    }
+    fun delete(@PathVariable id: Long) = ResponseEntity.ok(this.userService.deleteUser(id))
 
 }

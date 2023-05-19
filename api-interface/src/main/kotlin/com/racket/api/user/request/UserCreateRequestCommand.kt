@@ -1,25 +1,23 @@
 package com.racket.api.user.request
 
-import com.racket.api.user.domain.Address
-import javax.validation.Valid
-import javax.validation.constraints.Email
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.Size
-
 data class UserCreateRequestCommand(
-    @field:NotBlank(message = "userName cannot be empty")
     val userName: String,
-
-    @field:Email(message = "email format is invalid")
     val email: String,
-
-    @field:Size(min = 6, max = 20, message = "password format is invalid")
-    val password: String,
-
-    @field:NotBlank(message = "mobile cannot be empty")
-    val mobile: String,
-
-    @Valid
-    val address: Address
+    val password: String
 ) {
+    fun validate() {
+        if (this.userName.isEmpty()) {
+            throw IllegalArgumentException("userName cannot be empty")
+        }
+        if (this.email.isEmpty()) {
+            throw IllegalArgumentException("email cannot be empty")
+        }
+        if (this.password.isEmpty()) {
+            throw IllegalArgumentException("password cannot be empty")
+        } else {
+            if (this.password.length < 6 || this.password.length > 20) {
+                throw IllegalArgumentException("password length must be between 6 and 20")
+            }
+        }
+    }
 }

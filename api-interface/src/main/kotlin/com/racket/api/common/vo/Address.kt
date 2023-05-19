@@ -1,4 +1,4 @@
-package com.racket.api.user.domain
+package com.racket.api.common.vo
 
 import javax.persistence.Column
 import javax.persistence.Embeddable
@@ -7,12 +7,12 @@ import javax.persistence.Embeddable
 data class Address(
 
     @Column(name = "street")
-    val street: String,
+    val street: String?,
 
     @Column(name = "zip_code")
-    val zipCode: String,
+    val zipCode: String?,
 
     @Column(name = "detailed_address")
-    val detailedAddress: String
+    val detailedAddress: String?
 
 )

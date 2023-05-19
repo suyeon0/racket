@@ -1,5 +1,7 @@
 package com.racket.api.user.domain
 
+import com.racket.api.common.vo.Address
+import com.racket.api.common.vo.Mobile
 import javax.persistence.*
 
 @Entity
@@ -16,10 +18,11 @@ class User(
 
     var password: String,
 
-    var mobile: String,
+    @Embedded
+    var mobile: Mobile? = null,
 
     @Embedded
-    var address: Address,
+    var address: Address? = null,
 
     @Enumerated(EnumType.STRING)
     var status: UserStatus = UserStatus.ACTIVE,
@@ -27,24 +30,30 @@ class User(
     @Enumerated(EnumType.STRING)
     var grade: UserGrade = UserGrade.USER
 ) {
-    fun changeStatus(status:UserStatus) {
+    fun updateStatus(status:UserStatus): User {
         this.status = status
+        return this
     }
 
-    fun changeGrade(grade: UserGrade) {
+    fun updateGrade(grade: UserGrade): User {
         this.grade = grade
+        return this
     }
 
-    fun updateUserInfo(userName: String, password: String, mobile: String, address: Address) {
+    fun updateUserInfo(userName: String, password: String): User {
         this.userName = userName
         this.password = password
-        this.mobile = mobile
-        this.address = address
+        return this
     }
 
-    fun delete() {
-        this.status = UserStatus.DELETED
+    fun updateUserAdditionalInfo(mobile: Mobile?, address: Address?): User {
+        this.mobile = mobile
+        this.address = address
+        return this
     }
+
+    // 유저가 삭제 상태인지 확인
+    fun isDeleted() = this.status == UserStatus.DELETED
 
 
 }

@@ -2,13 +2,16 @@ package com.racket.api.user
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.racket.api.user.domain.Address
+import com.racket.api.common.vo.Address
+import com.racket.api.common.vo.Mobile
 import com.racket.api.user.domain.UserGrade
 import com.racket.api.user.domain.UserStatus
 import com.racket.api.user.exception.DuplicateUserException
 import com.racket.api.user.exception.InvalidUserStatusException
+import com.racket.api.user.request.UserAdditionalInfoCreateRequestCommand
 import com.racket.api.user.request.UserCreateRequestCommand
 import com.racket.api.user.request.UserUpdateRequestCommand
+import com.racket.api.user.response.UserAdditionalResponseView
 import com.racket.api.user.response.UserResponseView
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -29,36 +32,26 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
 
     val objectMapper = jacksonObjectMapper()
 
-    @Autowired lateinit var userService: UserService
+    @Autowired
+    lateinit var userService: UserService
 
     // 변경 및 삭제할 유저 데이터 생성
     private fun saveTestUserAndReturnResponseView(): UserResponseView {
-        val userCreateRequestCommand = UserCreateRequestCommand(
+        val userRegisterDTO = UserServiceImpl.UserRegisterDTO(
             userName = "tdd_user",
             email = "tdd_user@naver.com",
-            password = "1234567",
-            mobile = "01012341234",
-            address = Address (
-                zipCode = "12345",
-                street = "Positano SA",
-                detailedAddress = "30"
-            )
+            password = "1234567"
         )
-        return this.userService.registerUser(userCreateRequestCommand)
+        return this.userService.registerUser(userRegisterDTO)
     }
+
     @Test
     fun `User Test - 유저를 생성한다 유저 생성이 완료되면 HttpStatus 201이 나와야 하며 DB 에 존재해야 한다`() {
         // given
         val userCreateRequestCommand = UserCreateRequestCommand(
             userName = "zibri",
             email = "test@naver.com",
-            password = "1234567",
-            mobile = "01012341234",
-            address = Address (
-                zipCode = "12345",
-                street = "Positano SA",
-                detailedAddress = "30"
-            )
+            password = "1234567"
         )
 
         // when
@@ -66,7 +59,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userCreateRequestCommand)
         }.andExpect {
-            status {isCreated()}
+            status { isCreated() }
         }.andReturn()
 
         // then
@@ -74,8 +67,6 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         Assertions.assertNotNull(resultView.id)
         Assertions.assertEquals(userCreateRequestCommand.userName, resultView.userName)
         Assertions.assertEquals(userCreateRequestCommand.email, resultView.email)
-        Assertions.assertEquals(userCreateRequestCommand.mobile, resultView.mobile)
-        Assertions.assertEquals(userCreateRequestCommand.address, resultView.address)
     }
 
 
@@ -85,13 +76,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         val userCreateRequestCommand = UserCreateRequestCommand(
             userName = "",
             email = "test@naver.com",
-            password = "1234567",
-            mobile = "01012341234",
-            address = Address (
-                zipCode = "12345",
-                street = "Positano SA",
-                detailedAddress = "30"
-            )
+            password = "1234567"
         )
 
         // when-then
@@ -99,7 +84,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userCreateRequestCommand)
         }.andExpect {
-            status {isBadRequest()}
+            status { isBadRequest() }
         }.andReturn()
 
     }
@@ -111,13 +96,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         val userCreateRequestCommand = UserCreateRequestCommand(
             email = existedEmail,
             userName = "zibri",
-            password = "1234567",
-            mobile = "01012341234",
-            address = Address (
-                zipCode = "12345",
-                street = "Positano SA",
-                detailedAddress = "30"
-            )
+            password = "1234567"
         )
 
         // when-then
@@ -134,7 +113,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
     }
 
     @Test
-    fun `User Test - 유저 조회에 사용할 id 포맷이 일치하지 않으면 400 오류` () {
+    fun `User Test - 유저 조회에 사용할 id 포맷이 일치하지 않으면 400 오류`() {
         // given
         val userId = this.saveTestUserAndReturnResponseView().id
         val invalidId = userId.toString() + "ID"
@@ -157,7 +136,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         val updateStatus = UserStatus.INACTIVE
 
         // when
-        val sut = mockMvc.patch("/user/{id}/status", updateUserId) {
+        val sut = mockMvc.put("/user/{id}/status", updateUserId) {
             param("status", updateStatus.name)
         }.andExpect {
             status { isOk() }
@@ -203,7 +182,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         val updateGrade = UserGrade.ADMIN
 
         // when
-        val sut = mockMvc.patch("/user/{id}/grade", updateUserId) {
+        val sut = mockMvc.put("/user/{id}/grade", updateUserId) {
             param("grade", updateGrade.name)
         }.andExpect {
             status { isOk() }
@@ -223,7 +202,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         val invalidGrade = "INVALID_GRADE"
 
         // when
-        mockMvc.patch("/user/{id}/grade", updateUserId) {
+        mockMvc.put("/user/{id}/grade", updateUserId) {
             param("grade", invalidGrade)
         }.andExpect {
             status { isBadRequest() }
@@ -239,13 +218,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         val userId = res.id // 변경할 유저 id
         val userUpdateRequestCommand = UserUpdateRequestCommand(
             userName = "updateUser",
-            password = "updatePWD",
-            mobile = "01043214321",
-            address = Address (
-                zipCode = "",
-                street = "Positano SA 2",
-                detailedAddress = "31"
-            )
+            password = "updatePWD"
         )
 
         // when
@@ -259,8 +232,6 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         // then
         val resultView = objectMapper.readValue(sut.response.contentAsString, UserResponseView::class.java)
         Assertions.assertEquals(userUpdateRequestCommand.userName, resultView.userName)
-        Assertions.assertEquals(userUpdateRequestCommand.mobile, resultView.mobile)
-        Assertions.assertEquals(userUpdateRequestCommand.address, resultView.address)
     }
 
     @Test
@@ -282,12 +253,71 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
 
         // 조회할 수 없어야 한다
         val sutGet = this.mockMvc.get("/user/{id}", deleteUserId)
-                .andExpect {
-                    status { isBadRequest() }
-                }.andReturn()
+            .andExpect {
+                status { isBadRequest() }
+            }.andReturn()
         val resolvedException = sutGet.resolvedException
         assert(resolvedException is InvalidUserStatusException)
     }
+
+    @Test
+    fun `유저 추가 정보를 정상적으로 저장하면 200 을 리턴 받는다`() {
+        // given
+        val res: UserResponseView = this.saveTestUserAndReturnResponseView() // 변경할 유저 데이터 저장
+        val userId = res.id // 저장할 유저 id
+        val userAdditionalInfoCreateRequestCommand = UserAdditionalInfoCreateRequestCommand(
+            mobile = Mobile (
+                number = "01012341234"
+            ),
+            address = Address (
+                zipCode = "",
+                street = "Positano SA 2",
+                detailedAddress = "31"
+            )
+        )
+
+        // when
+        val sut = this.mockMvc.put("/user/{id}/additional-info", userId) {
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userAdditionalInfoCreateRequestCommand)
+        }.andExpect {
+            status { isOk() }
+        }.andReturn()
+
+        // then
+        val resultView = objectMapper.readValue(sut.response.contentAsString, UserAdditionalResponseView::class.java)
+        val addressResult = resultView.address!!
+        Assertions.assertEquals(userAdditionalInfoCreateRequestCommand.mobile!!, resultView.mobile)
+        Assertions.assertEquals(userAdditionalInfoCreateRequestCommand.address!!.zipCode, addressResult.zipCode)
+        Assertions.assertEquals(userAdditionalInfoCreateRequestCommand.address!!.detailedAddress, addressResult.detailedAddress)
+        Assertions.assertEquals(userAdditionalInfoCreateRequestCommand.address!!.street, addressResult.street)
+    }
+
+    @Test
+    fun `유저 추가 정보 저장시 핸드폰 번호 포맷이 불일치하면 400 오류를 리턴받는다`() {
+        // given
+        val res: UserResponseView = this.saveTestUserAndReturnResponseView() // 변경할 유저 데이터 저장
+        val userId = res.id // 저장할 유저 id
+        val userAdditionalInfoCreateRequestCommand = UserAdditionalInfoCreateRequestCommand(
+            mobile = Mobile (
+                number = "12341234"
+            ),
+            address = Address (
+                zipCode = "",
+                street = "Positano SA 2",
+                detailedAddress = "31"
+            )
+        )
+
+        // when - then
+        val sut = this.mockMvc.put("/user/{id}/additional-info", userId) {
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userAdditionalInfoCreateRequestCommand)
+        }.andExpect {
+            status { isBadRequest() }
+        }.andReturn()
+    }
+
 
 
 }
