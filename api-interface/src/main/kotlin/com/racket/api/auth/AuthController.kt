@@ -1,7 +1,7 @@
 package com.racket.api.auth
 
+import com.racket.api.auth.enums.SessionConst
 import com.racket.api.auth.response.LoginUserResponseView
-import com.racket.api.auth.session.SessionManager
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
@@ -10,8 +10,7 @@ import javax.servlet.http.HttpServletResponse
 @Controller
 @RequestMapping("/auth")
 class AuthController(
-    private val loginService: LoginService,
-    private val sessionManager: SessionManager
+    private val loginService: LoginService
 ) {
 
     @GetMapping("/login")
@@ -27,9 +26,10 @@ class AuthController(
     ): LoginUserResponseView {
         val loginResponse = this.loginService.login(inputEmail = email, inputPassword = password)
 
-        // 로그인 성공시 세션 설정 및 리다이렉트
+        // 로그인 성공 처리
+        // 세션이 있으면 있는 세션 반환, 없으면 신규 세션을 생성 -> 로그인 회원 정보 보관
         if (loginResponse.result == "SUCCESS") {
-            this.sessionManager.createSession(value = loginResponse.user!!, response = response, request = request)
+            request.getSession(true).setAttribute(SessionConst.LOGIN_USER.key, loginResponse.user)
             loginResponse.redirectURI = "/"
         }
         return loginResponse
@@ -37,7 +37,7 @@ class AuthController(
 
     @GetMapping("/logout")
     fun logout(request: HttpServletRequest): String {
-        this.sessionManager.expire(request)
+        request.getSession(false)?.invalidate()
         return "redirect:/"
     }
 

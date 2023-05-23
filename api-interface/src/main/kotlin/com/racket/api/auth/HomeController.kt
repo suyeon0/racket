@@ -1,6 +1,6 @@
 package com.racket.api.auth
 
-import com.racket.api.auth.session.SessionManager
+import com.racket.api.auth.enums.SessionConst
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
@@ -10,13 +10,12 @@ import javax.servlet.http.HttpServletRequest
 
 @Controller
 @RequestMapping
-class HomeController(
-    private val sessionManager: SessionManager
-) {
+class HomeController() {
     @GetMapping("/")
     fun home(request: HttpServletRequest, model: Model): String {
-        val loginUserSession = this.sessionManager.getSession(request)
-        if(loginUserSession != null) {
+        val session = request.getSession(false)
+        if(session != null) {
+            val loginUserSession = session.getAttribute(SessionConst.LOGIN_USER.key)
             model.addAttribute("loginUser", loginUserSession)
         }
         return "home"
