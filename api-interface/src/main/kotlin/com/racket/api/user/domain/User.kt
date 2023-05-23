@@ -28,15 +28,15 @@ class User(
     var status: UserStatus = UserStatus.ACTIVE,
 
     @Enumerated(EnumType.STRING)
-    var grade: UserGrade = UserGrade.USER
+    var role: UserRole = UserRole.USER
 ) {
     fun updateStatus(status:UserStatus): User {
         this.status = status
         return this
     }
 
-    fun updateGrade(grade: UserGrade): User {
-        this.grade = grade
+    fun updateRole(role: UserRole): User {
+        this.role = role
         return this
     }
 

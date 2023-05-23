@@ -51,6 +51,9 @@ subprojects {
 		implementation ("com.mysql:mysql-connector-j")
 		implementation("org.javassist:javassist:3.29.2-GA")
 
+		//thymeleaf
+		implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+
 	}
 
 	dependencyManagement {

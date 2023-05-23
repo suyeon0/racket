@@ -1,5 +1,5 @@
 package com.racket.api.user.domain
 
-enum class UserGrade {
+enum class UserRole {
     USER, ADMIN
 }

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>index</title>
+</head>
+<body>
+
+<p>racket home 입니다</p>
+<th:block th:if="${loginUser == null}">
+  <a href="/auth/login">LOGIN FORM 이동</a>
+</th:block>
+
+<div th:if="${loginUser}">
+  <p>Hello, <span th:text="${loginUser.name}"></span>!</p>
+
+  <div th:if="${loginUser.role == 'USER'}">
+    <a href="/user-info">User Info</a>
+  </div>
+  <div th:if="${loginUser.role == 'ADMIN'}">
+    <a href="/admin-info">ADMIN Info</a>
+  </div>
+  <div>
+    <a href="/auth/logout">LOGOUT</a>
+  </div>
+
+</div>
+
+</body>
+</html>

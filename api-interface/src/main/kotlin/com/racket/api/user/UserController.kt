@@ -1,7 +1,7 @@
 package com.racket.api.user
 
 import com.racket.api.annotation.UserIdInputValidator
-import com.racket.api.user.domain.UserGrade
+import com.racket.api.user.domain.UserRole
 import com.racket.api.user.domain.UserStatus
 import com.racket.api.user.request.UserAdditionalInfoCreateRequestCommand
 import com.racket.api.user.request.UserCreateRequestCommand
@@ -53,14 +53,14 @@ class UserController(private val userService: UserService) {
     ) = ResponseEntity.ok(this.userService.updateUserStatus(id, status))
 
     @UserIdInputValidator
-    @PutMapping("/{id}/grade")
-    fun patchGrade(
+    @PatchMapping("/{id}/role")
+    fun patchRole(
         @PathVariable id: Long,
-        @RequestParam grade: UserGrade
-    ) = ResponseEntity.ok(this.userService.updateUserGrade(id, grade))
+        @RequestParam role: UserRole
+    ) = ResponseEntity.ok(this.userService.updateUserRole(id, role))
 
     @UserIdInputValidator
-    @PutMapping("/{id}/info")
+    @PatchMapping("/{id}/info")
     fun patchInfo(
         @PathVariable id: Long,
         @RequestBody request: UserUpdateRequestCommand

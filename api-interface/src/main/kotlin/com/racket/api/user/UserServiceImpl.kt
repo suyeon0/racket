@@ -3,7 +3,7 @@ package com.racket.api.user
 import com.racket.api.common.vo.Address
 import com.racket.api.common.vo.Mobile
 import com.racket.api.user.domain.User
-import com.racket.api.user.domain.UserGrade
+import com.racket.api.user.domain.UserRole
 import com.racket.api.user.domain.UserRepository
 import com.racket.api.user.domain.UserStatus
 import com.racket.api.user.exception.DuplicateUserException
@@ -39,8 +39,8 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
     /**
      * 등급 변경
      */
-    override fun updateUserGrade(id: Long, grade: UserGrade) =
-        this.makeUserResponseViewFromUser(this.getUserEntity(id).updateGrade(grade))
+    override fun updateUserRole(id: Long, role: UserRole) =
+        this.makeUserResponseViewFromUser(this.getUserEntity(id).updateRole(role))
 
     /**
      * 회원 조회
@@ -75,6 +75,15 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
     override fun registerAdditionalUserInformation(id: Long, mobile: Mobile?, address: Address?)
         = this.makeUserAdditionalResponseViewFromUser(this.getUserEntity(id).updateUserAdditionalInfo(mobile, address))
 
+    override fun getUserByEmail(email: String): UserResponseView {
+        val optUser = this.userRepository.findByEmail(email)
+        if (optUser.isPresent) {
+            return this.makeUserResponseViewFromUser(optUser.get())
+        } else {
+            throw NotFoundUserException()
+        }
+    }
+
 
     /**
      * 이메일 중복 체크
@@ -103,7 +112,8 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
             userName = user.userName,
             email = user.email,
             status = user.status,
-            grade = user.grade
+            role = user.role,
+            password = user.password
         )
 
     fun makeUserAdditionalResponseViewFromUser(user: User) =

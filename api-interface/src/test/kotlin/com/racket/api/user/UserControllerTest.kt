@@ -4,7 +4,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.racket.api.common.vo.Address
 import com.racket.api.common.vo.Mobile
-import com.racket.api.user.domain.UserGrade
+import com.racket.api.user.domain.UserRole
 import com.racket.api.user.domain.UserStatus
 import com.racket.api.user.exception.DuplicateUserException
 import com.racket.api.user.exception.InvalidUserStatusException
@@ -136,7 +136,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         val updateStatus = UserStatus.INACTIVE
 
         // when
-        val sut = mockMvc.put("/user/{id}/status", updateUserId) {
+        val sut = mockMvc.patch("/user/{id}/status", updateUserId) {
             param("status", updateStatus.name)
         }.andExpect {
             status { isOk() }
@@ -152,7 +152,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
     fun `User Test - 최초에 회원을 가입하면 일반 유저 등급이 된다 유저 등급은 USER, ADMIN 으로 나뉜다 유저 정보를 불러올 때 해당 유저 등급과 상태를 확인할 수 있어야 한다`() {
         // given
         val res: UserResponseView = this.saveTestUserAndReturnResponseView() // 변경할 유저 데이터 저장
-        val defaultGrade: UserGrade = res.grade // 최초 가입시 유저 등급
+        val defaultRole: UserRole = res.role // 최초 가입시 유저 등급
         val userId = res.id // 정보 조회할 유저 id
 
         // when
@@ -163,13 +163,13 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
 
         // then
         // 최초에 회원을 가입하면 일반 유저 등급이 된다
-        Assertions.assertEquals(UserGrade.USER, defaultGrade)
+        Assertions.assertEquals(UserRole.USER, defaultRole)
         // 유저 등급은 USER, ADMIN 으로 나뉜다
-        val list: Array<UserGrade> = UserGrade.values()
-        Assertions.assertTrue(UserGrade.USER in list && UserGrade.ADMIN in list)
+        val list: Array<UserRole> = UserRole.values()
+        Assertions.assertTrue(UserRole.USER in list && UserRole.ADMIN in list)
         // 유저 정보를 불러올 때 해당 유저 등급과 상태를 확인할 수 있어야 한다
         val resultView = objectMapper.readValue(sut.response.contentAsString, UserResponseView::class.java)
-        Assertions.assertEquals(UserGrade.USER, resultView.grade)
+        Assertions.assertEquals(UserRole.USER, resultView.role)
         Assertions.assertEquals(UserStatus.ACTIVE, resultView.status)
     }
 
@@ -179,18 +179,18 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         val res: UserResponseView = this.saveTestUserAndReturnResponseView() // 변경할 유저 데이터 저장
 
         val updateUserId = res.id
-        val updateGrade = UserGrade.ADMIN
+        val updateRole = UserRole.ADMIN
 
         // when
-        val sut = mockMvc.put("/user/{id}/grade", updateUserId) {
-            param("grade", updateGrade.name)
+        val sut = mockMvc.patch("/user/{id}/role", updateUserId) {
+            param("role", updateRole.name)
         }.andExpect {
             status { isOk() }
         }.andReturn()
 
         // then
         val resultView = objectMapper.readValue(sut.response.contentAsString, UserResponseView::class.java)
-        Assertions.assertEquals(updateGrade, resultView.grade)
+        Assertions.assertEquals(updateRole, resultView.role)
     }
 
     @Test
@@ -199,11 +199,11 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         val res: UserResponseView = this.saveTestUserAndReturnResponseView() // 변경할 유저 데이터 저장
 
         val updateUserId = res.id
-        val invalidGrade = "INVALID_GRADE"
+        val invalidRole = "INVALID_ROLE"
 
         // when
-        mockMvc.put("/user/{id}/grade", updateUserId) {
-            param("grade", invalidGrade)
+        mockMvc.patch("/user/{id}/role", updateUserId) {
+            param("role", invalidRole)
         }.andExpect {
             status { isBadRequest() }
         }
@@ -222,7 +222,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         )
 
         // when
-        val sut = this.mockMvc.put("/user/{id}/info", userId) {
+        val sut = this.mockMvc.patch("/user/{id}/info", userId) {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userUpdateRequestCommand)
         }.andExpect {
@@ -277,7 +277,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         )
 
         // when
-        val sut = this.mockMvc.put("/user/{id}/additional-info", userId) {
+        val sut = this.mockMvc.patch("/user/{id}/additional-info", userId) {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userAdditionalInfoCreateRequestCommand)
         }.andExpect {
@@ -310,7 +310,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         )
 
         // when - then
-        val sut = this.mockMvc.put("/user/{id}/additional-info", userId) {
+        val sut = this.mockMvc.patch("/user/{id}/additional-info", userId) {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userAdditionalInfoCreateRequestCommand)
         }.andExpect {
