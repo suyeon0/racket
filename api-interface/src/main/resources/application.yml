@@ -26,6 +26,13 @@ spring:
     open-in-view: false
     show-sql: true
 
+  redis:
+    host: 127.0.0.1
+    password: 1234
+    port: 6379
+  session:
+    store-type: redis
+
 logging:
   level:
     org.hibernate.SQL: debug

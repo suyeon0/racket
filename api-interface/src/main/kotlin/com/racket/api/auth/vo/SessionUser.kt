@@ -1,8 +1,9 @@
 package com.racket.api.auth.vo
 
-data class User(
+import java.io.Serializable
+
+data class SessionUser(
     val id: Long,
     val name: String,
     val role: String
-) {
-}
+) : Serializable

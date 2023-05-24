@@ -1,7 +1,7 @@
 package com.racket.api.auth
 
 import com.racket.api.auth.response.LoginUserResponseView
-import com.racket.api.auth.vo.User
+import com.racket.api.auth.vo.SessionUser
 import com.racket.api.user.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -18,7 +18,7 @@ class LoginServiceImpl: LoginService {
             val user = this.userService.getUserByEmail(inputEmail)
             LoginUserResponseView(
                 result = "SUCCESS",
-                user = User(id = user.id, name = user.userName, role = user.role.name),
+                user = SessionUser(id = user.id, name = user.userName, role = user.role.name),
                 redirectURI = null
             )
         } else {

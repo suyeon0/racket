@@ -1,10 +1,10 @@
 package com.racket.api.auth.response
 
-import com.racket.api.auth.vo.User
+import com.racket.api.auth.vo.SessionUser
 
 data class LoginUserResponseView(
     val result: String,
-    val user: User?,
+    val user: SessionUser?,
     var redirectURI: String?
 ) {
 

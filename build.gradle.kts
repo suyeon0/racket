@@ -54,6 +54,9 @@ subprojects {
 		//thymeleaf
 		implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 
+		implementation("org.springframework.boot:spring-boot-starter-data-redis")
+		implementation("org.springframework.session:spring-session-data-redis")
+
 	}
 
 	dependencyManagement {
