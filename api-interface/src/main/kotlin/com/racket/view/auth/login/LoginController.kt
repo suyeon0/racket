@@ -1,7 +1,7 @@
-package com.racket.api.auth
+package com.racket.view.auth.login
 
-import com.racket.api.auth.enums.SessionConst
-import com.racket.api.auth.response.LoginUserResponseView
+import com.racket.view.auth.enums.SessionType
+import com.racket.view.auth.login.response.LoginUserResponseView
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse
 
 @Controller
 @RequestMapping("/auth")
-class AuthController(
+class LoginController(
     private val loginService: LoginService
 ) {
 
@@ -28,9 +28,8 @@ class AuthController(
 
         // 로그인 성공 처리
         // 세션이 있으면 있는 세션 반환, 없으면 신규 세션을 생성 -> 로그인 회원 정보 보관
-        if (loginResponse.result == "SUCCESS") {
-            request.getSession(true).setAttribute(SessionConst.LOGIN_USER.key, loginResponse.user)
-            loginResponse.redirectURI = "/"
+        if (true) {
+            request.getSession(true).setAttribute(SessionType.LOGIN_USER.key, loginResponse.user)
         }
         return loginResponse
     }

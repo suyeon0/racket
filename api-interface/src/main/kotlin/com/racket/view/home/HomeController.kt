@@ -1,7 +1,7 @@
-package com.racket.api.auth
+package com.racket.view.home
 
-import com.racket.api.auth.enums.SessionConst
-import com.racket.api.auth.vo.SessionUser
+import com.racket.view.auth.enums.SessionType
+import com.racket.view.auth.login.vo.SessionUserVO
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
@@ -16,7 +16,7 @@ class HomeController() {
     fun home(request: HttpServletRequest, model: Model): String {
         val session = request.getSession(false)
         if(session != null) {
-            val loginUserSession = session.getAttribute(SessionConst.LOGIN_USER.key) as SessionUser
+            val loginUserSession = session.getAttribute(SessionType.LOGIN_USER.key) as SessionUserVO
             model.addAttribute("loginUser", loginUserSession)
         }
         return "home"

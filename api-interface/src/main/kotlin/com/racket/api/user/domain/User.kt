@@ -1,7 +1,7 @@
 package com.racket.api.user.domain
 
-import com.racket.api.common.vo.Address
-import com.racket.api.common.vo.Mobile
+import com.racket.api.common.vo.AddressVO
+import com.racket.api.common.vo.MobileVO
 import javax.persistence.*
 
 @Entity
@@ -19,10 +19,10 @@ class User(
     var password: String,
 
     @Embedded
-    var mobile: Mobile? = null,
+    var mobileVO: MobileVO? = null,
 
     @Embedded
-    var address: Address? = null,
+    var addressVO: AddressVO? = null,
 
     @Enumerated(EnumType.STRING)
     var status: UserStatus = UserStatus.ACTIVE,
@@ -46,9 +46,9 @@ class User(
         return this
     }
 
-    fun updateUserAdditionalInfo(mobile: Mobile?, address: Address?): User {
-        this.mobile = mobile
-        this.address = address
+    fun updateUserAdditionalInfo(mobileVO: MobileVO?, addressVO: AddressVO?): User {
+        this.mobileVO = mobileVO
+        this.addressVO = addressVO
         return this
     }
 

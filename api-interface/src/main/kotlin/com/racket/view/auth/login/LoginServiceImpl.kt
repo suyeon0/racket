@@ -1,14 +1,13 @@
-package com.racket.api.auth
+package com.racket.view.auth.login
 
-import com.racket.api.auth.response.LoginUserResponseView
-import com.racket.api.auth.vo.SessionUser
+import com.racket.view.auth.login.response.LoginUserResponseView
+import com.racket.view.auth.login.vo.SessionUserVO
 import com.racket.api.user.UserService
+import com.racket.view.auth.login.exception.LoginFailException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import javax.transaction.Transactional
 
 @Service
-@Transactional
 class LoginServiceImpl: LoginService {
 
     @Autowired lateinit var userService: UserService
@@ -17,12 +16,14 @@ class LoginServiceImpl: LoginService {
         return if (this.isValidateLoginRequest(inputEmail = inputEmail, inputPassword = inputPassword)) {
             val user = this.userService.getUserByEmail(inputEmail)
             LoginUserResponseView(
-                result = "SUCCESS",
-                user = SessionUser(id = user.id, name = user.userName, role = user.role.name),
-                redirectURI = null
+                user = SessionUserVO(
+                    id = user.id,
+                    name = user.userName,
+                    role = user.role.name),
+                redirectURI = "/"
             )
         } else {
-            LoginUserResponseView(result = "FAIL", null, null)
+            throw LoginFailException()
         }
     }
 

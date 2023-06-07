@@ -1,4 +1,4 @@
-package com.racket.api.auth.session
+package com.racket.view.auth.session
 
 import org.springframework.stereotype.Component
 import java.util.*

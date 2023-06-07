@@ -1,4 +1,4 @@
-package com.racket.api
+package com.racket
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
