@@ -2,8 +2,8 @@ package com.racket.api.user
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.racket.api.common.vo.Address
-import com.racket.api.common.vo.Mobile
+import com.racket.api.common.vo.AddressVO
+import com.racket.api.common.vo.MobileVO
 import com.racket.api.user.domain.UserRole
 import com.racket.api.user.domain.UserStatus
 import com.racket.api.user.exception.DuplicateUserException
@@ -15,6 +15,9 @@ import com.racket.api.user.response.UserAdditionalResponseView
 import com.racket.api.user.response.UserResponseView
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
+import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
@@ -37,7 +40,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
 
     // 변경 및 삭제할 유저 데이터 생성
     private fun saveTestUserAndReturnResponseView(): UserResponseView {
-        val userRegisterDTO = UserServiceImpl.UserRegisterDTO(
+        val userRegisterDTO = UserService.UserRegisterDTO(
             userName = "tdd_user",
             email = "tdd_user@naver.com",
             password = "1234567"
@@ -126,14 +129,14 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
 
     }
 
-    @Test
-    fun `User Test - 유저 상태를 변경할 수 있어야 한다 상태는 ACTIVE, INACTIVE, DELETED 로 나뉜다 기본값은 ACTIVE 이다`() {
+    @ParameterizedTest
+    @EnumSource(value = UserStatus::class, names = ["ACTIVE", "INACTIVE", "DELETED"])
+    fun `User Test - 유저 상태를 변경할 수 있어야 한다 상태는 ACTIVE, INACTIVE, DELETED 로 나뉜다 기본값은 ACTIVE 이다`(updateStatus: UserStatus) {
         // given
         val res: UserResponseView = this.saveTestUserAndReturnResponseView() // 변경할 유저 데이터 저장
         val defaultStatus: UserStatus = res.status // 유저 상태 기본값 확인
 
         val updateUserId = res.id
-        val updateStatus = UserStatus.INACTIVE
 
         // when
         val sut = mockMvc.patch("/user/{id}/status", updateUserId) {
@@ -266,10 +269,10 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         val res: UserResponseView = this.saveTestUserAndReturnResponseView() // 변경할 유저 데이터 저장
         val userId = res.id // 저장할 유저 id
         val userAdditionalInfoCreateRequestCommand = UserAdditionalInfoCreateRequestCommand(
-            mobile = Mobile (
+            mobileVO = MobileVO (
                 number = "01012341234"
             ),
-            address = Address (
+            addressVO = AddressVO (
                 zipCode = "",
                 street = "Positano SA 2",
                 detailedAddress = "31"
@@ -286,11 +289,11 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
 
         // then
         val resultView = objectMapper.readValue(sut.response.contentAsString, UserAdditionalResponseView::class.java)
-        val addressResult = resultView.address!!
-        Assertions.assertEquals(userAdditionalInfoCreateRequestCommand.mobile!!, resultView.mobile)
-        Assertions.assertEquals(userAdditionalInfoCreateRequestCommand.address!!.zipCode, addressResult.zipCode)
-        Assertions.assertEquals(userAdditionalInfoCreateRequestCommand.address!!.detailedAddress, addressResult.detailedAddress)
-        Assertions.assertEquals(userAdditionalInfoCreateRequestCommand.address!!.street, addressResult.street)
+        val addressResult = resultView.addressVO!!
+        Assertions.assertEquals(userAdditionalInfoCreateRequestCommand.mobileVO!!, resultView.mobileVO)
+        Assertions.assertEquals(userAdditionalInfoCreateRequestCommand.addressVO!!.zipCode, addressResult.zipCode)
+        Assertions.assertEquals(userAdditionalInfoCreateRequestCommand.addressVO!!.detailedAddress, addressResult.detailedAddress)
+        Assertions.assertEquals(userAdditionalInfoCreateRequestCommand.addressVO!!.street, addressResult.street)
     }
 
     @Test
@@ -299,10 +302,10 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         val res: UserResponseView = this.saveTestUserAndReturnResponseView() // 변경할 유저 데이터 저장
         val userId = res.id // 저장할 유저 id
         val userAdditionalInfoCreateRequestCommand = UserAdditionalInfoCreateRequestCommand(
-            mobile = Mobile (
+            mobileVO = MobileVO (
                 number = "12341234"
             ),
-            address = Address (
+            addressVO = AddressVO (
                 zipCode = "",
                 street = "Positano SA 2",
                 detailedAddress = "31"

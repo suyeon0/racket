@@ -56,4 +56,5 @@ class GlobalUserExceptionHandlerAdvice : ResponseEntityExceptionHandler() {
                     listOf(Error.from(e.message.toString())), httpServletRequest, HttpStatus.INTERNAL_SERVER_ERROR.value()
                 )
             )
+
 }

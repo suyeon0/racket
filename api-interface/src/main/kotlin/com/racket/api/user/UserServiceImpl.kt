@@ -1,7 +1,7 @@
 package com.racket.api.user
 
-import com.racket.api.common.vo.Address
-import com.racket.api.common.vo.Mobile
+import com.racket.api.common.vo.AddressVO
+import com.racket.api.common.vo.MobileVO
 import com.racket.api.user.domain.User
 import com.racket.api.user.domain.UserRole
 import com.racket.api.user.domain.UserRepository
@@ -13,17 +13,15 @@ import com.racket.api.user.request.UserUpdateRequestCommand
 import com.racket.api.user.response.UserAdditionalResponseView
 import com.racket.api.user.response.UserResponseView
 import org.springframework.stereotype.Service
-import javax.transaction.Transactional
 
 
 @Service
-@Transactional
 class UserServiceImpl(private val userRepository: UserRepository) : UserService {
 
     /**
      * 회원 등록
      */
-    override fun registerUser(userRegisterDTO: UserRegisterDTO): UserResponseView {
+    override fun registerUser(userRegisterDTO: UserService.UserRegisterDTO): UserResponseView {
         this.checkDuplicateEmail(userRegisterDTO.email)
 
         val user = this.userRepository.save(this.createUserEntity(userRegisterDTO))
@@ -60,7 +58,10 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
      */
     override fun updateUserInfo(id: Long, request: UserUpdateRequestCommand) =
         this.makeUserResponseViewFromUser(
-            this.getUserEntity(id).updateUserInfo(request.userName, request.password)
+            this.getUserEntity(id)
+                .updateUserInfo(
+                    userName = request.userName,
+                    password = request.password)
         )
 
     /**
@@ -72,8 +73,13 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
     /**
      * 회원 추가 정보 등록
      */
-    override fun registerAdditionalUserInformation(id: Long, mobile: Mobile?, address: Address?)
-        = this.makeUserAdditionalResponseViewFromUser(this.getUserEntity(id).updateUserAdditionalInfo(mobile, address))
+    override fun registerAdditionalUserInformation(id: Long, mobileVO: MobileVO?, addressVO: AddressVO?)
+        = this.makeUserAdditionalResponseViewFromUser(
+            this.getUserEntity(id)
+                .updateUserAdditionalInfo(
+                    mobileVO = mobileVO,
+                    addressVO = addressVO)
+        )
 
     override fun getUserByEmail(email: String): UserResponseView {
         val optUser = this.userRepository.findByEmail(email)
@@ -97,13 +103,13 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
     private fun getUserEntity(id: Long) =
         this.userRepository.findById(id).orElseThrow { NotFoundUserException() }
 
-    fun createUserEntity(registerDTO: UserRegisterDTO) =
+    fun createUserEntity(registerDTO: UserService.UserRegisterDTO) =
          User(
             userName = registerDTO.userName,
             password = registerDTO.password,
             email = registerDTO.email,
-            mobile = null,
-            address = null
+            mobileVO = null,
+            addressVO = null
          )
 
     fun makeUserResponseViewFromUser(user: User) =
@@ -119,13 +125,8 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
     fun makeUserAdditionalResponseViewFromUser(user: User) =
         UserAdditionalResponseView(
             id = user.id!!,
-            mobile = user.mobile,
-            address = user.address
+            mobileVO = user.mobileVO,
+            addressVO = user.addressVO
         )
 
-    data class UserRegisterDTO(
-        val userName: String,
-        val email: String,
-        val password: String,
-    )
 }

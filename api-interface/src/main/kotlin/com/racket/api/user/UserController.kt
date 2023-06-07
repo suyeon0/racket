@@ -21,7 +21,7 @@ class UserController(private val userService: UserService) {
     @PostMapping
     fun post(@RequestBody request: UserCreateRequestCommand): ResponseEntity<UserResponseView> {
         request.validate()
-        val userRegisterDTO = UserServiceImpl.UserRegisterDTO(
+        val userRegisterDTO = UserService.UserRegisterDTO(
             userName = request.userName,
             email = request.email,
             password = request.password
@@ -31,13 +31,18 @@ class UserController(private val userService: UserService) {
     }
 
     @UserIdInputValidator
-    @PutMapping("/{id}/additional-info")
+    @PatchMapping("/{id}/additional-info")
     fun putAdditionalInfo(
         @PathVariable id: Long,
-        @RequestBody request: UserAdditionalInfoCreateRequestCommand): ResponseEntity<UserAdditionalResponseView> {
+        @RequestBody request: UserAdditionalInfoCreateRequestCommand
+    ): ResponseEntity<UserAdditionalResponseView> {
         request.validate()
         return ResponseEntity.ok(
-            this.userService.registerAdditionalUserInformation(id, request.mobile, request.address)
+            this.userService.registerAdditionalUserInformation(
+                id = id,
+                mobileVO = request.mobileVO,
+                addressVO = request.addressVO
+            )
         )
     }
 
@@ -46,18 +51,24 @@ class UserController(private val userService: UserService) {
     fun get(@PathVariable id: Long) = ResponseEntity.ok(this.userService.getUser(id))
 
     @UserIdInputValidator
-    @PutMapping("/{id}/status")
+    @PatchMapping("/{id}/status")
     fun patchStatus(
         @PathVariable id: Long,
         @RequestParam status: UserStatus
-    ) = ResponseEntity.ok(this.userService.updateUserStatus(id, status))
+    ) = ResponseEntity.ok(this.userService.updateUserStatus(
+            id = id,
+            status = status)
+    )
 
     @UserIdInputValidator
     @PatchMapping("/{id}/role")
     fun patchRole(
         @PathVariable id: Long,
         @RequestParam role: UserRole
-    ) = ResponseEntity.ok(this.userService.updateUserRole(id, role))
+    ) = ResponseEntity.ok(this.userService.updateUserRole(
+        id = id,
+        role = role)
+    )
 
     @UserIdInputValidator
     @PatchMapping("/{id}/info")
@@ -66,7 +77,10 @@ class UserController(private val userService: UserService) {
         @RequestBody request: UserUpdateRequestCommand
     ): ResponseEntity<UserResponseView> {
         request.validate()
-        return ResponseEntity.ok(this.userService.updateUserInfo(id, request))
+        return ResponseEntity.ok(this.userService.updateUserInfo(
+            id = id,
+            request = request)
+        )
     }
 
     @UserIdInputValidator

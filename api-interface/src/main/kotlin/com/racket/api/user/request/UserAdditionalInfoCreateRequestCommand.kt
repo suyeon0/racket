@@ -1,15 +1,16 @@
 package com.racket.api.user.request
 
-import com.racket.api.common.vo.Address
-import com.racket.api.common.vo.Mobile
+import com.racket.api.common.vo.AddressVO
+import com.racket.api.common.vo.MobileVO
+import com.racket.api.util.isMatchMobileNumberFormat
 
 data class UserAdditionalInfoCreateRequestCommand(
-    val mobile: Mobile?,
-    val address: Address?
+    val mobileVO: MobileVO,
+    val addressVO: AddressVO
 ) {
 
     fun validate() {
-        if (mobile?.isNotMatchMobileNumberFormat() == true) {
+        if (!isMatchMobileNumberFormat(this.mobileVO.number)) {
             throw IllegalArgumentException("mobile number pattern mismatch")
         }
     }

@@ -16,21 +16,18 @@ function loginDataSend() {
         success: function (res) {
           loginDataSendSuccess(res);
         },
-        error: function () {
-          console.log(error);
+        error: function (res) {
+          loginDataSendFail(res);
         }
     });
 }
 
 // login ajax success 이후 처리
 function loginDataSendSuccess(res) {
-    if (res.result == "SUCCESS") {
-        window.location.href = res.redirectURI;
-    } else if (res.result == "FAIL") {
-        alert("로그인 정보와 일치하는 유저가 없습니다");
-        return false;
-    } else {
-        alert("SERVER ERROR");
-        return false;
-    }
+  window.location.href = res.redirectURI;
+}
+
+function loginDataSendFail(res) {
+  if(res.status == "400") alert("로그인 정보가 일치하지 않습니다");
+  else alert("server error");
 }
