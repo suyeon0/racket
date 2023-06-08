@@ -38,5 +38,10 @@ class LoginController(
         return "redirect:/"
     }
 
+    @GetMapping("/user-info")
+    fun userInfo(): String {
+        return "userInfo"
+    }
+
 
 }

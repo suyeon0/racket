@@ -1,4 +1,4 @@
-package com.racket.api.config
+package com.racket.view.auth.config.http
 
 import lombok.NoArgsConstructor
 import org.springframework.beans.factory.annotation.Value
@@ -16,7 +16,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 
 @Configuration
 @NoArgsConstructor
-@EnableRedisHttpSession
+@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 0)
 class RedisSessionConfig(
 
     @Value("\${spring.redis.host}")

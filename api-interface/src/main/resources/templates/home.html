@@ -13,9 +13,10 @@
 
 <div th:if="${loginUser}">
   <p>Hello, <span th:text="${loginUser.name}"></span>!</p>
+  <p>sessionId : <span th:text="${loginUser.sessionId}"></span></p>
 
   <div th:if="${loginUser.role == 'USER'}">
-    <a href="/user-info">User Info</a>
+    <a href="/auth/user-info">User Info</a>
   </div>
   <div th:if="${loginUser.role == 'ADMIN'}">
     <a href="/admin-info">ADMIN Info</a>

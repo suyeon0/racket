@@ -11,12 +11,13 @@ import javax.servlet.http.HttpServletRequest
 
 @Controller
 @RequestMapping
-class HomeController() {
+class HomeController {
     @GetMapping("/")
     fun home(request: HttpServletRequest, model: Model): String {
         val session = request.getSession(false)
         if(session != null) {
             val loginUserSession = session.getAttribute(SessionType.LOGIN_USER.key) as SessionUserVO
+            loginUserSession.sessionId = session.id
             model.addAttribute("loginUser", loginUserSession)
         }
         return "home"

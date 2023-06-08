@@ -1,4 +1,4 @@
-package com.racket.api.config
+package com.racket.api.config.db
 
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties
