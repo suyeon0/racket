@@ -10,9 +10,13 @@ function loginDataSend() {
             xhr.setRequestHeader(header, token);
         },
         type: "post",
-        url: "/auth/login",
+        url: "/api/auth/login",
         dataType: "json",
-        data: { email: email, password: password },
+        contentType: 'application/json',
+        data:  JSON.stringify ({
+            email : email,
+            password : password
+        }),
         success: function (res) {
           loginDataSendSuccess(res);
         },

@@ -1,4 +1,4 @@
-package com.racket.view.auth.interceptor
+package com.racket.api.auth.login.interceptor
 
 import lombok.RequiredArgsConstructor
 import org.springframework.context.annotation.Configuration
@@ -13,6 +13,6 @@ class LoginInterceptorConfig(private val loginInterceptor: LoginInterceptor) : W
         registry.addInterceptor(loginInterceptor)
             .addPathPatterns("/auth/user-info")
             .excludePathPatterns("/resources/static/js")
-            .excludePathPatterns("/auth/logout", "/auth/login", "/")
+            .excludePathPatterns("/view/auth/logout", "/view/auth/login", "/api/auth/login", "/")
     }
 }

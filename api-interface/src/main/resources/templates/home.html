@@ -8,21 +8,20 @@
 
 <p>racket home 입니다</p>
 <th:block th:if="${loginUser == null}">
-  <a href="/auth/login">LOGIN FORM 이동</a>
+  <a href="/view/auth/login">LOGIN FORM 이동</a>
 </th:block>
 
 <div th:if="${loginUser}">
   <p>Hello, <span th:text="${loginUser.name}"></span>!</p>
-  <p>sessionId : <span th:text="${loginUser.sessionId}"></span></p>
 
   <div th:if="${loginUser.role == 'USER'}">
-    <a href="/auth/user-info">User Info</a>
+    <a href="/view/auth/user-info">User Info</a>
   </div>
   <div th:if="${loginUser.role == 'ADMIN'}">
-    <a href="/admin-info">ADMIN Info</a>
+    <a href="/view/auth/admin-info">ADMIN Info</a>
   </div>
   <div>
-    <a href="/auth/logout">LOGOUT</a>
+    <a href="/view/auth/logout">LOGOUT</a>
   </div>
 
 </div>

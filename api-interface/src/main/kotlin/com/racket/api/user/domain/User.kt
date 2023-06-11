@@ -53,7 +53,7 @@ class User(
     }
 
     // 유저가 삭제 상태인지 확인
-    fun isDeleted() = this.status == UserStatus.DELETED
+    fun isDeletedStatus() = this.status == UserStatus.DELETED
 
 
 }

@@ -2,7 +2,7 @@ package com.racket.api.user.advice
 
 import com.racket.api.user.response.Error
 import com.racket.api.user.response.ErrorResponse
-import com.racket.view.auth.login.exception.LoginFailException
+import com.racket.api.auth.login.exception.LoginFailException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler

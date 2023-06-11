@@ -58,7 +58,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         )
 
         // when
-        val sut = this.mockMvc.post("/user") {
+        val sut = this.mockMvc.post("/api/user") {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userCreateRequestCommand)
         }.andExpect {
@@ -83,7 +83,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         )
 
         // when-then
-        val sut = this.mockMvc.post("/user") {
+        val sut = this.mockMvc.post("/api/user") {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userCreateRequestCommand)
         }.andExpect {
@@ -103,7 +103,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         )
 
         // when-then
-        val sut = this.mockMvc.post("/user") {
+        val sut = this.mockMvc.post("/api/user") {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userCreateRequestCommand)
         }.andExpect {
@@ -122,7 +122,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         val invalidId = userId.toString() + "ID"
 
         // when-then
-        this.mockMvc.get("/user/{id}", invalidId) {
+        this.mockMvc.get("/api/user/{id}", invalidId) {
         }.andExpect {
             status { isBadRequest() }
         }.andReturn()
@@ -139,7 +139,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         val updateUserId = res.id
 
         // when
-        val sut = mockMvc.patch("/user/{id}/status", updateUserId) {
+        val sut = mockMvc.patch("/api/user/{id}/status", updateUserId) {
             param("status", updateStatus.name)
         }.andExpect {
             status { isOk() }
@@ -159,7 +159,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         val userId = res.id // 정보 조회할 유저 id
 
         // when
-        val sut = this.mockMvc.get("/user/{id}", userId) {
+        val sut = this.mockMvc.get("/api/user/{id}", userId) {
         }.andExpect {
             status { isOk() }
         }.andReturn()
@@ -185,7 +185,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         val updateRole = UserRole.ADMIN
 
         // when
-        val sut = mockMvc.patch("/user/{id}/role", updateUserId) {
+        val sut = mockMvc.patch("/api/user/{id}/role", updateUserId) {
             param("role", updateRole.name)
         }.andExpect {
             status { isOk() }
@@ -205,7 +205,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         val invalidRole = "INVALID_ROLE"
 
         // when
-        mockMvc.patch("/user/{id}/role", updateUserId) {
+        mockMvc.patch("/api/user/{id}/role", updateUserId) {
             param("role", invalidRole)
         }.andExpect {
             status { isBadRequest() }
@@ -225,7 +225,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         )
 
         // when
-        val sut = this.mockMvc.patch("/user/{id}/info", userId) {
+        val sut = this.mockMvc.patch("/api/user/{id}/info", userId) {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userUpdateRequestCommand)
         }.andExpect {
@@ -244,7 +244,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         val deleteUserId = res.id
 
         // when
-        val sut = this.mockMvc.delete("/user/{id}", deleteUserId)
+        val sut = this.mockMvc.delete("/api/user/{id}", deleteUserId)
             .andExpect {
                 status { isOk() }
             }.andReturn()
@@ -255,7 +255,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         Assertions.assertEquals(UserStatus.DELETED, resultView.status)
 
         // 조회할 수 없어야 한다
-        val sutGet = this.mockMvc.get("/user/{id}", deleteUserId)
+        val sutGet = this.mockMvc.get("/api/user/{id}", deleteUserId)
             .andExpect {
                 status { isBadRequest() }
             }.andReturn()
@@ -280,7 +280,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         )
 
         // when
-        val sut = this.mockMvc.patch("/user/{id}/additional-info", userId) {
+        val sut = this.mockMvc.patch("/api/user/{id}/additional-info", userId) {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userAdditionalInfoCreateRequestCommand)
         }.andExpect {
@@ -313,7 +313,7 @@ class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
         )
 
         // when - then
-        val sut = this.mockMvc.patch("/user/{id}/additional-info", userId) {
+        val sut = this.mockMvc.patch("/api/user/{id}/additional-info", userId) {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userAdditionalInfoCreateRequestCommand)
         }.andExpect {

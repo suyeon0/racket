@@ -1,4 +1,4 @@
-package com.racket.view.auth.interceptor
+package com.racket.api.auth.login.interceptor
 
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
@@ -11,7 +11,7 @@ class LoginInterceptor: HandlerInterceptor {
     @Throws(Exception::class)
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         if(request.getSession(false) == null) {
-            response.sendRedirect("/auth/login");
+            response.sendRedirect("/view/auth/login");
             return false;
         }
         return true;

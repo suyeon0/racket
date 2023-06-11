@@ -1,6 +1,6 @@
-package com.racket.view.auth.login
+package com.racket.api.auth.login
 
-import com.racket.view.auth.login.response.LoginUserResponseView
+import com.racket.api.auth.login.response.LoginUserResponseView
 
 interface LoginService {
 

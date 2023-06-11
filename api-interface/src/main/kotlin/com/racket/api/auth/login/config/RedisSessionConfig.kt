@@ -1,4 +1,4 @@
-package com.racket.view.auth.config.http
+package com.racket.api.auth.login.config
 
 import lombok.NoArgsConstructor
 import org.springframework.beans.factory.annotation.Value
