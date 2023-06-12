@@ -38,9 +38,8 @@ subprojects {
 		implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
 		//util
-		compileOnly("org.projectlombok:lombok")
-		annotationProcessor("org.projectlombok:lombok")
 		implementation("org.apache.commons:commons-lang3")
+		implementation ("org.projectlombok:lombok:1.18.20")
 
 		//test
 		testImplementation("org.springframework.boot:spring-boot-starter-test")
