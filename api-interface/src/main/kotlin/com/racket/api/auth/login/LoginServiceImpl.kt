@@ -1,9 +1,9 @@
 package com.racket.api.auth.login
 
 import com.racket.api.auth.login.response.LoginUserResponseView
-import com.racket.api.auth.login.vo.SessionUserVO
 import com.racket.api.user.UserService
 import com.racket.api.auth.login.exception.LoginFailException
+import com.racket.api.auth.login.session.vo.SessionVO
 import com.racket.api.user.domain.User
 import org.springframework.stereotype.Service
 
@@ -15,11 +15,13 @@ class LoginServiceImpl(
     override fun login(inputEmail: String, inputPassword: String): LoginUserResponseView {
         val loginUser = this.getLoginUserByLoginRequest(inputEmail = inputEmail, inputPassword = inputPassword)
         return LoginUserResponseView(
-            user = SessionUserVO(
-                id = loginUser.id!!,
+            user = SessionVO(
+                userId = loginUser.id!!,
                 name = loginUser.userName,
-                role = loginUser.role.name
+                role = loginUser.role.name,
+                email = loginUser.email
             ),
+            sessionId = null,
             redirectURI = "/"
         )
     }

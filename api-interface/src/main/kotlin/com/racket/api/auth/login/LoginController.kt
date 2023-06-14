@@ -1,28 +1,32 @@
 package com.racket.api.auth.login
 
-import com.racket.api.auth.login.enums.SessionType
-import com.racket.api.auth.login.request.LoginRequest
+import com.racket.api.auth.login.request.LoginRequestCommand
 import com.racket.api.auth.login.response.LoginUserResponseView
+import com.racket.api.auth.login.session.SessionRedisManager
+import lombok.RequiredArgsConstructor
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/auth")
 class LoginController(
-    private val loginService: LoginService
+    private val loginService: LoginService,
+    private val sessionRedisManager: SessionRedisManager
 ) {
 
     @ResponseBody
     @PostMapping("/login")
     fun login(
+        response: HttpServletResponse,
         request: HttpServletRequest,
-        @RequestBody loginRequest: LoginRequest
+        @RequestBody loginRequestCommand: LoginRequestCommand
     ): LoginUserResponseView {
-        val loginResponse = this.loginService.login(inputEmail = loginRequest.email, inputPassword = loginRequest.password)
+        val loginResponse = this.loginService.login(inputEmail = loginRequestCommand.email, inputPassword = loginRequestCommand.password)
+        val sessionId = this.sessionRedisManager.setSession(sessionVO = loginResponse.user)
+        this.sessionRedisManager.setSessionCookie(sessionId = sessionId, response = response)
 
-        // 로그인 성공 처리
-        // 세션이 있으면 있는 세션 반환, 없으면 신규 세션을 생성 -> 로그인 회원 정보 보관
-        request.getSession(true).setAttribute(SessionType.LOGIN_USER.key, loginResponse.user)
         return loginResponse
     }
 

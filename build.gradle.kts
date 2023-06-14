@@ -45,6 +45,8 @@ subprojects {
 		testImplementation("org.springframework.boot:spring-boot-starter-test")
 		testImplementation("org.springframework.security:spring-security-test")
 		testImplementation("org.junit.jupiter:junit-jupiter-params")
+		testImplementation("it.ozimov:embedded-redis:0.7.2")
+
 
 		//DB
 		implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -55,7 +57,7 @@ subprojects {
 		implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 
 		implementation("org.springframework.boot:spring-boot-starter-data-redis")
-		implementation("org.springframework.session:spring-session-data-redis")
+		//implementation("org.springframework.session:spring-session-data-redis")
 
 	}
 

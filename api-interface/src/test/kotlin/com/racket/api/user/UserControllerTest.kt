@@ -31,10 +31,12 @@ import org.springframework.transaction.annotation.Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
-class UserControllerTest @Autowired constructor(private val mockMvc: MockMvc) {
+class UserControllerTest {
 
     val objectMapper = jacksonObjectMapper()
 
+    @Autowired
+    lateinit var mockMvc: MockMvc
     @Autowired
     lateinit var userService: UserService
 
