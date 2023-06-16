@@ -40,6 +40,8 @@ subprojects {
 		//util
 		implementation("org.apache.commons:commons-lang3")
 		implementation ("org.projectlombok:lombok:1.18.20")
+		implementation("io.github.microutils:kotlin-logging:2.1.23")
+		implementation("org.slf4j:slf4j-api:1.7.30")
 
 		//test
 		testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -57,8 +59,6 @@ subprojects {
 		implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 
 		implementation("org.springframework.boot:spring-boot-starter-data-redis")
-		//implementation("org.springframework.session:spring-session-data-redis")
-
 	}
 
 	dependencyManagement {

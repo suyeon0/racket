@@ -12,19 +12,24 @@ class UserParamAspect {
     @Around("@annotation(com.racket.api.annotation.UserIdFormat)")
     @Throws(Throwable::class)
     fun checkUserIdFormat(pjp: ProceedingJoinPoint): Any? {
-        var id: String? = null
-        val parameterValues = pjp.args
-        val signature = pjp.signature as MethodSignature
-        val method = signature.method
-        for (i in method.parameters.indices) {
-            val parameterName = method.parameters[i].name
-            if (parameterName == "id") {
-                id = parameterValues[i] as String
-                break
+        try {
+            var id: String? = null
+            val parameterValues = pjp.args
+            val signature = pjp.signature as MethodSignature
+            val method = signature.method
+            for (i in method.parameters.indices) {
+                val parameterName = method.parameters[i].name
+                if (parameterName == "id") {
+                    id = parameterValues[i] as String
+                    break
+                }
             }
+            require(ObjectUtils.isNotEmpty(id)) { "user id 는 공백일 수 없습니다" }
+            require(StringUtils.isNumeric(id)) { "user id 는 숫자여야 합니다" }
+            return pjp.proceed()
+
+        } catch (e: Exception) {
+            throw e
         }
-        require(ObjectUtils.isNotEmpty(id)) { "user id 는 공백일 수 없습니다" }
-        require(StringUtils.isNumeric(id)) { "user id 는 숫자여야 합니다" }
-        return pjp.proceed()
     }
 }

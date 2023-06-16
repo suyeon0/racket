@@ -12,7 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.servlet.http.HttpServletRequest
 
 @RestControllerAdvice(basePackages = ["com.racket.api.auth"])
-class GlobalAuthExceptionHandlerAdvice : ResponseEntityExceptionHandler() {
+class AuthApiExceptionHandlerAdvice : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(value = [LoginFailException::class])
     fun loginFailException(e: LoginFailException, httpServletRequest: HttpServletRequest) =
@@ -28,16 +28,6 @@ class GlobalAuthExceptionHandlerAdvice : ResponseEntityExceptionHandler() {
             .status(HttpStatus.UNAUTHORIZED)
             .body(
                 ErrorResponse.from(listOf(Error.from(e.message)), httpServletRequest, HttpStatus.UNAUTHORIZED.value())
-            )
-
-    @ExceptionHandler(value = [Exception::class])
-    fun exception(e: Exception, httpServletRequest: HttpServletRequest) =
-        ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(
-                ErrorResponse.from(
-                    listOf(Error.from(e.message.toString())), httpServletRequest, HttpStatus.INTERNAL_SERVER_ERROR.value()
-                )
             )
 
 }
