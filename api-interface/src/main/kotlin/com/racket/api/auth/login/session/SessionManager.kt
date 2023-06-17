@@ -4,6 +4,7 @@ import com.racket.api.auth.login.session.vo.SessionVO
 import java.util.*
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
 interface SessionManager {
 
@@ -26,5 +27,10 @@ interface SessionManager {
             Optional.empty()
         }
     }
+
+    fun isExistSessionCookie(request: HttpServletRequest): Boolean
+    fun getSessionBySessionCookie(request: HttpServletRequest): SessionVO
+
+    fun deleteSessionCookie(response: HttpServletResponse, request: HttpServletRequest)
 
 }

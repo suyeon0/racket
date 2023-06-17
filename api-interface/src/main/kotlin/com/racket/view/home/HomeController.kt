@@ -1,8 +1,8 @@
 package com.racket.view.home
 
-import com.racket.api.auth.login.enums.SessionType
+import com.racket.api.auth.login.exception.NoSuchSessionException
+import com.racket.api.auth.login.session.SessionManager
 import com.racket.api.auth.login.session.SessionRedisManager
-import com.racket.api.auth.login.session.domain.SessionUser
 import lombok.RequiredArgsConstructor
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -15,14 +15,17 @@ import javax.servlet.http.HttpServletRequest
 @RequestMapping
 @RequiredArgsConstructor
 class HomeController(
-    private val sessionRedisManager: SessionRedisManager
+    private val sessionRedisManager: SessionManager
 ) {
     @GetMapping("/")
     fun home(request: HttpServletRequest, model: Model): String {
 
-        val session = this.sessionRedisManager.getSessionBySessionCookie(request)
-        if (session != null) {
-            model.addAttribute("userId", session.userId)
+        if (this.sessionRedisManager.isExistSessionCookie(request)) {
+            try {
+                val session = this.sessionRedisManager.getSessionBySessionCookie(request)
+                model.addAttribute("userId", session.userId)
+            } catch (_: NoSuchSessionException) {
+            }
         }
 
         return "home"

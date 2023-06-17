@@ -17,13 +17,13 @@ import javax.servlet.http.HttpServletResponse
 @RequiredArgsConstructor
 class SessionRedisManager(
     private val sessionRedisRepository: SessionRedisRepository
-): SessionManager {
+) : SessionManager {
 
     companion object {
         private const val SESSION_COOKIE = "SessionID"
     }
 
-    private val log = KotlinLogging.logger {  }
+    private val log = KotlinLogging.logger { }
 
     override fun setSession(sessionVO: SessionVO): String {
         val sessionId = UUID.randomUUID().toString()
@@ -73,24 +73,30 @@ class SessionRedisManager(
 
     /**
      * 쿠키의 sessionID로 세션 조회
+     * - 유효한 세션 없으면 NoSuchSessionException 발생
      */
-    fun getSessionBySessionCookie(request: HttpServletRequest): SessionVO? {
+    override fun getSessionBySessionCookie(request: HttpServletRequest): SessionVO {
         val sessionCookie = findSessionCookie(request = request)
-        return if(sessionCookie.isPresent) {
+        return if (sessionCookie.isPresent) {
             this.getSession(sessionId = sessionCookie.get().value)
         } else {
-            null
+            throw NoSuchSessionException()
         }
     }
 
     /**
      * 세션 쿠키 삭제(sessionID)
      */
-    fun deleteSessionCookie(response: HttpServletResponse, request: HttpServletRequest) {
+    override fun deleteSessionCookie(response: HttpServletResponse, request: HttpServletRequest) {
         val sessionCookie = findSessionCookie(request = request).get()
         sessionCookie.maxAge = 0
         response.addCookie(sessionCookie)
     }
+
+    /**
+     * 쿠키에 sessionId 가 있는지 확인
+     */
+    override fun isExistSessionCookie(request: HttpServletRequest) = this.findSessionCookie(request).isPresent
 
 
 }

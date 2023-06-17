@@ -4,12 +4,14 @@ import com.racket.api.auth.login.exception.LoginFailException
 import com.racket.api.auth.login.exception.NoSuchSessionException
 import com.racket.api.user.response.Error
 import com.racket.api.user.response.ErrorResponse
+import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import javax.servlet.http.HttpServletRequest
 
+@Order(1)
 @ControllerAdvice(basePackages = ["com.racket.view.auth"])
 class AuthViewExceptionHandlerAdvice {
 

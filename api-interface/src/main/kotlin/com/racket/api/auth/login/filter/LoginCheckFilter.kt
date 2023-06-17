@@ -1,7 +1,7 @@
 package com.racket.api.auth.login.filter
 
 import com.racket.api.auth.login.exception.NoSuchSessionException
-import com.racket.api.auth.login.session.SessionRedisManager
+import com.racket.api.auth.login.session.SessionManager
 import org.springframework.util.PatternMatchUtils
 import javax.servlet.*
 import javax.servlet.annotation.WebFilter
@@ -13,7 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 @WebFilter(urlPatterns = ["/*"])
 class LoginCheckFilter(
-    private val sessionRedisManager: SessionRedisManager
+    private val sessionRedisManager: SessionManager
 ) : OncePerRequestFilter() {
 
     private val log = KotlinLogging.logger { }
@@ -24,7 +24,7 @@ class LoginCheckFilter(
             "/view/auth/logout",
             "/view/auth/login",
             "/api/auth/login",
-            "/css/*", "/js/*"
+            "/css/*", "/js/*", "/favicon.ico"
         )
     }
 
