@@ -20,7 +20,7 @@ class SessionRedisManager(
 ) : SessionManager {
 
     companion object {
-        private const val SESSION_COOKIE = "SessionID"
+        const val SESSION_COOKIE = "SessionID"
     }
 
     private val log = KotlinLogging.logger { }
