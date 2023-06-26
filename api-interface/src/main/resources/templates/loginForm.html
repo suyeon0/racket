@@ -1,0 +1,43 @@
+<!doctype HTML>
+<head>
+  <meta charset="UTF-8">
+  <title>로그인</title>
+  <link rel="stylesheet" href="/css/login.css">
+  <script src="https://kit.fontawesome.com/51db22a717.js" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="/js/dataSendAjax.js"></script>
+  <script src="/js/validator.js"></script>
+</head>
+<body>
+<script>
+    $(document).ready(function () {
+        // 로그인 버튼 클릭 이벤트 : 입력값 유효성 체크 후 ajax 전송
+        $("#loginBtn").click(function () {
+            if (loginChk()) {
+                loginDataSend();
+            }
+        });
+    })
+</script>
+<div class="main-container">
+  <form id="loginForm">
+    <div class="main-wrap">
+      <section class="login-input-section-wrap">
+        <div class="login-input-wrap">
+          <input placeholder="Email" type="email" id="email">
+        </div>
+        <div class="login-input-wrap password-wrap">
+          <input placeholder="Password" type="password" id="password">
+        </div>
+        <div class="login-button-wrap">
+          <button id = "loginBtn" type="button">Login</button>
+        </div>
+        <div class="login-stay-email">
+          <i class="far fa-check-circle"></i>
+          <span>Remember Id</span>
+        </div>
+      </section>
+    </div>
+  </form>
+</div>
+</body>
