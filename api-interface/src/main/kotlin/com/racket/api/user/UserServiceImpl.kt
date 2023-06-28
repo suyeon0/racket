@@ -1,12 +1,11 @@
 package com.racket.api.user
 
-import com.racket.api.auth.login.response.LoginUserResponseView
 import com.racket.api.common.vo.AddressVO
 import com.racket.api.common.vo.MobileVO
 import com.racket.api.user.domain.User
-import com.racket.api.user.domain.UserRole
+import com.racket.api.user.domain.UserRoleType
 import com.racket.api.user.domain.UserRepository
-import com.racket.api.user.domain.UserStatus
+import com.racket.api.user.domain.UserStatusType
 import com.racket.api.user.exception.DuplicateUserException
 import com.racket.api.user.exception.InvalidUserStatusException
 import com.racket.api.user.exception.NotFoundUserException
@@ -35,13 +34,13 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
     /**
      * 상태 변경
      */
-    override fun updateUserStatus(id: Long, status: UserStatus) =
+    override fun updateUserStatus(id: Long, status: UserStatusType) =
         this.makeUserResponseViewFromUser(this.getUserEntity(id).updateStatus(status))
 
     /**
      * 등급 변경
      */
-    override fun updateUserRole(id: Long, role: UserRole) =
+    override fun updateUserRole(id: Long, role: UserRoleType) =
         this.makeUserResponseViewFromUser(this.getUserEntity(id).updateRole(role))
 
     /**
@@ -73,7 +72,7 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
      * 회원 삭제
      */
     override fun deleteUser(id: Long) =
-        this.makeUserResponseViewFromUser(this.getUserEntity(id).updateStatus(UserStatus.DELETED))
+        this.makeUserResponseViewFromUser(this.getUserEntity(id).updateStatus(UserStatusType.DELETED))
 
     /**
      * 회원 추가 정보 등록

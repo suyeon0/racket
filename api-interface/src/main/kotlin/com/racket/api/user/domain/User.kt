@@ -25,17 +25,17 @@ class User(
     var addressVO: AddressVO? = null,
 
     @Enumerated(EnumType.STRING)
-    var status: UserStatus = UserStatus.ACTIVE,
+    var status: UserStatusType = UserStatusType.ACTIVE,
 
     @Enumerated(EnumType.STRING)
-    var role: UserRole = UserRole.USER
+    var role: UserRoleType = UserRoleType.USER
 ) {
-    fun updateStatus(status:UserStatus): User {
+    fun updateStatus(status:UserStatusType): User {
         this.status = status
         return this
     }
 
-    fun updateRole(role: UserRole): User {
+    fun updateRole(role: UserRoleType): User {
         this.role = role
         return this
     }
@@ -53,7 +53,7 @@ class User(
     }
 
     // 유저가 삭제 상태인지 확인
-    fun isDeletedStatus() = this.status == UserStatus.DELETED
+    fun isDeletedStatus() = this.status == UserStatusType.DELETED
 
 
 }

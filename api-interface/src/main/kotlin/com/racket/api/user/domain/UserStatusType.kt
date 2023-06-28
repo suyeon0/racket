@@ -1,5 +1,5 @@
 package com.racket.api.user.domain
 
-enum class UserStatus {
+enum class UserStatusType {
     ACTIVE, INACTIVE, DELETED
 }

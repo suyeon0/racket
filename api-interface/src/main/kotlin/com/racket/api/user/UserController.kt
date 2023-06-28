@@ -1,8 +1,8 @@
 package com.racket.api.user
 
-import com.racket.api.annotation.UserIdInputValidator
-import com.racket.api.user.domain.UserRole
-import com.racket.api.user.domain.UserStatus
+import com.racket.api.annotation.LongTypeIdInputValidator
+import com.racket.api.user.domain.UserRoleType
+import com.racket.api.user.domain.UserStatusType
 import com.racket.api.user.request.UserAdditionalInfoCreateRequestCommand
 import com.racket.api.user.request.UserCreateRequestCommand
 import com.racket.api.user.request.UserUpdateRequestCommand
@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
-@Slf4j
 @RestController
 @RequestMapping("/api/user")
 class UserController(private val userService: UserService) {
@@ -30,7 +29,7 @@ class UserController(private val userService: UserService) {
             .body(this.userService.registerUser(userRegisterDTO))
     }
 
-    @UserIdInputValidator
+    @LongTypeIdInputValidator
     @PatchMapping("/{id}/additional-info")
     fun putAdditionalInfo(
         @PathVariable id: Long,
@@ -46,31 +45,31 @@ class UserController(private val userService: UserService) {
         )
     }
 
-    @UserIdInputValidator
+    @LongTypeIdInputValidator
     @GetMapping("/{id}")
     fun get(@PathVariable id: Long) = ResponseEntity.ok(this.userService.getUser(id))
 
-    @UserIdInputValidator
+    @LongTypeIdInputValidator
     @PatchMapping("/{id}/status")
     fun patchStatus(
         @PathVariable id: Long,
-        @RequestParam status: UserStatus
+        @RequestParam status: UserStatusType
     ) = ResponseEntity.ok(this.userService.updateUserStatus(
             id = id,
             status = status)
     )
 
-    @UserIdInputValidator
+    @LongTypeIdInputValidator
     @PatchMapping("/{id}/role")
     fun patchRole(
         @PathVariable id: Long,
-        @RequestParam role: UserRole
+        @RequestParam role: UserRoleType
     ) = ResponseEntity.ok(this.userService.updateUserRole(
         id = id,
         role = role)
     )
 
-    @UserIdInputValidator
+    @LongTypeIdInputValidator
     @PatchMapping("/{id}/info")
     fun patchInfo(
         @PathVariable id: Long,
@@ -83,7 +82,7 @@ class UserController(private val userService: UserService) {
         )
     }
 
-    @UserIdInputValidator
+    @LongTypeIdInputValidator
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Long) = ResponseEntity.ok(this.userService.deleteUser(id))
 

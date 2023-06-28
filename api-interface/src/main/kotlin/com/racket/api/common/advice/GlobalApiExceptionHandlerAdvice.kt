@@ -1,7 +1,7 @@
 package com.racket.api.common.advice
 
-import com.racket.api.user.response.Error
-import com.racket.api.user.response.ErrorResponse
+import com.racket.api.common.response.Error
+import com.racket.api.common.response.ErrorResponse
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
