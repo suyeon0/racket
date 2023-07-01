@@ -1,6 +1,6 @@
 package com.racket.api.product
 
-import com.racket.api.common.vo.CursorResult
+import com.racket.api.shared.vo.CursorResult
 import com.racket.api.product.domain.Product
 import com.racket.api.product.domain.ProductRepository
 import com.racket.api.product.exception.InvalidProductStatusException

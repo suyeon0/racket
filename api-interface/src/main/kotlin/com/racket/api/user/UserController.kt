@@ -1,14 +1,13 @@
 package com.racket.api.user
 
-import com.racket.api.annotation.LongTypeIdInputValidator
-import com.racket.api.user.domain.UserRoleType
-import com.racket.api.user.domain.UserStatusType
+import com.racket.api.shared.annotation.LongTypeIdInputValidator
+import com.racket.api.user.enums.UserRoleType
+import com.racket.api.user.enums.UserStatusType
 import com.racket.api.user.request.UserAdditionalInfoCreateRequestCommand
 import com.racket.api.user.request.UserCreateRequestCommand
 import com.racket.api.user.request.UserUpdateRequestCommand
 import com.racket.api.user.response.UserAdditionalResponseView
 import com.racket.api.user.response.UserResponseView
-import lombok.extern.slf4j.Slf4j
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

@@ -1,4 +1,4 @@
-package com.racket.api.common.response
+package com.racket.api.shared.response
 
 data class Error(
     val message: String,

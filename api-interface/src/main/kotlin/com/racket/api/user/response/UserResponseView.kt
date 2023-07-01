@@ -1,7 +1,7 @@
 package com.racket.api.user.response
 
-import com.racket.api.user.domain.UserRoleType
-import com.racket.api.user.domain.UserStatusType
+import com.racket.api.user.enums.UserRoleType
+import com.racket.api.user.enums.UserStatusType
 
 data class UserResponseView(
     val id: Long,

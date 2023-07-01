@@ -1,6 +1,6 @@
 package com.racket.api.product.option
 
-import com.racket.api.product.response.OptionResponseView
+import com.racket.api.product.option.reponse.OptionResponseView
 
 interface OptionService {
 

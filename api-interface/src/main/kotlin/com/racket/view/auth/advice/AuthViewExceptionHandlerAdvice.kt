@@ -2,8 +2,8 @@ package com.racket.view.auth.advice
 
 import com.racket.api.auth.login.exception.LoginFailException
 import com.racket.api.auth.login.exception.NoSuchSessionException
-import com.racket.api.common.response.Error
-import com.racket.api.common.response.ErrorResponse
+import com.racket.api.shared.response.Error
+import com.racket.api.shared.response.ErrorResponse
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

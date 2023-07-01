@@ -3,7 +3,7 @@ package com.racket.api.product.option
 import com.racket.api.product.domain.Option
 import com.racket.api.product.domain.OptionRepository
 import com.racket.api.product.exception.NotFoundOptionException
-import com.racket.api.product.response.OptionResponseView
+import com.racket.api.product.option.reponse.OptionResponseView
 import org.springframework.stereotype.Service
 
 

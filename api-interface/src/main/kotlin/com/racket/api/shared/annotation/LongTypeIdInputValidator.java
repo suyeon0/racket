@@ -1,4 +1,4 @@
-package com.racket.api.annotation;
+package com.racket.api.shared.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

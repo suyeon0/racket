@@ -1,7 +1,9 @@
 package com.racket.api.user.domain
 
-import com.racket.api.common.vo.AddressVO
-import com.racket.api.common.vo.MobileVO
+import com.racket.api.shared.vo.AddressVO
+import com.racket.api.shared.vo.MobileVO
+import com.racket.api.user.enums.UserRoleType
+import com.racket.api.user.enums.UserStatusType
 import javax.persistence.*
 
 @Entity
@@ -30,7 +32,7 @@ class User(
     @Enumerated(EnumType.STRING)
     var role: UserRoleType = UserRoleType.USER
 ) {
-    fun updateStatus(status:UserStatusType): User {
+    fun updateStatus(status: UserStatusType): User {
         this.status = status
         return this
     }

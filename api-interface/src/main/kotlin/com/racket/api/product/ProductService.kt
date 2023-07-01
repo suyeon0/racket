@@ -1,8 +1,7 @@
 package com.racket.api.product
 
-import com.racket.api.common.vo.CursorResult
+import com.racket.api.shared.vo.CursorResult
 import com.racket.api.product.response.ProductResponseView
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 
 interface ProductService {

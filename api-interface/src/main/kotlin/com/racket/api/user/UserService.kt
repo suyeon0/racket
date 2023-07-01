@@ -1,10 +1,10 @@
 package com.racket.api.user
 
-import com.racket.api.common.vo.AddressVO
-import com.racket.api.common.vo.MobileVO
+import com.racket.api.shared.vo.AddressVO
+import com.racket.api.shared.vo.MobileVO
 import com.racket.api.user.domain.User
-import com.racket.api.user.domain.UserRoleType
-import com.racket.api.user.domain.UserStatusType
+import com.racket.api.user.enums.UserRoleType
+import com.racket.api.user.enums.UserStatusType
 import com.racket.api.user.request.UserUpdateRequestCommand
 import com.racket.api.user.response.UserAdditionalResponseView
 import com.racket.api.user.response.UserResponseView

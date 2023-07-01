@@ -2,14 +2,14 @@ package com.racket.api.product
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.racket.api.common.vo.CursorResult
+import com.racket.api.shared.vo.CursorResult
 import com.racket.api.product.domain.Option
 import com.racket.api.product.domain.OptionRepository
 import com.racket.api.product.domain.Product
 import com.racket.api.product.domain.ProductRepository
 import com.racket.api.product.exception.NotFoundOptionException
 import com.racket.api.product.exception.NotFoundProductException
-import com.racket.api.product.response.OptionResponseView
+import com.racket.api.product.option.reponse.OptionResponseView
 import com.racket.api.product.response.ProductResponseView
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

@@ -2,10 +2,10 @@ package com.racket.api.user
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.racket.api.common.vo.AddressVO
-import com.racket.api.common.vo.MobileVO
-import com.racket.api.user.domain.UserRoleType
-import com.racket.api.user.domain.UserStatusType
+import com.racket.api.shared.vo.AddressVO
+import com.racket.api.shared.vo.MobileVO
+import com.racket.api.user.enums.UserRoleType
+import com.racket.api.user.enums.UserStatusType
 import com.racket.api.user.exception.DuplicateUserException
 import com.racket.api.user.exception.InvalidUserStatusException
 import com.racket.api.user.request.UserAdditionalInfoCreateRequestCommand

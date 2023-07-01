@@ -1,3 +1,3 @@
-package com.racket.api.common.vo
+package com.racket.api.shared.vo
 
 class CursorResult<T>(val values: List<T>, val hasNext: Boolean)

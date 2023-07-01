@@ -1,4 +1,4 @@
-package com.racket.api.common.response
+package com.racket.api.shared.response
 
 import javax.servlet.http.HttpServletRequest
 import kotlin.String

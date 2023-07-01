@@ -1,4 +1,4 @@
-package com.racket.api.product.domain
+package com.racket.api.product.enums
 
 enum class ProductStatusType {
     ACTIVE, DELETED

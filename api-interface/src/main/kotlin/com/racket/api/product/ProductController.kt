@@ -1,7 +1,7 @@
 package com.racket.api.product
 
-import com.racket.api.annotation.LongTypeIdInputValidator
-import com.racket.api.common.vo.CursorResult
+import com.racket.api.shared.annotation.LongTypeIdInputValidator
+import com.racket.api.shared.vo.CursorResult
 import com.racket.api.product.option.OptionService
 import com.racket.api.product.response.ProductResponseView
 import lombok.extern.slf4j.Slf4j

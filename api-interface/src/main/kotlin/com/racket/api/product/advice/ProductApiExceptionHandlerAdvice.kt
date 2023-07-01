@@ -1,7 +1,7 @@
 package com.racket.api.product.advice
 
-import com.racket.api.common.response.Error
-import com.racket.api.common.response.ErrorResponse
+import com.racket.api.shared.response.Error
+import com.racket.api.shared.response.ErrorResponse
 import com.racket.api.product.exception.NotFoundOptionException
 import com.racket.api.product.exception.NotFoundProductException
 import org.springframework.core.annotation.Order

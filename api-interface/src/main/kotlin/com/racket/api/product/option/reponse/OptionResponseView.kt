@@ -1,4 +1,4 @@
-package com.racket.api.product.response
+package com.racket.api.product.option.reponse
 
 data class OptionResponseView(
     val id: Long,
