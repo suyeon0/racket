@@ -3,7 +3,7 @@ package com.racket.api.product.domain
 import javax.persistence.*
 
 @Entity
-@Table(name = "option")
+@Table(name = "product_option")
 class Option(
 
     @Id

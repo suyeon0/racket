@@ -1,6 +1,7 @@
 package com.racket.api.user
 
 import com.racket.api.shared.annotation.LongTypeIdInputValidator
+import com.racket.api.shared.response.ApiResponse
 import com.racket.api.user.enums.UserRoleType
 import com.racket.api.user.enums.UserStatusType
 import com.racket.api.user.request.UserAdditionalInfoCreateRequestCommand
@@ -46,16 +47,18 @@ class UserController(private val userService: UserService) {
 
     @LongTypeIdInputValidator
     @GetMapping("/{id}")
-    fun get(@PathVariable id: Long) = ResponseEntity.ok(this.userService.getUser(id))
+    fun get(@PathVariable id: Long) = this.userService.getUser(id)
 
     @LongTypeIdInputValidator
     @PatchMapping("/{id}/status")
     fun patchStatus(
         @PathVariable id: Long,
         @RequestParam status: UserStatusType
-    ) = ResponseEntity.ok(this.userService.updateUserStatus(
+    ) = ResponseEntity.ok(
+        this.userService.updateUserStatus(
             id = id,
-            status = status)
+            status = status
+        )
     )
 
     @LongTypeIdInputValidator
@@ -63,9 +66,11 @@ class UserController(private val userService: UserService) {
     fun patchRole(
         @PathVariable id: Long,
         @RequestParam role: UserRoleType
-    ) = ResponseEntity.ok(this.userService.updateUserRole(
-        id = id,
-        role = role)
+    ) = ResponseEntity.ok(
+        this.userService.updateUserRole(
+            id = id,
+            role = role
+        )
     )
 
     @LongTypeIdInputValidator
@@ -75,9 +80,11 @@ class UserController(private val userService: UserService) {
         @RequestBody request: UserUpdateRequestCommand
     ): ResponseEntity<UserResponseView> {
         request.validate()
-        return ResponseEntity.ok(this.userService.updateUserInfo(
-            id = id,
-            request = request)
+        return ResponseEntity.ok(
+            this.userService.updateUserInfo(
+                id = id,
+                request = request
+            )
         )
     }
 

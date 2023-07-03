@@ -1,14 +1,13 @@
 package com.racket.api.user.advice
 
+import com.racket.api.shared.response.ApiError
 import com.racket.api.user.exception.DuplicateUserException
 import com.racket.api.user.exception.InvalidUserStatusException
 import com.racket.api.user.exception.NotFoundUserException
-import com.racket.api.shared.response.Error
-import com.racket.api.shared.response.ErrorResponse
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import javax.servlet.http.HttpServletRequest
@@ -17,24 +16,24 @@ import javax.servlet.http.HttpServletRequest
 @RestControllerAdvice(basePackages = ["com.racket.api.user"])
 class UserApiExceptionHandlerAdvice : ResponseEntityExceptionHandler() {
 
-    @ExceptionHandler(value = [
-          IllegalArgumentException::class
-        , DuplicateUserException::class
-        , NotFoundUserException::class
-    ])
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(
+        value = [
+            IllegalArgumentException::class, DuplicateUserException::class, NotFoundUserException::class
+        ]
+    )
     fun userBadRequestException(e: RuntimeException, httpServletRequest: HttpServletRequest) =
-        ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(
-                ErrorResponse.from(listOf(Error.from(e.message.toString())), httpServletRequest, HttpStatus.BAD_REQUEST.value())
-            )
+        ApiError(
+            code = HttpStatus.BAD_REQUEST.value(),
+            message = e.message.toString()
+        )
 
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(value = [InvalidUserStatusException::class])
     fun invalidUserStatusException(e: RuntimeException, httpServletRequest: HttpServletRequest) =
-        ResponseEntity
-            .status(HttpStatus.UNAUTHORIZED)
-            .body(
-                ErrorResponse.from(listOf(Error.from(e.message.toString())), httpServletRequest, HttpStatus.UNAUTHORIZED.value())
-            )
+        ApiError(
+            code = HttpStatus.UNAUTHORIZED.value(),
+            message = e.message.toString()
+        )
 
 }

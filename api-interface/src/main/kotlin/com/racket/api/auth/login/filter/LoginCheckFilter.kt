@@ -29,14 +29,12 @@ class LoginCheckFilter(
     }
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
-        log.info { "init done" }
-
         val requestURI = request.requestURI
 
         try {
-            if (this.isLoginCheckPath(requestURI)) {
-                this.sessionRedisManager.getSessionBySessionCookie(request)
-            }
+//            if (this.isLoginCheckPath(requestURI)) {
+//                this.sessionRedisManager.getSessionBySessionCookie(request)
+//            }
             filterChain.doFilter(request, response)
 
         } catch (e: NoSuchSessionException) {

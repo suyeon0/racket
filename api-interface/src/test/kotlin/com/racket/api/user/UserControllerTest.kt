@@ -1,7 +1,9 @@
 package com.racket.api.user
 
+import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.racket.api.shared.response.ApiResponse
 import com.racket.api.shared.vo.AddressVO
 import com.racket.api.shared.vo.MobileVO
 import com.racket.api.user.enums.UserRoleType
@@ -14,6 +16,7 @@ import com.racket.api.user.request.UserUpdateRequestCommand
 import com.racket.api.user.response.UserAdditionalResponseView
 import com.racket.api.user.response.UserResponseView
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
@@ -147,7 +150,8 @@ class UserControllerTest {
         }.andReturn()
 
         // then
-        val resultView = objectMapper.readValue(sut.response.contentAsString, UserResponseView::class.java)
+        val resultResponse = objectMapper.convertValue(sut.response.contentAsString, ApiResponse::class.java)
+        val resultView = resultResponse.response as UserResponseView
         Assertions.assertEquals(UserStatusType.ACTIVE, defaultStatus) // 기본값이 ACTIVE 인지 확인
         Assertions.assertEquals(updateStatus, resultView.status)  // 상태값 변경 확인
     }
