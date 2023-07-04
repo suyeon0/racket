@@ -34,15 +34,13 @@ class UserController(private val userService: UserService) {
     fun putAdditionalInfo(
         @PathVariable id: Long,
         @RequestBody request: UserAdditionalInfoCreateRequestCommand
-    ): ResponseEntity<UserAdditionalResponseView> {
+    ): UserAdditionalResponseView {
         request.validate()
-        return ResponseEntity.ok(
-            this.userService.registerAdditionalUserInformation(
-                id = id,
-                mobileVO = request.mobileVO,
-                addressVO = request.addressVO
-            )
-        )
+        return this.userService.registerAdditionalUserInformation(
+            id = id,
+            mobileVO = request.mobileVO,
+            addressVO = request.addressVO
+        )!!
     }
 
     @LongTypeIdInputValidator
@@ -54,42 +52,38 @@ class UserController(private val userService: UserService) {
     fun patchStatus(
         @PathVariable id: Long,
         @RequestParam status: UserStatusType
-    ) = ResponseEntity.ok(
-        this.userService.updateUserStatus(
-            id = id,
-            status = status
-        )
+    ) = this.userService.updateUserStatus(
+        id = id,
+        status = status
     )
+
 
     @LongTypeIdInputValidator
     @PatchMapping("/{id}/role")
     fun patchRole(
         @PathVariable id: Long,
         @RequestParam role: UserRoleType
-    ) = ResponseEntity.ok(
-        this.userService.updateUserRole(
-            id = id,
-            role = role
-        )
+    ) = this.userService.updateUserRole(
+        id = id,
+        role = role
     )
+
 
     @LongTypeIdInputValidator
     @PatchMapping("/{id}/info")
     fun patchInfo(
         @PathVariable id: Long,
         @RequestBody request: UserUpdateRequestCommand
-    ): ResponseEntity<UserResponseView> {
+    ): UserResponseView {
         request.validate()
-        return ResponseEntity.ok(
-            this.userService.updateUserInfo(
-                id = id,
-                request = request
-            )
-        )
+        return this.userService.updateUserInfo(
+            id = id,
+            request = request
+        )!!
     }
 
     @LongTypeIdInputValidator
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long) = ResponseEntity.ok(this.userService.deleteUser(id))
+    fun delete(@PathVariable id: Long) = this.userService.deleteUser(id)
 
 }

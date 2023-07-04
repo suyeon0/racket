@@ -11,6 +11,9 @@ import com.racket.api.product.exception.NotFoundOptionException
 import com.racket.api.product.exception.NotFoundProductException
 import com.racket.api.product.option.reponse.OptionResponseView
 import com.racket.api.product.response.ProductResponseView
+import com.racket.api.shared.response.ApiResponse
+import com.racket.api.user.response.UserResponseView
+import com.racket.api.utils.ObjectMapperUtils
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -97,7 +100,8 @@ class ProductControllerTest {
             .andReturn()
 
         // then
-        val resultView = objectMapper.readValue(sut.response.contentAsString, ProductResponseView::class.java)
+        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiResponse<ProductResponseView>
+        val resultView = ObjectMapperUtils.responseToResultView(resultResponse)
         Assertions.assertEquals(savedProduct.id, resultView.id)
     }
 
@@ -133,10 +137,11 @@ class ProductControllerTest {
             .andReturn()
 
         // then
-        val responseJson = sut.response.contentAsString
-        val objectMapper = jacksonObjectMapper()
+        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiResponse<ProductResponseView>
+        val responseJsonString = ObjectMapperUtils.objectMapper.writeValueAsString(resultResponse.response)
+
         val responseList: List<OptionResponseView> =
-            objectMapper.readValue(responseJson, object : TypeReference<List<OptionResponseView>>() {})
+            objectMapper.readValue(responseJsonString, object : TypeReference<List<OptionResponseView>>() {})
         Assertions.assertTrue(responseList.isNotEmpty())
         Assertions.assertTrue(responseList.size == options.count())
         Assertions.assertEquals(options.first().name, responseList[0].name)
@@ -164,7 +169,7 @@ class ProductControllerTest {
     fun `Product Test - 상품 정보 리스트 조회시 페이징 처리되어 조회한다 최초 조회시(cursorId가 null) cursorSize 만큼 조회되어야 한다`() {
         // given
         for (i in 1..25) {
-            productRepository.save(Product(price = 10000, name = "TestProduct"))
+            this.productRepository.save(Product(price = 10000, name = "TestProduct"))
         }
 
         // when
@@ -175,8 +180,10 @@ class ProductControllerTest {
         }.andReturn()
 
         // then
+        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiResponse<CursorResult<ProductResponseView>>
+        val responseJsonString = ObjectMapperUtils.objectMapper.writeValueAsString(resultResponse.response)
         val productList: CursorResult<ProductResponseView> = objectMapper.readValue(
-            sut.response.contentAsString,
+            responseJsonString,
             object : TypeReference<CursorResult<ProductResponseView>>() {}
         )
 
@@ -195,8 +202,10 @@ class ProductControllerTest {
         }.andReturn()
 
         // then
+        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiResponse<CursorResult<ProductResponseView>>
+        val responseJsonString = ObjectMapperUtils.objectMapper.writeValueAsString(resultResponse.response)
         val productList: CursorResult<ProductResponseView> = objectMapper.readValue(
-            sut.response.contentAsString,
+            responseJsonString,
             object : TypeReference<CursorResult<ProductResponseView>>() {}
         )
 
@@ -223,8 +232,10 @@ class ProductControllerTest {
         }.andReturn()
 
         // then
+        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiResponse<CursorResult<ProductResponseView>>
+        val responseJsonString = ObjectMapperUtils.objectMapper.writeValueAsString(resultResponse.response)
         val productList: CursorResult<ProductResponseView> = objectMapper.readValue(
-            sut.response.contentAsString,
+            responseJsonString,
             object : TypeReference<CursorResult<ProductResponseView>>() {}
         )
 
