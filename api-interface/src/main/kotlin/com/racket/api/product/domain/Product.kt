@@ -22,7 +22,20 @@ class Product(
     @Enumerated(EnumType.STRING)
     var status: ProductStatusType = ProductStatusType.ACTIVE
 ) {
-    fun isDeletedStatus() = this.status == ProductStatusType.DELETED
+
+    /* 판매가 */
+    fun applyOptionAndGetSalePrice(optionId: Long): Long {
+        var salePrice = price
+        val option = options.find { it.id == optionId }
+
+        if (option != null) {
+            salePrice += option.optionAdditionalPrice // 기본 판매가에 옵션 가격 반영
+        }
+        return salePrice
+    }
+
+    /* 상태 */
+    fun isDeletedStatus() = this.status == ProductStatusType.INACTIVE
 
     fun updateStatus(status: ProductStatusType): Product {
         this.status = status

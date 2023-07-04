@@ -1,5 +1,6 @@
 package com.racket.api.product.domain
 
+import com.racket.api.product.enums.ProductStatusType
 import javax.persistence.*
 
 @Entity
@@ -11,21 +12,23 @@ class Option(
     @Column(name = "option_id")
     var id: Long? = null,
 
-    val optionNo: String,
+    val name: String,   // 옵션명
+
+    val optionNo: String,   // 옵션코드
+
+    val sort: Int,  // 옵션 정렬
 
     @JoinColumn(name = "product_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    val product: Product,
+    val product: Product,   // 상품
 
-    val name: String,
+    val optionAdditionalPrice: Long,  // 옵션 가격
 
-    val additionalPrice: Long,
+    val stock: Int, // 재고 수량
 
-    val price: Long = product.price + additionalPrice,
+    val orderStatus: ProductStatusType = ProductStatusType.INITIATED, // 판매 상태
 
-    val stock: Int,
-
-    val remark: String = ""
+    val remark: String = "" // 비고
 
 ) {
 

@@ -35,9 +35,9 @@ class OptionServiceImpl(
             optionNo = option.optionNo,
             productId = option.product.id!!,
             name = option.name,
-            price = option.price,
-            additionalPrice = option.additionalPrice,
+            additionalPrice = option.optionAdditionalPrice,
             stock = option.stock,
-            remark = option.remark
+            remark = option.remark,
+            sort = option.sort
         )
 }

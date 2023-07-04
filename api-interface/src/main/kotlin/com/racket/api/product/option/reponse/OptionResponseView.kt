@@ -6,7 +6,7 @@ data class OptionResponseView(
     val productId: Long,
     val name: String,
     val additionalPrice: Long,
-    val price: Long,
     val stock: Int,
-    val remark: String
+    val remark: String,
+    val sort: Int
 )
