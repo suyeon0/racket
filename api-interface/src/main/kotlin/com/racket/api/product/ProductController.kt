@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*
 
 @Slf4j
 @RestController
-@RequestMapping("/api/product")
+@RequestMapping("/api/v1/product")
 class ProductController(
     val optionServiceImpl: OptionService,
     val productServiceImpl: ProductService

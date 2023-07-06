@@ -12,15 +12,13 @@ class Option(
     @Column(name = "option_id")
     var id: Long? = null,
 
+    val productId: Long,   // 상품 ID
+
     val name: String,   // 옵션명
 
     val optionNo: String,   // 옵션코드
 
     val sort: Int,  // 옵션 정렬
-
-    @JoinColumn(name = "product_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    val product: Product,   // 상품
 
     val optionAdditionalPrice: Long,  // 옵션 가격
 

@@ -53,7 +53,7 @@ class ProductControllerTest {
         val savedProduct = this.saveProduct()
         val options = listOf(
             Option(
-                product = savedProduct,
+                productId = savedProduct.id!!,
                 optionNo = "Option 2",
                 name = "Option 2",
                 optionAdditionalPrice = 2000,
@@ -61,7 +61,7 @@ class ProductControllerTest {
                 sort = 1
             ),
             Option(
-                product = savedProduct,
+                productId = savedProduct.id!!,
                 optionNo = "Option 3",
                 name = "Option 3",
                 optionAdditionalPrice = 3000,
@@ -80,7 +80,7 @@ class ProductControllerTest {
 
         // when
         val invalidProductId = 0
-        val sut = this.mockMvc.get("/api/product/{product_id}", invalidProductId) {}
+        val sut = this.mockMvc.get("/api/v1/product/{product_id}", invalidProductId) {}
             .andExpect { status { isBadRequest() } }
             .andReturn()
 
@@ -96,7 +96,7 @@ class ProductControllerTest {
 
         // when
         val productId = savedProduct.id
-        val sut = this.mockMvc.get("/api/product/{product_id}", productId) {}
+        val sut = this.mockMvc.get("/api/v1/product/{product_id}", productId) {}
             .andExpect { status { isOk() } }
             .andReturn()
 
@@ -113,7 +113,7 @@ class ProductControllerTest {
 
         // when
         val productId = savedProduct.id
-        val sut = this.mockMvc.get("/api/product/options/{productId}", productId) {
+        val sut = this.mockMvc.get("/api/v1/product/options/{productId}", productId) {
             accept = MediaType.APPLICATION_JSON
         }
             .andExpect { status { isBadRequest() } }
@@ -130,8 +130,8 @@ class ProductControllerTest {
         val options = this.saveProductAndOption()
 
         // when
-        val productId = options.first().product.id
-        val sut = this.mockMvc.get("/api/product/options/{productId}", productId) {
+        val productId = options.first().productId
+        val sut = this.mockMvc.get("/api/v1/product/options/{productId}", productId) {
             accept = MediaType.APPLICATION_JSON
         }
             .andExpect { status { isOk() } }
@@ -156,7 +156,7 @@ class ProductControllerTest {
 
         // when
         val optionId = options.first().id
-        val sut = this.mockMvc.get("/api/product/option/{optionId}", optionId) {}
+        val sut = this.mockMvc.get("/api/v1/product/option/{optionId}", optionId) {}
             .andExpect { status { isOk() } }
             .andReturn()
 
@@ -175,7 +175,7 @@ class ProductControllerTest {
         }
 
         // when
-        val sut = this.mockMvc.get("/api/product/list") {
+        val sut = this.mockMvc.get("/api/v1/product/list") {
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
             status { isOk() }
@@ -196,7 +196,7 @@ class ProductControllerTest {
     fun `Product Test - 상품 리스트 조회시 조회결과물이 없는 경우 결과 리스트 사이즈는 0이고 마지막 페이지임을 리턴한다 - hasNext 가 False`() {
         // given-when
         val cursorId: Long? = null
-        val sut = this.mockMvc.get("/api/product/list") {
+        val sut = this.mockMvc.get("/api/v1/product/list") {
             contentType = MediaType.APPLICATION_JSON
             content = cursorId
         }.andExpect {
@@ -226,7 +226,7 @@ class ProductControllerTest {
         val cursorId = 21
         val cursorSize = 10
 
-        val sut = this.mockMvc.get("/api/product/list") {
+        val sut = this.mockMvc.get("/api/v1/product/list") {
             contentType = MediaType.APPLICATION_JSON
             param("cursorId", cursorId.toString())
         }.andExpect {

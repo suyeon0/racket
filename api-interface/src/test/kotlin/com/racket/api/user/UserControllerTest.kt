@@ -61,7 +61,7 @@ class UserControllerTest {
         )
 
         // when
-        val sut = this.mockMvc.post("/api/user") {
+        val sut = this.mockMvc.post("/api/v1/user") {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userCreateRequestCommand)
         }.andExpect {
@@ -88,7 +88,7 @@ class UserControllerTest {
         )
 
         // when-then
-        val sut = this.mockMvc.post("/api/user") {
+        val sut = this.mockMvc.post("/api/v1/user") {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userCreateRequestCommand)
         }.andExpect {
@@ -108,7 +108,7 @@ class UserControllerTest {
         )
 
         // when-then
-        val sut = this.mockMvc.post("/api/user") {
+        val sut = this.mockMvc.post("/api/v1/user") {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userCreateRequestCommand)
         }.andExpect {
@@ -127,7 +127,7 @@ class UserControllerTest {
         val invalidId = userId.toString() + "ID"
 
         // when-then
-        this.mockMvc.get("/api/user/{id}", invalidId) {
+        this.mockMvc.get("/api/v1/user/{id}", invalidId) {
         }.andExpect {
             status { isBadRequest() }
         }.andReturn()
@@ -144,7 +144,7 @@ class UserControllerTest {
         val updateUserId = res.id
 
         // when
-        val sut = mockMvc.patch("/api/user/{id}/status", updateUserId) {
+        val sut = mockMvc.patch("/api/v1/user/{id}/status", updateUserId) {
             param("status", updateStatus.name)
         }.andExpect {
             status { isOk() }
@@ -165,7 +165,7 @@ class UserControllerTest {
         val userId = res.id // 정보 조회할 유저 id
 
         // when
-        val sut = this.mockMvc.get("/api/user/{id}", userId) {
+        val sut = this.mockMvc.get("/api/v1/user/{id}", userId) {
         }.andExpect {
             status { isOk() }
         }.andReturn()
@@ -192,7 +192,7 @@ class UserControllerTest {
         val updateRole = UserRoleType.ADMIN
 
         // when
-        val sut = mockMvc.patch("/api/user/{id}/role", updateUserId) {
+        val sut = mockMvc.patch("/api/v1/user/{id}/role", updateUserId) {
             param("role", updateRole.name)
         }.andExpect {
             status { isOk() }
@@ -213,7 +213,7 @@ class UserControllerTest {
         val invalidRole = "INVALID_ROLE"
 
         // when
-        mockMvc.patch("/api/user/{id}/role", updateUserId) {
+        mockMvc.patch("/api/v1/user/{id}/role", updateUserId) {
             param("role", invalidRole)
         }.andExpect {
             status { isBadRequest() }
@@ -233,7 +233,7 @@ class UserControllerTest {
         )
 
         // when
-        val sut = this.mockMvc.patch("/api/user/{id}/info", userId) {
+        val sut = this.mockMvc.patch("/api/v1/user/{id}/info", userId) {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userUpdateRequestCommand)
         }.andExpect {
@@ -253,7 +253,7 @@ class UserControllerTest {
         val deleteUserId = res.id
 
         // when
-        val sut = this.mockMvc.delete("/api/user/{id}", deleteUserId)
+        val sut = this.mockMvc.delete("/api/v1/user/{id}", deleteUserId)
             .andExpect {
                 status { isOk() }
             }.andReturn()
@@ -265,7 +265,7 @@ class UserControllerTest {
         Assertions.assertEquals(UserStatusType.DELETED, resultView.status)
 
         // 조회할 수 없어야 한다
-        val sutGet = this.mockMvc.get("/api/user/{id}", deleteUserId)
+        val sutGet = this.mockMvc.get("/api/v1/user/{id}", deleteUserId)
             .andExpect {
                 status { isUnauthorized() }
             }.andReturn()
@@ -290,7 +290,7 @@ class UserControllerTest {
         )
 
         // when
-        val sut = this.mockMvc.patch("/api/user/{id}/additional-info", userId) {
+        val sut = this.mockMvc.patch("/api/v1/user/{id}/additional-info", userId) {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userAdditionalInfoCreateRequestCommand)
         }.andExpect {
@@ -324,7 +324,7 @@ class UserControllerTest {
         )
 
         // when - then
-        val sut = this.mockMvc.patch("/api/user/{id}/additional-info", userId) {
+        val sut = this.mockMvc.patch("/api/v1/user/{id}/additional-info", userId) {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userAdditionalInfoCreateRequestCommand)
         }.andExpect {

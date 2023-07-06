@@ -33,7 +33,7 @@ class OptionServiceImpl(
         OptionResponseView(
             id = option.id!!,
             optionNo = option.optionNo,
-            productId = option.product.id!!,
+            productId = option.productId,
             name = option.name,
             additionalPrice = option.optionAdditionalPrice,
             stock = option.stock,
