@@ -2,7 +2,7 @@ package com.racket.api.user
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.racket.api.shared.response.ApiResponse
+import com.racket.api.shared.response.ApiGlobalResponse
 import com.racket.api.shared.vo.AddressVO
 import com.racket.api.shared.vo.MobileVO
 import com.racket.api.user.enums.UserRoleType
@@ -69,7 +69,7 @@ class UserControllerTest {
         }.andReturn()
 
         // then
-        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiResponse<UserResponseView>
+        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiGlobalResponse<UserResponseView>
         val resultView = ObjectMapperUtils.responseToResultView(resultResponse)
 
         Assertions.assertNotNull(resultView.id)
@@ -151,7 +151,7 @@ class UserControllerTest {
         }.andReturn()
 
         // then
-        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiResponse<UserResponseView>
+        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiGlobalResponse<UserResponseView>
         val resultView = ObjectMapperUtils.responseToResultView(resultResponse)
         Assertions.assertEquals(UserStatusType.ACTIVE, defaultStatus) // 기본값이 ACTIVE 인지 확인
         Assertions.assertEquals(updateStatus, resultView.status)  // 상태값 변경 확인
@@ -177,7 +177,7 @@ class UserControllerTest {
         val list: Array<UserRoleType> = UserRoleType.values()
         Assertions.assertTrue(UserRoleType.USER in list && UserRoleType.ADMIN in list)
         // 유저 정보를 불러올 때 해당 유저 등급과 상태를 확인할 수 있어야 한다
-        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiResponse<UserResponseView>
+        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiGlobalResponse<UserResponseView>
         val resultView = ObjectMapperUtils.responseToResultView(resultResponse)
         Assertions.assertEquals(UserRoleType.USER, resultView.role)
         Assertions.assertEquals(UserStatusType.ACTIVE, resultView.status)
@@ -199,7 +199,7 @@ class UserControllerTest {
         }.andReturn()
 
         // then
-        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiResponse<UserResponseView>
+        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiGlobalResponse<UserResponseView>
         val resultView = ObjectMapperUtils.responseToResultView(resultResponse)
         Assertions.assertEquals(updateRole, resultView.role)
     }
@@ -241,7 +241,7 @@ class UserControllerTest {
         }.andReturn()
 
         // then
-        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiResponse<UserResponseView>
+        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiGlobalResponse<UserResponseView>
         val resultView = ObjectMapperUtils.responseToResultView(resultResponse)
         Assertions.assertEquals(userUpdateRequestCommand.userName, resultView.userName)
     }
@@ -260,7 +260,7 @@ class UserControllerTest {
 
         // then
         // DELETED 상태로 변경
-        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiResponse<UserResponseView>
+        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiGlobalResponse<UserResponseView>
         val resultView = ObjectMapperUtils.responseToResultView(resultResponse)
         Assertions.assertEquals(UserStatusType.DELETED, resultView.status)
 
@@ -298,7 +298,7 @@ class UserControllerTest {
         }.andReturn()
 
         // then
-        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiResponse<UserAdditionalResponseView>
+        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiGlobalResponse<UserAdditionalResponseView>
         val resultView = ObjectMapperUtils.responseToResultView(resultResponse)
         val addressResult = resultView.addressVO!!
         Assertions.assertEquals(userAdditionalInfoCreateRequestCommand.mobileVO, resultView.mobileVO)

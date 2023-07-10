@@ -1,7 +1,8 @@
 package com.racket.api.shared.advice
 
 import com.racket.api.shared.response.ApiError
-import com.racket.api.shared.response.ApiResponse
+import com.racket.api.shared.response.ApiGlobalResponse
+import io.swagger.v3.oas.annotations.Hidden
 import org.springframework.core.MethodParameter
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice
 
 @Order(1)
 @RestControllerAdvice
+@Hidden
 class GlobalApiResponseHandlerAdvice : ResponseBodyAdvice<Any> {
     override fun supports(returnType: MethodParameter, converterType: Class<out HttpMessageConverter<*>>): Boolean = true
 
@@ -28,11 +30,12 @@ class GlobalApiResponseHandlerAdvice : ResponseBodyAdvice<Any> {
     ): Any? {
         val status = (response as ServletServerHttpResponse).servletResponse.status
         val resolve = HttpStatus.resolve(status)
+        if(body == null) return null
 
         return if ((resolve != null) && resolve.is2xxSuccessful) {
-            ApiResponse.success(response = body!!)
+            ApiGlobalResponse.success(response = body)
         } else {
-            ApiResponse.error(error = body as ApiError)
+            ApiGlobalResponse.error(error = body as ApiError)
         }
     }
 

@@ -11,7 +11,7 @@ import com.racket.api.product.exception.NotFoundOptionException
 import com.racket.api.product.exception.NotFoundProductException
 import com.racket.api.product.option.reponse.OptionResponseView
 import com.racket.api.product.response.ProductResponseView
-import com.racket.api.shared.response.ApiResponse
+import com.racket.api.shared.response.ApiGlobalResponse
 import com.racket.api.utils.ObjectMapperUtils
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -74,14 +74,14 @@ class ProductControllerTest {
 
 
     @Test
-    fun `Product Test - productId 로 상품 단건을 조회한다 조회정보가 없으면 상태코드 400, NotFountProductException 발생한다`() {
+    fun `Product Test - productId 로 상품 단건을 조회한다 조회정보가 없으면 상태코드 404, NotFountProductException 발생한다`() {
         // given
         this.saveProduct()
 
         // when
         val invalidProductId = 0
         val sut = this.mockMvc.get("/api/v1/product/{product_id}", invalidProductId) {}
-            .andExpect { status { isBadRequest() } }
+            .andExpect { status { isNotFound() } }
             .andReturn()
 
         // then
@@ -101,13 +101,13 @@ class ProductControllerTest {
             .andReturn()
 
         // then
-        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiResponse<ProductResponseView>
+        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiGlobalResponse<ProductResponseView>
         val resultView = ObjectMapperUtils.responseToResultView(resultResponse)
         Assertions.assertEquals(savedProduct.id, resultView.id)
     }
 
     @Test
-    fun `Product Option Test - productId 로 옵션 리스트를 조회한다 조회정보가 없으면 상태코드 400, NotFountOptionException 발생한다 `() {
+    fun `Product Option Test - productId 로 옵션 리스트를 조회한다 조회정보가 없으면 상태코드 404, NotFountOptionException 발생한다 `() {
         // given
         val savedProduct = this.saveProduct()
 
@@ -116,7 +116,7 @@ class ProductControllerTest {
         val sut = this.mockMvc.get("/api/v1/product/options/{productId}", productId) {
             accept = MediaType.APPLICATION_JSON
         }
-            .andExpect { status { isBadRequest() } }
+            .andExpect { status { isNotFound() } }
             .andReturn()
 
         // then
@@ -138,7 +138,7 @@ class ProductControllerTest {
             .andReturn()
 
         // then
-        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiResponse<ProductResponseView>
+        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiGlobalResponse<ProductResponseView>
         val responseJsonString = ObjectMapperUtils.objectMapper.writeValueAsString(resultResponse.response)
 
         val responseList: List<OptionResponseView> =
@@ -161,7 +161,7 @@ class ProductControllerTest {
             .andReturn()
 
         // then
-        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiResponse<OptionResponseView>
+        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiGlobalResponse<OptionResponseView>
         val resultView = ObjectMapperUtils.responseToResultView(resultResponse)
         Assertions.assertEquals(optionId, resultView.id)
 
@@ -182,7 +182,7 @@ class ProductControllerTest {
         }.andReturn()
 
         // then
-        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiResponse<CursorResultVO<ProductResponseView>>
+        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiGlobalResponse<CursorResultVO<ProductResponseView>>
         val responseJsonString = ObjectMapperUtils.objectMapper.writeValueAsString(resultResponse.response)
         val productList: CursorResultVO<ProductResponseView> = objectMapper.readValue(
             responseJsonString,
@@ -204,7 +204,7 @@ class ProductControllerTest {
         }.andReturn()
 
         // then
-        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiResponse<CursorResultVO<ProductResponseView>>
+        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiGlobalResponse<CursorResultVO<ProductResponseView>>
         val responseJsonString = ObjectMapperUtils.objectMapper.writeValueAsString(resultResponse.response)
         val productList: CursorResultVO<ProductResponseView> = objectMapper.readValue(
             responseJsonString,
@@ -234,7 +234,7 @@ class ProductControllerTest {
         }.andReturn()
 
         // then
-        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiResponse<CursorResultVO<ProductResponseView>>
+        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiGlobalResponse<CursorResultVO<ProductResponseView>>
         val responseJsonString = ObjectMapperUtils.objectMapper.writeValueAsString(resultResponse.response)
         val productList: CursorResultVO<ProductResponseView> = objectMapper.readValue(
             responseJsonString,

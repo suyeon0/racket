@@ -24,7 +24,8 @@ class LoginCheckFilter(
             "/view/auth/logout",
             "/view/auth/login",
             "/api/auth/login",
-            "/css/*", "/js/*", "/favicon.ico"
+            "/css/*", "/js/*", "/favicon.ico",
+            "/swagger-ui/index.html", "/v3/api-docs.yaml"
         )
     }
 

@@ -58,7 +58,12 @@ subprojects {
 		//thymeleaf
 		implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 
+		//Redis
 		implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
+		//swagger
+		implementation("org.springdoc:springdoc-openapi-ui:1.7.0")
+		implementation("org.springdoc:springdoc-openapi-kotlin:1.7.0")
 	}
 
 	dependencyManagement {

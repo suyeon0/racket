@@ -3,10 +3,8 @@ package com.racket.view.auth.advice
 import com.racket.api.auth.login.exception.LoginFailException
 import com.racket.api.auth.login.exception.NoSuchSessionException
 import com.racket.api.shared.response.ApiError
-import com.racket.api.shared.response.ApiResponse
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
