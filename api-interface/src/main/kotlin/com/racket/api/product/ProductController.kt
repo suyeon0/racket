@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
-import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import lombok.extern.slf4j.Slf4j
 import org.springframework.data.domain.PageRequest
@@ -36,7 +35,6 @@ class ProductController(
         summary = "상품 단건 조회",
         description = "상품 ID로 상품 단건 조회",
         responses = [
-            //ApiResponse(description = "Success", responseCode = "200", content = [Content(schema = Schema(implementation = ProductResponseView::class))]),
             ApiResponse(
                 description = "Not Found Product",
                 responseCode = "404",
@@ -68,7 +66,7 @@ class ProductController(
             )
         ]
     )
-    fun getOptions(@PathVariable productId: Long) = this.optionServiceImpl.getListByProductId(productId)
+    fun getOptions(@PathVariable productId: Long) = ResponseEntity.ok(this.optionServiceImpl.getListByProductId(productId))
 
     @LongTypeIdInputValidator
     @GetMapping("/option/{optionId}")
@@ -83,7 +81,7 @@ class ProductController(
             )
         ]
     )
-    fun getOption(@PathVariable optionId: Long) = this.optionServiceImpl.getByOptionId(optionId)
+    fun getOption(@PathVariable optionId: Long) = ResponseEntity.ok(this.optionServiceImpl.getByOptionId(optionId))
 
     @GetMapping("/list")
     @Parameter(name = "cursorId", description = "조회할 페이지 번호")
@@ -102,7 +100,7 @@ class ProductController(
             )
         ]
     )
-    fun getListByPage(@RequestParam cursorId: Long?): CursorResultVO<ProductResponseView> =
-        this.productServiceImpl.getList(cursorId = cursorId, page = PageRequest.of(0, CURSOR_SIZE))
+    fun getProductList(@RequestParam cursorId: Long?) =
+        ResponseEntity.ok(this.productServiceImpl.getList(cursorId = cursorId, page = PageRequest.of(0, CURSOR_SIZE)))
 
 }

@@ -1,6 +1,7 @@
 package com.racket.api.product
 
 import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.racket.api.shared.vo.CursorResultVO
 import com.racket.api.product.domain.Option
@@ -11,8 +12,6 @@ import com.racket.api.product.exception.NotFoundOptionException
 import com.racket.api.product.exception.NotFoundProductException
 import com.racket.api.product.option.reponse.OptionResponseView
 import com.racket.api.product.response.ProductResponseView
-import com.racket.api.shared.response.ApiGlobalResponse
-import com.racket.api.utils.ObjectMapperUtils
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -72,7 +71,6 @@ class ProductControllerTest {
         return optionRepository.saveAll(options)
     }
 
-
     @Test
     fun `Product Test - productId 로 상품 단건을 조회한다 조회정보가 없으면 상태코드 404, NotFountProductException 발생한다`() {
         // given
@@ -101,8 +99,7 @@ class ProductControllerTest {
             .andReturn()
 
         // then
-        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiGlobalResponse<ProductResponseView>
-        val resultView = ObjectMapperUtils.responseToResultView(resultResponse)
+        val resultView = objectMapper.registerModule(JavaTimeModule()).readValue(sut.response.contentAsString, ProductResponseView::class.java)
         Assertions.assertEquals(savedProduct.id, resultView.id)
     }
 
@@ -138,15 +135,12 @@ class ProductControllerTest {
             .andReturn()
 
         // then
-        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiGlobalResponse<ProductResponseView>
-        val responseJsonString = ObjectMapperUtils.objectMapper.writeValueAsString(resultResponse.response)
-
-        val responseList: List<OptionResponseView> =
-            objectMapper.readValue(responseJsonString, object : TypeReference<List<OptionResponseView>>() {})
-        Assertions.assertTrue(responseList.isNotEmpty())
-        Assertions.assertTrue(responseList.size == options.count())
-        Assertions.assertEquals(options.first().name, responseList[0].name)
-        Assertions.assertEquals(options.first().optionAdditionalPrice, responseList[0].additionalPrice)
+        val responseViewList: List<OptionResponseView> =
+            objectMapper.readValue(sut.response.contentAsString, object : TypeReference<List<OptionResponseView>>() {})
+        Assertions.assertTrue(responseViewList.isNotEmpty())
+        Assertions.assertTrue(responseViewList.size == options.count())
+        Assertions.assertEquals(options.first().name, responseViewList[0].name)
+        Assertions.assertEquals(options.first().optionAdditionalPrice, responseViewList[0].additionalPrice)
     }
 
     @Test
@@ -161,8 +155,7 @@ class ProductControllerTest {
             .andReturn()
 
         // then
-        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiGlobalResponse<OptionResponseView>
-        val resultView = ObjectMapperUtils.responseToResultView(resultResponse)
+        val resultView = objectMapper.registerModule(JavaTimeModule()).readValue(sut.response.contentAsString, OptionResponseView::class.java)
         Assertions.assertEquals(optionId, resultView.id)
 
     }
@@ -182,10 +175,8 @@ class ProductControllerTest {
         }.andReturn()
 
         // then
-        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiGlobalResponse<CursorResultVO<ProductResponseView>>
-        val responseJsonString = ObjectMapperUtils.objectMapper.writeValueAsString(resultResponse.response)
         val productList: CursorResultVO<ProductResponseView> = objectMapper.readValue(
-            responseJsonString,
+            sut.response.contentAsString,
             object : TypeReference<CursorResultVO<ProductResponseView>>() {}
         )
 
@@ -204,10 +195,8 @@ class ProductControllerTest {
         }.andReturn()
 
         // then
-        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiGlobalResponse<CursorResultVO<ProductResponseView>>
-        val responseJsonString = ObjectMapperUtils.objectMapper.writeValueAsString(resultResponse.response)
         val productList: CursorResultVO<ProductResponseView> = objectMapper.readValue(
-            responseJsonString,
+            sut.response.contentAsString,
             object : TypeReference<CursorResultVO<ProductResponseView>>() {}
         )
 
@@ -234,10 +223,8 @@ class ProductControllerTest {
         }.andReturn()
 
         // then
-        val resultResponse = ObjectMapperUtils.resultToApiResponse(sut) as ApiGlobalResponse<CursorResultVO<ProductResponseView>>
-        val responseJsonString = ObjectMapperUtils.objectMapper.writeValueAsString(resultResponse.response)
         val productList: CursorResultVO<ProductResponseView> = objectMapper.readValue(
-            responseJsonString,
+            sut.response.contentAsString,
             object : TypeReference<CursorResultVO<ProductResponseView>>() {}
         )
 

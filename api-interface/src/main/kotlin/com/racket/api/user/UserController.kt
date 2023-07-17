@@ -32,51 +32,47 @@ class UserController(private val userService: UserService) {
             .body(this.userService.registerUser(userRegisterDTO))
     }
 
-
     @LongTypeIdInputValidator
     @Operation(summary = "유저 추가 정보 등록")
     @PatchMapping("/{id}/additional-info")
     fun putAdditionalInfo(
         @PathVariable id: Long,
         @RequestBody request: UserAdditionalInfoCreateRequestCommand
-    ): UserAdditionalResponseView {
+    ): ResponseEntity<UserAdditionalResponseView> {
         request.validate()
-        return this.userService.registerAdditionalUserInformation(
-            id = id,
-            mobileVO = request.mobileVO,
-            addressVO = request.addressVO
-        )!!
+        return ResponseEntity.ok(
+            this.userService.registerAdditionalUserInformation(
+                id = id,
+                mobileVO = request.mobileVO,
+                addressVO = request.addressVO
+            )
+        )
     }
 
     @GetMapping("/{id}")
     @LongTypeIdInputValidator
     @Operation(summary = "유저 조회")
-    fun get(@PathVariable id: Long) = this.userService.getUser(id)
-
+    fun get(@PathVariable id: Long) = ResponseEntity.ok(this.userService.getUser(id))
 
     @LongTypeIdInputValidator
     @PatchMapping("/{id}/status")
     @Operation(summary = "유저 상태 변경")
-    fun patchStatus(
-        @PathVariable id: Long,
-        @RequestParam status: UserStatusType
-    ) = this.userService.updateUserStatus(
-        id = id,
-        status = status
+    fun patchStatus(@PathVariable id: Long, @RequestParam status: UserStatusType) = ResponseEntity.ok(
+        this.userService.updateUserStatus(
+            id = id,
+            status = status
+        )
     )
-
 
     @LongTypeIdInputValidator
     @PatchMapping("/{id}/role")
     @Operation(summary = "유저 롤 변경")
-    fun patchRole(
-        @PathVariable id: Long,
-        @RequestParam role: UserRoleType
-    ) = this.userService.updateUserRole(
-        id = id,
-        role = role
+    fun patchRole(@PathVariable id: Long, @RequestParam role: UserRoleType) = ResponseEntity.ok(
+        this.userService.updateUserRole(
+            id = id,
+            role = role
+        )
     )
-
 
     @LongTypeIdInputValidator
     @PatchMapping("/{id}/info")
@@ -84,17 +80,19 @@ class UserController(private val userService: UserService) {
     fun patchInfo(
         @PathVariable id: Long,
         @RequestBody request: UserUpdateRequestCommand
-    ): UserResponseView {
+    ): ResponseEntity<UserResponseView> {
         request.validate()
-        return this.userService.updateUserInfo(
-            id = id,
-            request = request
-        )!!
+        return ResponseEntity.ok(
+            this.userService.updateUserInfo(
+                id = id,
+                request = request
+            )!!
+        )
     }
 
     @DeleteMapping("/{id}")
     @LongTypeIdInputValidator
     @Operation(summary = "유저 삭제")
-    fun delete(@PathVariable id: Long) = this.userService.deleteUser(id)
+    fun delete(@PathVariable id: Long) = ResponseEntity.ok(this.userService.deleteUser(id))
 
 }
