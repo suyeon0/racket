@@ -2,7 +2,6 @@ package com.racket.api.user
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.racket.api.product.response.ProductResponseView
 import com.racket.api.shared.vo.AddressVO
 import com.racket.api.shared.vo.MobileVO
 import com.racket.api.user.enums.UserRoleType
@@ -14,7 +13,6 @@ import com.racket.api.user.request.UserCreateRequestCommand
 import com.racket.api.user.request.UserUpdateRequestCommand
 import com.racket.api.user.response.UserAdditionalResponseView
 import com.racket.api.user.response.UserResponseView
-import com.racket.api.utils.ObjectMapperUtils
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest

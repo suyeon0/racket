@@ -3,7 +3,6 @@ package com.racket.api.product
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.racket.api.shared.vo.CursorResultVO
 import com.racket.api.product.domain.Option
 import com.racket.api.product.domain.OptionRepository
 import com.racket.api.product.domain.Product
@@ -12,6 +11,7 @@ import com.racket.api.product.exception.NotFoundOptionException
 import com.racket.api.product.exception.NotFoundProductException
 import com.racket.api.product.option.reponse.OptionResponseView
 import com.racket.api.product.response.ProductResponseView
+import com.racket.api.product.vo.ProductCursorResultVO
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -175,9 +175,9 @@ class ProductControllerTest {
         }.andReturn()
 
         // then
-        val productList: CursorResultVO<ProductResponseView> = objectMapper.readValue(
+        val productList: ProductCursorResultVO = objectMapper.readValue(
             sut.response.contentAsString,
-            object : TypeReference<CursorResultVO<ProductResponseView>>() {}
+            object : TypeReference<ProductCursorResultVO>() {}
         )
 
         Assertions.assertEquals(cursorSize, productList.values.size)
@@ -195,13 +195,13 @@ class ProductControllerTest {
         }.andReturn()
 
         // then
-        val productList: CursorResultVO<ProductResponseView> = objectMapper.readValue(
+        val productList: ProductCursorResultVO = objectMapper.readValue(
             sut.response.contentAsString,
-            object : TypeReference<CursorResultVO<ProductResponseView>>() {}
+            object : TypeReference<ProductCursorResultVO>() {}
         )
 
         Assertions.assertEquals(0, productList.values.size)
-        Assertions.assertFalse(productList.hasNext)
+        Assertions.assertFalse(productList.hasNextCursor)
     }
 
     @Test
@@ -223,9 +223,9 @@ class ProductControllerTest {
         }.andReturn()
 
         // then
-        val productList: CursorResultVO<ProductResponseView> = objectMapper.readValue(
+        val productList: ProductCursorResultVO = objectMapper.readValue(
             sut.response.contentAsString,
-            object : TypeReference<CursorResultVO<ProductResponseView>>() {}
+            object : TypeReference<ProductCursorResultVO>() {}
         )
 
         Assertions.assertEquals(cursorSize, productList.values.size)
