@@ -3,10 +3,10 @@ package com.racket.api.product.response
 import io.swagger.v3.oas.annotations.media.Schema
 
 data class ProductResponseView(
-    @Schema(example = "1234567")
+    @Schema(title = "상품 ID", example = "1234567")
     val id: Long,
-    @Schema(example = "윌슨 클래시 100 V2 WR074011 테니스라켓")
+    @Schema(title = "상품명", example = "윌슨 테니스라켓 2023 프로스태프 V14 골드")
     val name: String,
-    @Schema(example = "167500")
+    @Schema(title = "상품 기본가", example = "167500")
     val price: Long
 )

@@ -9,5 +9,4 @@ data class UserAdditionalResponseView(
     val id: Long,
     val mobileVO: MobileVO?,
     val addressVO: AddressVO?
-) {
-}
+)

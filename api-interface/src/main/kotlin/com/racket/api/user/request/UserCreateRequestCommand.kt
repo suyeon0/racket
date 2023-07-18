@@ -1,8 +1,15 @@
 package com.racket.api.user.request
 
+import io.swagger.v3.oas.annotations.media.Schema
+
 data class UserCreateRequestCommand(
+    @Schema(required = true)
     val userName: String,
+
+    @Schema(required = true)
     val email: String,
+
+    @Schema(required = true)
     val password: String
 ) {
     fun validate() {

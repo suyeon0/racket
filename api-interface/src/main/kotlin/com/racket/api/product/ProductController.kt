@@ -2,6 +2,7 @@ package com.racket.api.product
 
 import com.racket.api.shared.annotation.LongTypeIdInputValidator
 import com.racket.api.product.option.OptionService
+import com.racket.api.product.option.reponse.OptionResponseView
 import com.racket.api.product.response.ProductResponseView
 import com.racket.api.product.vo.ProductCursorResultVO
 import com.racket.api.shared.response.ApiError
@@ -50,28 +51,16 @@ class ProductController(
     @Operation(
         summary = "상품 옵션 리스트 조회",
         description = "상품 ID로 상품 옵션 리스트 조회",
+        parameters = [Parameter(name = "productId", description = "상품ID", example = "10")],
         responses = [
             ApiResponse(
                 responseCode = "200",
                 description = "Success",
-                content = [Content(schema = Schema(implementation = ProductResponseView::class))]
+                content = [Content(schema = Schema(implementation = OptionResponseView::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Bad Request", content = [Content(schema = Schema(hidden = true))]),
-            ApiResponse(
-                responseCode = "401",
-                description = "Authentication Failure",
-                content = [Content(schema = Schema(hidden = true))]
-            ),
-            ApiResponse(
-                responseCode = "404",
-                description = "Not Found Product",
-                content = [Content(schema = Schema(hidden = true))]
-            ),
-            ApiResponse(
-                responseCode = "500",
-                description = "Internal Server Error",
-                content = [Content(schema = Schema(hidden = true))]
-            ),
+            ApiResponse(responseCode = "400", description = "Bad Request"),
+            ApiResponse(responseCode = "404", description = "Not Found Product"),
+            ApiResponse(responseCode = "500", description = "Internal Server Error")
         ]
     )
     fun getOptions(@PathVariable productId: Long) = ResponseEntity.ok(this.optionServiceImpl.getListByProductId(productId))
@@ -83,10 +72,13 @@ class ProductController(
         description = "옵션 ID로 옵션 단건 조회",
         responses = [
             ApiResponse(
-                description = "Not Found Option",
-                responseCode = "404",
-                content = [Content(schema = Schema(implementation = ApiError::class))]
-            )
+                responseCode = "200",
+                description = "Success",
+                content = [Content(schema = Schema(implementation = OptionResponseView::class))]
+            ),
+            ApiResponse(responseCode = "400", description = "Bad Request"),
+            ApiResponse(responseCode = "404", description = "Not Found Option"),
+            ApiResponse(responseCode = "500", description = "Internal Server Error")
         ]
     )
     fun getOption(@PathVariable optionId: Long) = ResponseEntity.ok(this.optionServiceImpl.getByOptionId(optionId))

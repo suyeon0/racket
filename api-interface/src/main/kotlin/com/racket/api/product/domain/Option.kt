@@ -16,7 +16,7 @@ class Option(
 
     val name: String,   // 옵션명
 
-    val optionNo: String,   // 옵션코드
+    val optionNo: String,   // 고객사 옵션코드
 
     val sort: Int,  // 옵션 정렬
 

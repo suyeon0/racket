@@ -180,7 +180,7 @@ class ProductControllerTest {
             object : TypeReference<ProductCursorResultVO>() {}
         )
 
-        Assertions.assertEquals(cursorSize, productList.values.size)
+        Assertions.assertEquals(cursorSize, productList.productResponseViewList.size)
     }
 
     @Test
@@ -200,7 +200,7 @@ class ProductControllerTest {
             object : TypeReference<ProductCursorResultVO>() {}
         )
 
-        Assertions.assertEquals(0, productList.values.size)
+        Assertions.assertEquals(0, productList.productResponseViewList.size)
         Assertions.assertFalse(productList.hasNextCursor)
     }
 
@@ -228,8 +228,8 @@ class ProductControllerTest {
             object : TypeReference<ProductCursorResultVO>() {}
         )
 
-        Assertions.assertEquals(cursorSize, productList.values.size)
-        Assertions.assertEquals((cursorId - 1).toLong(), productList.values[0].id)
+        Assertions.assertEquals(cursorSize, productList.productResponseViewList.size)
+        Assertions.assertEquals((cursorId - 1).toLong(), productList.productResponseViewList[0].id)
     }
 
 

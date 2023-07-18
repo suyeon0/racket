@@ -44,7 +44,7 @@ class ProductServiceImpl(
             }
             newCursorId = productList[productList.size - 1].id
         }
-        return ProductCursorResultVO(values = productResponseViewList, hasNextCursor = this.hasNextCursor(id = newCursorId))
+        return ProductCursorResultVO(productResponseViewList = productResponseViewList, hasNextCursor = this.hasNextCursor(id = newCursorId))
     }
 
     private fun hasNextCursor(id: Long?): Boolean {
