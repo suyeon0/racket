@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 
 
 @Component
-class SwaggerOpenApiConfig {
+class SwaggerConfig {
 
     @Bean
     fun openApi(): OpenAPI {

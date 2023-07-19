@@ -1,10 +1,13 @@
 package com.racket.api.shared.response
 
 import io.swagger.v3.oas.annotations.media.Schema
+import java.time.Instant
 
 data class ApiError(
-    @Schema(title = "Error Code", example = "400")
+    @Schema(title = "Error Code")
     val code: Int,
-    @Schema(title = "Error message", example = "Bad Request")
-    val message: String
+    @Schema(title = "Error message")
+    val message: String,
+    @Schema(title = "Error timeStamp")
+    val timeStamp: Instant = Instant.now()
 )

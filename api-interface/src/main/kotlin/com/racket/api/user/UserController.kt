@@ -1,6 +1,7 @@
 package com.racket.api.user
 
 import com.racket.api.shared.annotation.LongTypeIdInputValidator
+import com.racket.api.shared.annotation.SwaggerFailResponse
 import com.racket.api.user.enums.UserRoleType
 import com.racket.api.user.enums.UserStatusType
 import com.racket.api.user.request.UserAdditionalInfoCreateRequestCommand
@@ -9,7 +10,9 @@ import com.racket.api.user.request.UserUpdateRequestCommand
 import com.racket.api.user.response.UserAdditionalResponseView
 import com.racket.api.user.response.UserResponseView
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
@@ -21,8 +24,21 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/v1/user")
 class UserController(private val userService: UserService) {
 
+    @SwaggerFailResponse
     @PostMapping
-    @Operation(summary = "유저 등록")
+    @Operation(
+        summary = "유저 등록",
+        responses = [
+            ApiResponse(
+                responseCode = "201",
+                description = "Success",
+                content = [Content(schema = Schema(implementation = UserResponseView::class))]
+            ),
+            ApiResponse(responseCode = "400", description = "Bad Request"),
+            ApiResponse(responseCode = "404", description = "Not Found"),
+            ApiResponse(responseCode = "500", description = "Internal Server Error")
+        ]
+    )
     fun post(@RequestBody request: UserCreateRequestCommand): ResponseEntity<UserResponseView> {
         request.validate()
         val userRegisterDTO = UserService.UserRegisterDTO(
@@ -34,8 +50,21 @@ class UserController(private val userService: UserService) {
             .body(this.userService.registerUser(userRegisterDTO))
     }
 
+    @SwaggerFailResponse
     @LongTypeIdInputValidator
-    @Operation(summary = "유저 추가 정보 등록")
+    @Operation(
+        summary = "유저 추가 정보 등록",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Success",
+                content = [Content(schema = Schema(implementation = UserAdditionalResponseView::class))]
+            ),
+            ApiResponse(responseCode = "400", description = "Bad Request"),
+            ApiResponse(responseCode = "404", description = "Not Found"),
+            ApiResponse(responseCode = "500", description = "Internal Server Error")
+        ]
+    )
     @PatchMapping("/{id}/additional-info")
     fun putAdditionalInfo(
         @PathVariable id: Long,
@@ -51,14 +80,40 @@ class UserController(private val userService: UserService) {
         )
     }
 
+    @SwaggerFailResponse
     @GetMapping("/{id}")
     @LongTypeIdInputValidator
-    @Operation(summary = "유저 조회")
+    @Operation(
+        summary = "유저 조회",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Success",
+                content = [Content(schema = Schema(implementation = UserResponseView::class))]
+            ),
+            ApiResponse(responseCode = "400", description = "Bad Request"),
+            ApiResponse(responseCode = "404", description = "Not Found User"),
+            ApiResponse(responseCode = "500", description = "Internal Server Error")
+        ]
+    )
     fun get(@PathVariable id: Long) = ResponseEntity.ok(this.userService.getUser(id))
 
+    @SwaggerFailResponse
     @LongTypeIdInputValidator
     @PatchMapping("/{id}/status")
-    @Operation(summary = "유저 상태 변경")
+    @Operation(
+        summary = "유저 상태 변경",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Success",
+                content = [Content(schema = Schema(implementation = UserResponseView::class))]
+            ),
+            ApiResponse(responseCode = "400", description = "Bad Request"),
+            ApiResponse(responseCode = "404", description = "Not Found User"),
+            ApiResponse(responseCode = "500", description = "Internal Server Error")
+        ]
+    )
     fun patchStatus(@PathVariable id: Long, @RequestParam status: UserStatusType) = ResponseEntity.ok(
         this.userService.updateUserStatus(
             id = id,
@@ -66,9 +121,23 @@ class UserController(private val userService: UserService) {
         )
     )
 
+    @SwaggerFailResponse
     @LongTypeIdInputValidator
     @PatchMapping("/{id}/role")
-    @Operation(summary = "유저 롤 변경")
+    @Operation(
+        summary = "유저 롤 변경",
+        parameters = [Parameter(name = "id", description = "유저 ID", example = "1")],
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Success",
+                content = [Content(schema = Schema(implementation = UserResponseView::class))]
+            ),
+            ApiResponse(responseCode = "400", description = "Bad Request"),
+            ApiResponse(responseCode = "404", description = "Not Found User"),
+            ApiResponse(responseCode = "500", description = "Internal Server Error")
+        ]
+    )
     fun patchRole(@PathVariable id: Long, @RequestParam role: UserRoleType) = ResponseEntity.ok(
         this.userService.updateUserRole(
             id = id,
@@ -76,9 +145,23 @@ class UserController(private val userService: UserService) {
         )
     )
 
+    @SwaggerFailResponse
     @LongTypeIdInputValidator
     @PatchMapping("/{id}/info")
-    @Operation(summary = "유저 정보 변경")
+    @Operation(
+        summary = "유저 정보 변경",
+        parameters = [Parameter(name = "id", description = "유저 ID", example = "1")],
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Success",
+                content = [Content(schema = Schema(implementation = UserResponseView::class))]
+            ),
+            ApiResponse(responseCode = "400", description = "Bad Request"),
+            ApiResponse(responseCode = "404", description = "Not Found User"),
+            ApiResponse(responseCode = "500", description = "Internal Server Error")
+        ]
+    )
     fun patchInfo(
         @PathVariable id: Long,
         @RequestBody request: UserUpdateRequestCommand
@@ -93,8 +176,22 @@ class UserController(private val userService: UserService) {
     }
 
     @DeleteMapping("/{id}")
+    @SwaggerFailResponse
     @LongTypeIdInputValidator
-    @Operation(summary = "유저 삭제")
+    @Operation(
+        summary = "유저 정보 삭제",
+        parameters = [Parameter(name = "id", description = "유저 ID", example = "1")],
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Success",
+                content = [Content(schema = Schema(implementation = UserResponseView::class))]
+            ),
+            ApiResponse(responseCode = "400", description = "Bad Request"),
+            ApiResponse(responseCode = "404", description = "Not Found User"),
+            ApiResponse(responseCode = "500", description = "Internal Server Error")
+        ]
+    )
     fun delete(@PathVariable id: Long) = ResponseEntity.ok(this.userService.deleteUser(id))
 
 }
