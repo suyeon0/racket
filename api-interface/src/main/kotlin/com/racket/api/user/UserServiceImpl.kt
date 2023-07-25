@@ -65,7 +65,11 @@ class UserServiceImpl(
      * 회원 조회
      */
     override fun getUser(id: Long): UserResponseView {
-        val user = this.getUserEntity(id)
+        val user = try {
+            this.getUserFromCache(id)
+        } catch (dataNotFoubndException: DataNotFoundException) {
+           this.getUserEntity(id)
+        }
 
         if (user.isDeletedStatus()) {
             throw InvalidUserStatusException()
