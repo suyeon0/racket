@@ -4,6 +4,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.racket.api.shared.vo.AddressVO
 import com.racket.api.shared.vo.MobileVO
+import com.racket.api.user.vo.UserSignedUpEventVO
 import com.racket.api.user.enums.UserRoleType
 import com.racket.api.user.enums.UserStatusType
 import com.racket.api.user.exception.DuplicateUserException
@@ -13,8 +14,7 @@ import com.racket.api.user.request.UserCreateRequestCommand
 import com.racket.api.user.request.UserUpdateRequestCommand
 import com.racket.api.user.response.UserAdditionalResponseView
 import com.racket.api.user.response.UserResponseView
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,12 +23,16 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.test.context.event.ApplicationEvents
+import org.springframework.test.context.event.RecordApplicationEvents
 import org.springframework.test.web.servlet.*
 import org.springframework.transaction.annotation.Transactional
+
 
 @Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
+@RecordApplicationEvents
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 class UserControllerTest {
 
@@ -38,6 +42,8 @@ class UserControllerTest {
     lateinit var mockMvc: MockMvc
     @Autowired
     lateinit var userService: UserService
+    @Autowired
+    lateinit var events: ApplicationEvents
 
     // 변경 및 삭제할 유저 데이터 생성
     private fun saveTestUserAndReturnResponseView(): UserResponseView {
@@ -266,7 +272,7 @@ class UserControllerTest {
     }
 
     @Test
-    fun `유저 추가 정보를 정상적으로 저장하면 200 을 리턴 받는다`() {
+    fun `User Test - 유저 추가 정보를 정상적으로 저장하면 200 을 리턴 받는다`() {
         // given
         val res: UserResponseView = this.saveTestUserAndReturnResponseView() // 변경할 유저 데이터 저장
         val userId = res.id // 저장할 유저 id
@@ -299,7 +305,7 @@ class UserControllerTest {
     }
 
     @Test
-    fun `유저 추가 정보 저장시 핸드폰 번호 포맷이 불일치하면 400 오류를 리턴받는다`() {
+    fun `User Test - 유저 추가 정보 저장시 핸드폰 번호 포맷이 불일치하면 400 오류를 리턴받는다`() {
         // given
         val res: UserResponseView = this.saveTestUserAndReturnResponseView() // 변경할 유저 데이터 저장
         val userId = res.id // 저장할 유저 id
@@ -323,6 +329,28 @@ class UserControllerTest {
         }.andReturn()
     }
 
+    @Test
+    fun `User Test - 회원가입이 트랜잭션이 커밋되면 가입 완료 메일 전송 이벤트가 1회 발생되어야 한다`() {
+        // given
+        val userCreateRequestCommand = UserCreateRequestCommand(
+            userName = "zibri",
+            email = "test@naver.com",
+            password = "1234567"
+        )
+
+        // when
+        // 회원가입 진행
+        this.mockMvc.post("/api/v1/user") {
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userCreateRequestCommand)
+        }.andExpect {
+            status { isCreated() }
+        }
+
+        // then
+        val count = events.stream(UserSignedUpEventVO::class.java).count()
+        Assertions.assertEquals(1, count)
+    }
 
 
 }

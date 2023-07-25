@@ -5,6 +5,7 @@ import com.racket.api.shared.vo.MobileVO
 import com.racket.api.user.domain.User
 import com.racket.api.user.enums.UserRoleType
 import com.racket.api.user.domain.UserRepository
+import com.racket.api.user.vo.UserSignedUpEventVO
 import com.racket.api.user.enums.UserStatusType
 import com.racket.api.user.exception.DuplicateUserException
 import com.racket.api.user.exception.InvalidUserStatusException
@@ -12,22 +13,39 @@ import com.racket.api.user.exception.NotFoundUserException
 import com.racket.api.user.request.UserUpdateRequestCommand
 import com.racket.api.user.response.UserAdditionalResponseView
 import com.racket.api.user.response.UserResponseView
+import mu.KotlinLogging
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 
 @Service
-class UserServiceImpl(private val userRepository: UserRepository) : UserService {
+class UserServiceImpl(
+    private val userRepository: UserRepository,
+    private val eventPublisher: ApplicationEventPublisher
+)
+    : UserService {
+
+    private val log = KotlinLogging.logger { }
 
     /**
      * 회원 등록
      */
+    @Transactional
     override fun registerUser(userRegisterDTO: UserService.UserRegisterDTO): UserResponseView {
         if (this.isExistDuplicatedEmail(userRegisterDTO.email)) {
             throw DuplicateUserException()
         }
 
         val user = this.userRepository.save(this.createUserEntity(userRegisterDTO))
+
+        // 회원 가입 완료 이벤트 발행
+        log.info("registerUser Thread ID : " + Thread.currentThread().id)
+        this.eventPublisher.publishEvent(
+            UserSignedUpEventVO(userName = user.userName, userEmail = user.email, userId = user.id!!)
+        )
+
         return this.makeUserResponseViewFromUser(user)
     }
 
