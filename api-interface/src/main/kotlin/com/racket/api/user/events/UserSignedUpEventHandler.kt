@@ -17,7 +17,7 @@ class UserSignedUpEventHandler(
 
     private val log = KotlinLogging.logger { }
 
-    @Async
+    @Async("userSignedUpMailSendExecutor")
     @TransactionalEventListener(
         classes = [UserSignedUpEventVO::class],
         phase = TransactionPhase.AFTER_COMMIT
@@ -34,5 +34,4 @@ class UserSignedUpEventHandler(
         )
         this.emailNotificationSenderService.send(emailNotification)
     }
-
 }
