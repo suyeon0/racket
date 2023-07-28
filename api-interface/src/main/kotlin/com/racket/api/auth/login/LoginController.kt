@@ -3,6 +3,7 @@ package com.racket.api.auth.login
 import com.racket.api.auth.login.request.LoginRequestCommand
 import com.racket.api.auth.login.response.LoginUserResponseView
 import com.racket.api.auth.login.session.SessionRedisManager
+import io.swagger.v3.oas.annotations.Hidden
 import lombok.RequiredArgsConstructor
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
@@ -10,12 +11,13 @@ import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 class LoginController(
     private val loginService: LoginService,
     private val sessionRedisManager: SessionRedisManager
 ) {
 
+    @Hidden
     @ResponseBody
     @PostMapping("/login")
     fun login(

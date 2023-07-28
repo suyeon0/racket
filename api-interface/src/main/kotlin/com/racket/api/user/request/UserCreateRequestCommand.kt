@@ -1,9 +1,21 @@
 package com.racket.api.user.request
 
+import com.racket.api.shared.vo.MobileVO
+import com.racket.api.util.isMatchMobileNumberFormat
+import io.swagger.v3.oas.annotations.media.Schema
+
 data class UserCreateRequestCommand(
+    @Schema(required = true)
     val userName: String,
+
+    @Schema(required = true)
     val email: String,
-    val password: String
+
+    @Schema(required = true)
+    val password: String,
+
+    @Schema(required = true)
+    val mobileVO: MobileVO
 ) {
     fun validate() {
         if (this.userName.isEmpty()) {
@@ -18,6 +30,9 @@ data class UserCreateRequestCommand(
             if (this.password.length < 6 || this.password.length > 20) {
                 throw IllegalArgumentException("password length must be between 6 and 20")
             }
+        }
+        if (!isMatchMobileNumberFormat(this.mobileVO.number)) {
+            throw IllegalArgumentException("mobile number pattern mismatch")
         }
     }
 }

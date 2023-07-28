@@ -1,18 +1,12 @@
 package com.racket.api.user.request
 
-import com.racket.api.common.vo.AddressVO
-import com.racket.api.common.vo.MobileVO
-import com.racket.api.util.isMatchMobileNumberFormat
+import com.racket.api.shared.vo.AddressVO
+import io.swagger.v3.oas.annotations.media.Schema
 
 data class UserAdditionalInfoCreateRequestCommand(
-    val mobileVO: MobileVO,
+    @Schema(required = true)
     val addressVO: AddressVO
 ) {
-
-    fun validate() {
-        if (!isMatchMobileNumberFormat(this.mobileVO.number)) {
-            throw IllegalArgumentException("mobile number pattern mismatch")
-        }
-    }
+    fun validate() {}
 
 }

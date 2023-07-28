@@ -24,19 +24,18 @@ class LoginCheckFilter(
             "/view/auth/logout",
             "/view/auth/login",
             "/api/auth/login",
-            "/css/*", "/js/*", "/favicon.ico"
+            "/css/*", "/js/*", "/favicon.ico",
+            "/swagger-ui/index.html", "/v3/api-docs.yaml"
         )
     }
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
-        log.info { "init done" }
-
         val requestURI = request.requestURI
 
         try {
-            if (this.isLoginCheckPath(requestURI)) {
-                this.sessionRedisManager.getSessionBySessionCookie(request)
-            }
+//            if (this.isLoginCheckPath(requestURI)) {
+//                this.sessionRedisManager.getSessionBySessionCookie(request)
+//            }
             filterChain.doFilter(request, response)
 
         } catch (e: NoSuchSessionException) {

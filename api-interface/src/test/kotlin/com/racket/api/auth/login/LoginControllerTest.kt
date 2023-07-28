@@ -11,6 +11,7 @@ import com.racket.api.auth.login.session.SessionManager
 import com.racket.api.auth.login.session.SessionRedisManager
 import com.racket.api.auth.login.session.domain.SessionUser
 import com.racket.api.auth.login.session.domain.SessionRedisRepository
+import com.racket.api.shared.vo.MobileVO
 import com.racket.api.user.UserService
 import com.racket.api.user.response.UserResponseView
 import org.junit.jupiter.api.Assertions
@@ -64,7 +65,8 @@ class LoginControllerTest {
         val userRegisterDTO = UserService.UserRegisterDTO(
             userName = "tdd_login_user",
             email = "tdd_login_user@naver.com",
-            password = "123456"
+            password = "123456",
+            mobileVO = MobileVO(number = "0101234124")
         )
         return this.userService.registerUser(userRegisterDTO)
     }

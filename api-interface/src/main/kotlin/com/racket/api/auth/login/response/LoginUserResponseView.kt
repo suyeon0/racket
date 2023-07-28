@@ -6,6 +6,4 @@ data class LoginUserResponseView(
     val user: SessionVO,
     var sessionId: String?,
     var redirectURI: String?
-) {
-
-}
+)

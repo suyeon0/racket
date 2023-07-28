@@ -1,0 +1,22 @@
+version: "3"
+services:
+  db:
+    image: mysql:latest
+    container_name: mysql-server
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./data/:/var/lib/mysql
+
+  redis:
+  hostname: redis
+  container_name: redis
+  image: redis:latest
+  command: redis-server --requirepass 1234 --port 6379
+  ports:
+    - 6379:6379
