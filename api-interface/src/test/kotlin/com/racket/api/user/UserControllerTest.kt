@@ -4,7 +4,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.racket.api.shared.vo.AddressVO
 import com.racket.api.shared.vo.MobileVO
-import com.racket.api.user.vo.UserSignedUpEventVO
 import com.racket.api.user.enums.UserRoleType
 import com.racket.api.user.enums.UserStatusType
 import com.racket.api.user.exception.DuplicateUserException
@@ -14,6 +13,7 @@ import com.racket.api.user.request.UserCreateRequestCommand
 import com.racket.api.user.request.UserUpdateRequestCommand
 import com.racket.api.user.response.UserAdditionalResponseView
 import com.racket.api.user.response.UserResponseView
+import com.racket.api.user.vo.UserSignedUpEventVO
 import org.junit.jupiter.api.*
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
@@ -23,6 +23,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.retry.annotation.Backoff
+import org.springframework.retry.annotation.Retryable
 import org.springframework.test.context.event.ApplicationEvents
 import org.springframework.test.context.event.RecordApplicationEvents
 import org.springframework.test.web.servlet.*
@@ -45,12 +47,22 @@ class UserControllerTest {
     @Autowired
     lateinit var events: ApplicationEvents
 
+    companion object {
+        private val userCreateRequestCommand = UserCreateRequestCommand(
+            userName = "zibri",
+            email = "test@naver.com",
+            password = "1234567",
+            mobileVO = MobileVO(number = "01012341234")
+        )
+    }
+
     // 변경 및 삭제할 유저 데이터 생성
     private fun saveTestUserAndReturnResponseView(): UserResponseView {
         val userRegisterDTO = UserService.UserRegisterDTO(
             userName = "tdd_user",
             email = "tdd_user@naver.com",
-            password = "1234567"
+            password = "1234567",
+            mobileVO = MobileVO(number = "01012341234")
         )
         return this.userService.registerUser(userRegisterDTO)
     }
@@ -58,11 +70,6 @@ class UserControllerTest {
     @Test
     fun `User Test - 유저를 생성한다 유저 생성이 완료되면 HttpStatus 201이 나와야 하며 DB 에 존재해야 한다`() {
         // given
-        val userCreateRequestCommand = UserCreateRequestCommand(
-            userName = "zibri",
-            email = "test@naver.com",
-            password = "1234567"
-        )
 
         // when
         val sut = this.mockMvc.post("/api/v1/user") {
@@ -84,16 +91,17 @@ class UserControllerTest {
     @Test
     fun `User Test - 유저를 생성할 때 필수값을 입력하지 않는다면 HttpStatus 400 오류가 발생한다`() {
         // given
-        val userCreateRequestCommand = UserCreateRequestCommand(
+        val invalidUserCreateRequestCommand = UserCreateRequestCommand(
             userName = "",
             email = "test@naver.com",
-            password = "1234567"
+            password = "1234567",
+            mobileVO = MobileVO("01012341234")
         )
 
         // when-then
         val sut = this.mockMvc.post("/api/v1/user") {
             contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userCreateRequestCommand)
+            content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(invalidUserCreateRequestCommand)
         }.andExpect {
             status { isBadRequest() }
         }.andReturn()
@@ -104,23 +112,23 @@ class UserControllerTest {
     fun `User Test - 동일한 email 주소가 있는지 체크한다 동일한 주소가 있으면 HttpStatus 400 & DuplicateUserException 발생`() {
         // given
         val existedEmail = this.saveTestUserAndReturnResponseView().email
-        val userCreateRequestCommand = UserCreateRequestCommand(
+        val duplicatedUserCreateRequestCommand = UserCreateRequestCommand(
+            userName = "existedEmailTestName",
             email = existedEmail,
-            userName = "zibri",
-            password = "1234567"
+            password = "1234567",
+            mobileVO = MobileVO(number = "01012341234")
         )
 
         // when-then
         val sut = this.mockMvc.post("/api/v1/user") {
             contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userCreateRequestCommand)
+            content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(duplicatedUserCreateRequestCommand)
         }.andExpect {
             status { isBadRequest() }
         }.andReturn()
 
         val resolvedException = sut.resolvedException
         assert(resolvedException is DuplicateUserException)
-
     }
 
     @Test
@@ -277,9 +285,6 @@ class UserControllerTest {
         val res: UserResponseView = this.saveTestUserAndReturnResponseView() // 변경할 유저 데이터 저장
         val userId = res.id // 저장할 유저 id
         val userAdditionalInfoCreateRequestCommand = UserAdditionalInfoCreateRequestCommand(
-            mobileVO = MobileVO (
-                number = "01012341234"
-            ),
             addressVO = AddressVO (
                 zipCode = "",
                 street = "Positano SA 2",
@@ -298,32 +303,25 @@ class UserControllerTest {
         // then
         val resultView = objectMapper.registerModule(JavaTimeModule()).readValue(sut.response.contentAsString, UserAdditionalResponseView::class.java)
         val addressResult = resultView.addressVO!!
-        Assertions.assertEquals(userAdditionalInfoCreateRequestCommand.mobileVO, resultView.mobileVO)
         Assertions.assertEquals(userAdditionalInfoCreateRequestCommand.addressVO.zipCode, addressResult.zipCode)
         Assertions.assertEquals(userAdditionalInfoCreateRequestCommand.addressVO.detailedAddress, addressResult.detailedAddress)
         Assertions.assertEquals(userAdditionalInfoCreateRequestCommand.addressVO.street, addressResult.street)
     }
 
     @Test
-    fun `User Test - 유저 추가 정보 저장시 핸드폰 번호 포맷이 불일치하면 400 오류를 리턴받는다`() {
+    fun `User Test - 유저 정보 저장시 핸드폰 번호 포맷이 불일치하면 400 오류를 리턴받는다`() {
         // given
-        val res: UserResponseView = this.saveTestUserAndReturnResponseView() // 변경할 유저 데이터 저장
-        val userId = res.id // 저장할 유저 id
-        val userAdditionalInfoCreateRequestCommand = UserAdditionalInfoCreateRequestCommand(
-            mobileVO = MobileVO (
-                number = "12341234"
-            ),
-            addressVO = AddressVO (
-                zipCode = "",
-                street = "Positano SA 2",
-                detailedAddress = "31"
-            )
+        val invalidUserCreateRequestCommand = UserCreateRequestCommand(
+            userName = "invalidUserCreateRequestCommand",
+            email = "test@naver.com",
+            password = "1234567",
+            mobileVO = MobileVO(number = "invalidNumber")
         )
 
         // when - then
-        val sut = this.mockMvc.patch("/api/v1/user/{id}/additional-info", userId) {
+        val sut = this.mockMvc.post("/api/v1/user", invalidUserCreateRequestCommand) {
             contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(userAdditionalInfoCreateRequestCommand)
+            content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(invalidUserCreateRequestCommand)
         }.andExpect {
             status { isBadRequest() }
         }.andReturn()
@@ -332,11 +330,6 @@ class UserControllerTest {
     @Test
     fun `User Test - 회원가입이 트랜잭션이 커밋되면 가입 완료 메일 전송 이벤트가 1회 발생되어야 한다`() {
         // given
-        val userCreateRequestCommand = UserCreateRequestCommand(
-            userName = "zibri",
-            email = "test@naver.com",
-            password = "1234567"
-        )
 
         // when
         // 회원가입 진행
@@ -351,6 +344,4 @@ class UserControllerTest {
         val count = events.stream(UserSignedUpEventVO::class.java).count()
         Assertions.assertEquals(1, count)
     }
-
-
 }

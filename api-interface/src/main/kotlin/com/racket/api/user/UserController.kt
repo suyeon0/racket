@@ -44,7 +44,8 @@ class UserController(private val userService: UserService) {
         val userRegisterDTO = UserService.UserRegisterDTO(
             userName = request.userName,
             email = request.email,
-            password = request.password
+            password = request.password,
+            mobileVO = request.mobileVO
         )
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(this.userService.registerUser(userRegisterDTO))
@@ -74,7 +75,6 @@ class UserController(private val userService: UserService) {
         return ResponseEntity.ok(
             this.userService.registerAdditionalUserInformation(
                 id = id,
-                mobileVO = request.mobileVO,
                 addressVO = request.addressVO
             )
         )

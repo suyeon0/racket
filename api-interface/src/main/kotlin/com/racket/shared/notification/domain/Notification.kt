@@ -1,13 +1,12 @@
 package com.racket.shared.notification.domain
 
-import lombok.Getter
 import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
+@Inheritance
 @DiscriminatorColumn(name = "type")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name = "notifications")
 abstract class Notification protected constructor() {
 
@@ -23,9 +22,16 @@ abstract class Notification protected constructor() {
     @CreationTimestamp
     open var createdAt: LocalDateTime = LocalDateTime.now()
 
+    @Transient
+    open var retryCount = 1
+
     protected constructor(receiver: Receiver, message: String?) : this() {
         this.receiver = receiver
         this.message = message
+    }
+
+    open fun increaseRetryCount() {
+        this.retryCount++
     }
 
 }

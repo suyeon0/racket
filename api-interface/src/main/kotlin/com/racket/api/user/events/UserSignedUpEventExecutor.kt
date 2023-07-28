@@ -7,12 +7,12 @@ import org.springframework.stereotype.Component
 @Component
 class UserSignedUpEventExecutor {
 
-    @Bean("userSignedUpMailSendExecutor")
+    @Bean("userSignedUpSendExecutor")
     fun userSignedUpMailSendExecutor() =
         ThreadPoolTaskExecutor().apply {
-            this.corePoolSize = 4
+            this.corePoolSize = 1
             this.maxPoolSize = 4*2
-            this.queueCapacity = 200
-            this.setThreadNamePrefix("userSignedUpMailSendExecutor-")
+            this.queueCapacity = 100
+            this.setThreadNamePrefix("UserSignedUpSender_T-")
         }
 }

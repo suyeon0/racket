@@ -17,7 +17,7 @@ interface UserService {
     fun getUser(id: Long): UserResponseView?
     fun updateUserInfo(id: Long, request: UserUpdateRequestCommand): UserResponseView?
     fun deleteUser(id: Long): UserResponseView?
-    fun registerAdditionalUserInformation(id: Long, mobileVO: MobileVO?, addressVO: AddressVO?): UserAdditionalResponseView?
+    fun registerAdditionalUserInformation(id: Long, addressVO: AddressVO?): UserAdditionalResponseView?
     fun getUserByEmail(email: String): UserResponseView
 
     fun getUserByEmailAndPassword(email: String, password: String): Optional<User>
@@ -26,6 +26,7 @@ interface UserService {
         val userName: String,
         val email: String,
         val password: String,
+        val mobileVO: MobileVO
     )
 
 }

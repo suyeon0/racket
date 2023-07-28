@@ -1,7 +1,6 @@
 package com.racket.api.user
 
 import com.racket.api.shared.vo.AddressVO
-import com.racket.api.shared.vo.MobileVO
 import com.racket.api.user.domain.User
 import com.racket.api.user.enums.UserRoleType
 import com.racket.api.user.domain.UserRepository
@@ -18,7 +17,6 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
-
 
 @Service
 class UserServiceImpl(
@@ -40,11 +38,16 @@ class UserServiceImpl(
 
         val user = this.userRepository.save(this.createUserEntity(userRegisterDTO))
 
-        // 회원 가입 완료 이벤트 발행
-        log.info("registerUser Thread ID : " + Thread.currentThread().id)
+        // 회원 가입 완료 비동기 이벤트 발행
         this.eventPublisher.publishEvent(
-            UserSignedUpEventVO(userName = user.userName, userEmail = user.email, userId = user.id!!)
+            UserSignedUpEventVO(
+                userName = user.userName,
+                userEmail = user.email,
+                userId = user.id!!,
+                userMobileNumber = user.mobileVO!!.number)
         )
+
+        // TODO: 회원 가입 쿠폰 발행
 
         return this.makeUserResponseViewFromUser(user)
     }
@@ -95,11 +98,10 @@ class UserServiceImpl(
     /**
      * 회원 추가 정보 등록
      */
-    override fun registerAdditionalUserInformation(id: Long, mobileVO: MobileVO?, addressVO: AddressVO?) =
+    override fun registerAdditionalUserInformation(id: Long, addressVO: AddressVO?) =
         this.makeUserAdditionalResponseViewFromUser(
             this.getUserEntity(id)
                 .updateUserAdditionalInfo(
-                    mobileVO = mobileVO,
                     addressVO = addressVO
                 )
         )
@@ -130,7 +132,7 @@ class UserServiceImpl(
             userName = registerDTO.userName,
             password = registerDTO.password,
             email = registerDTO.email,
-            mobileVO = null,
+            mobileVO = registerDTO.mobileVO,
             addressVO = null
         )
 
@@ -141,13 +143,13 @@ class UserServiceImpl(
             email = user.email,
             status = user.status,
             role = user.role,
-            password = user.password
+            password = user.password,
+            mobile = user.mobileVO!!
         )
 
     fun makeUserAdditionalResponseViewFromUser(user: User) =
         UserAdditionalResponseView(
             id = user.id!!,
-            mobileVO = user.mobileVO,
             addressVO = user.addressVO
         )
 

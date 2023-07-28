@@ -48,8 +48,7 @@ class User(
         return this
     }
 
-    fun updateUserAdditionalInfo(mobileVO: MobileVO?, addressVO: AddressVO?): User {
-        this.mobileVO = mobileVO
+    fun updateUserAdditionalInfo(addressVO: AddressVO?): User {
         this.addressVO = addressVO
         return this
     }

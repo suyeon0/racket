@@ -1,5 +1,6 @@
 package com.racket.api.user.response
 
+import com.racket.api.shared.vo.MobileVO
 import com.racket.api.user.enums.UserRoleType
 import com.racket.api.user.enums.UserStatusType
 import io.swagger.v3.oas.annotations.media.Schema
@@ -20,5 +21,8 @@ data class UserResponseView(
     @Schema(example = "USER")
     val role: UserRoleType,
 
-    val password: String
+    val password: String,
+
+    @Schema(example = "01012341234")
+    val mobile: MobileVO
 )

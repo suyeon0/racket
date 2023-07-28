@@ -1,6 +1,5 @@
 package com.racket.shared.notification.domain
 
-import org.springframework.web.multipart.MultipartFile
 import javax.persistence.DiscriminatorValue
 import javax.persistence.Entity
 
@@ -23,6 +22,7 @@ class EmailNotification(
     ) : this(emailAddress, title, file) {
         this.receiver = receiver
         this.message = message
+        this.retryCount = retryCount
     }
 
     override fun toString(): String {
