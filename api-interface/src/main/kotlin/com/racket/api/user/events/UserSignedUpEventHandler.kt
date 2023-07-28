@@ -46,18 +46,23 @@ class UserSignedUpEvent(
     @Retryable(value = [Exception::class], backoff = Backoff(delay = 3000))
     fun sendSignedUpMail(userId: Long, userEmail: String, userName: String) {
         log.info { "sendSignedUpMail thread Id : ${Thread.currentThread().id}" }
-        this.emailNotificationSenderService.send(EmailNotification(
-            Receiver(userId = userId),
-            emailAddress = userEmail,
-            title = "회원가입 완료 안내",
-            message = "$userName 님의 회원가입이 완료되었습니다",
-            file = null))
+        this.emailNotificationSenderService.send(
+            EmailNotification(
+                Receiver(userId = userId),
+                emailAddress = userEmail,
+                title = "회원가입 완료 안내",
+                message = "${userName}- 회원가입이 완료되었습니다",
+                file = null
+            )
+        )
     }
 
     // 회원 가입 SMS 안내
     @Retryable(value = [Exception::class], backoff = Backoff(delay = 3000))
     fun sendSignedUpSMS(userId: Long, userName: String, userMobileNumber: String) {
-        log.info { "sendSignedUpSMS thread Id : ${Thread.currentThread().id}" }
-        log.info { ">>> sendSignedUpSMS Done" }
+        log.info {
+            "sendSignedUpSMS thread Id : ${Thread.currentThread().id}"
+            ">>> sendSignedUpSMS Done"
+        }
     }
 }
