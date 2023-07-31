@@ -99,7 +99,7 @@ class UserControllerTest {
         )
 
         // when-then
-        val sut = this.mockMvc.post("/api/v1/user") {
+        this.mockMvc.post("/api/v1/user") {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(invalidUserCreateRequestCommand)
         }.andExpect {
@@ -319,7 +319,7 @@ class UserControllerTest {
         )
 
         // when - then
-        val sut = this.mockMvc.post("/api/v1/user", invalidUserCreateRequestCommand) {
+        this.mockMvc.post("/api/v1/user", invalidUserCreateRequestCommand) {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(invalidUserCreateRequestCommand)
         }.andExpect {

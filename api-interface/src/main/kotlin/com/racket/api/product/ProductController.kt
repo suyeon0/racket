@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/v1/product")
 class ProductController(
     val optionServiceImpl: OptionService,
-    val productServiceImpl: ProductService
+    val productService: GetProductService
 ) {
     companion object {
         private const val CURSOR_SIZE = 10
@@ -44,7 +44,7 @@ class ProductController(
             )
         ]
     )
-    fun getProduct(@PathVariable productId: Long) = ResponseEntity.ok(this.productServiceImpl.getByProductId(productId))
+    fun getProduct(@PathVariable productId: Long) = ResponseEntity.ok(this.productService.getByProductId(productId))
 
     @LongTypeIdInputValidator
     @GetMapping("/options/{productId}")
@@ -101,6 +101,6 @@ class ProductController(
         ]
     )
     fun getProductList(@RequestParam cursorId: Long?) =
-        ResponseEntity.ok(this.productServiceImpl.getList(cursorId = cursorId, page = PageRequest.of(0, CURSOR_SIZE)))
+        ResponseEntity.ok(this.productService.getList(cursorId = cursorId, page = PageRequest.of(0, CURSOR_SIZE)))
 
 }

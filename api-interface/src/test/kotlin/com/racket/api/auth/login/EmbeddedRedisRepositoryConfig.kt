@@ -12,7 +12,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 @EnableRedisRepositories
 class EmbeddedRedisRepositoryConfig(private val redisProperties: RedisProperties) {
     @Bean
-    fun redisConnectionFactory(): RedisConnectionFactory {
+    fun embeddedRedisConnectionFactory(): RedisConnectionFactory {
         return LettuceConnectionFactory(redisProperties.host, redisProperties.port);
     }
 

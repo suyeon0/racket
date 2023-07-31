@@ -15,13 +15,4 @@ class UserSignedUpEventExecutor {
             this.queueCapacity = 100
             this.setThreadNamePrefix("UserSignedUpSender_T-")
         }
-
-    @Bean("userSignedUpSmsSendExecutor")
-    fun userSignedUpSmsSendExecutor() =
-        ThreadPoolTaskExecutor().apply {
-            this.corePoolSize = 4
-            this.maxPoolSize = 4*2
-            this.queueCapacity = 200
-            this.setThreadNamePrefix("userSignedUpSmsSendExecutor-")
-        }
 }

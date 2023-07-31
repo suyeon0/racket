@@ -10,9 +10,9 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
-class ProductServiceImpl(
+class GetProductServiceImpl(
     val productRepository: ProductRepository
-) : ProductService {
+) : GetProductService {
 
     /**
      * 상품 단건 조회
@@ -44,7 +44,10 @@ class ProductServiceImpl(
             }
             newCursorId = productList[productList.size - 1].id
         }
-        return ProductCursorResultVO(productResponseViewList = productResponseViewList, hasNextCursor = this.hasNextCursor(id = newCursorId))
+        return ProductCursorResultVO(
+            productResponseViewList = productResponseViewList,
+            hasNextCursor = this.hasNextCursor(id = newCursorId)
+        )
     }
 
     private fun hasNextCursor(id: Long?): Boolean {
@@ -53,11 +56,4 @@ class ProductServiceImpl(
     }
 
     private fun getProductEntity(id: Long) = this.productRepository.findById(id).orElseThrow { NotFoundProductException() }
-
-    private fun makeProductResponseViewFromProduct(product: Product) =
-        ProductResponseView(
-            id = product.id!!,
-            name = product.name,
-            price = product.price
-        )
 }

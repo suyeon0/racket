@@ -49,7 +49,6 @@ subprojects {
 		testImplementation("org.junit.jupiter:junit-jupiter-params")
 		testImplementation("it.ozimov:embedded-redis:0.7.2")
 
-
 		//DB
 		implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 		implementation ("com.mysql:mysql-connector-j")
@@ -68,6 +67,10 @@ subprojects {
 		//spring-retry
 		implementation("org.springframework.retry:spring-retry")
 		implementation("org.springframework:spring-aspects")
+
+		// cache
+		implementation("org.springframework.boot:spring-boot-starter-cache:3.1.2")
+
 	}
 
 	dependencyManagement {
