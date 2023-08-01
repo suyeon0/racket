@@ -32,10 +32,11 @@ import org.springframework.transaction.annotation.Transactional
 
 
 @Transactional
-@SpringBootTest
+//@SpringBootTest
 @AutoConfigureMockMvc
 @RecordApplicationEvents
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UserControllerTest {
 
     val objectMapper = jacksonObjectMapper()

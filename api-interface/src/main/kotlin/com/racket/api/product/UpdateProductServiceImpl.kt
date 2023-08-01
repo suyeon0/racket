@@ -4,20 +4,32 @@ import com.racket.api.product.domain.ProductRepository
 import com.racket.api.product.enums.ProductStatusType
 import com.racket.api.product.exception.NotFoundProductException
 import com.racket.api.product.response.ProductResponseView
+import com.racket.api.product.vo.ProductRedisHashVO
+import com.racket.api.util.RedisUtils
+import com.racket.core.cache.CacheKey
+import mu.KotlinLogging
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UpdateProductServiceImpl(
-    val productRepository: ProductRepository
+    private val productRepository: ProductRepository,
+    private val eventPublisher: ApplicationEventPublisher
 ) : UpdateProductService {
-    override fun updateProductInfo(id: Long, name: String, price: Long): ProductResponseView =
-        this.makeProductResponseViewFromProduct(
-            this.getProductEntity(id)
-                .updateProductInfo(
-                    name = name,
-                    price = price
-                )
-        )
+
+    private val log = KotlinLogging.logger { }
+
+    @Transactional
+    override fun updateProductInfo(id: Long, name: String, price: Long): ProductResponseView {
+        val product = this.getProductEntity(id).updateProductInfo(name = name, price = price)
+
+        this.productRepository.save(product)
+        // event
+        this.eventPublisher.publishEvent(ProductRedisHashVO.of(product))
+
+        return this.makeProductResponseViewFromProduct(product)
+    }
 
     override fun updateProductStatus(id: Long, status: ProductStatusType): ProductResponseView =
         this.makeProductResponseViewFromProduct(

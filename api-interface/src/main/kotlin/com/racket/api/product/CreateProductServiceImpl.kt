@@ -4,10 +4,12 @@ import com.racket.api.admin.product.exception.DuplicateProductException
 import com.racket.api.product.domain.Product
 import com.racket.api.product.domain.ProductRepository
 import com.racket.api.product.response.ProductResponseView
+import com.racket.api.product.vo.ProductRedisHashVO
 import mu.KotlinLogging
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+
 
 @Service
 class CreateProductServiceImpl(
@@ -27,11 +29,9 @@ class CreateProductServiceImpl(
             throw DuplicateProductException(customerProductCode)
         }
 
-        // DB 등록
         val product = this.productRepository.save(this.createProductEntity(productRegisterDTO))
-
-        // 이벤트 발생
-        //eventPublisher.publishEvent(product)
+        // event
+        this.eventPublisher.publishEvent(ProductRedisHashVO.of(product))
 
         return this.makeProductResponseViewFromProduct(product)
     }

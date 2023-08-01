@@ -6,25 +6,49 @@ import com.racket.api.product.exception.InvalidProductStatusException
 import com.racket.api.product.exception.NotFoundProductException
 import com.racket.api.product.response.ProductResponseView
 import com.racket.api.product.vo.ProductCursorResultVO
+import com.racket.api.product.vo.ProductRedisHashVO
+import com.racket.api.util.RedisUtils
+import com.racket.core.cache.CacheKey
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import java.util.*
+import kotlin.collections.ArrayList
 
 @Service
 class GetProductServiceImpl(
-    val productRepository: ProductRepository
+    val productRepository: ProductRepository,
+    val redisUtils: RedisUtils
 ) : GetProductService {
 
     /**
      * 상품 단건 조회
      */
     override fun getByProductId(productId: Long): ProductResponseView {
-        val product = this.getProductEntity(productId)
+        val product: Product = this.getProductFromCacheOrDatabase(productId)
+        this.validateProductStatus(product)
+        return this.makeProductResponseViewFromProduct(product)
+    }
+
+    private fun getProductFromCacheOrDatabase(productId: Long): Product =
+        this.getProductVOFromCache(productId = productId.toString())
+            .map { ProductRedisHashVO.makeEntity(it) }
+            .orElseGet {
+                val productEntity = getProductEntity(id = productId)
+                this.setProductCache(productEntity)
+                productEntity
+            }
+
+    private fun validateProductStatus(product: Product) {
         if (product.isDeletedStatus()) {
             throw InvalidProductStatusException()
-        } else {
-            return this.makeProductResponseViewFromProduct(product)
         }
     }
+
+    private fun setProductCache(product: Product) =
+        redisUtils.set(prefix = CacheKey.PRODUCT, key = product.id.toString(), value = ProductRedisHashVO.of(product))
+
+    fun getProductVOFromCache(productId: String): Optional<ProductRedisHashVO> =
+        redisUtils.getHashValue(key = CacheKey.PRODUCT, hashKey = productId, classType = ProductRedisHashVO::class.java)
 
     /**
      * 상품 리스트 조회

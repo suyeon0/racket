@@ -99,7 +99,7 @@ class LoginControllerTest {
         val loginRequestCommand = LoginRequestCommand(email = savedUser.email, password = savedUser.password)
 
         // when
-        val sut = this.mockMvc.post("/api/auth/login") {
+        val sut = this.mockMvc.post("/api/v1/auth/login") {
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(loginRequestCommand)
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
@@ -120,7 +120,7 @@ class LoginControllerTest {
         val loginRequestCommand = LoginRequestCommand(email = savedUser.email, password = savedUser.password + "@@@")
 
         // when-then
-        val sut = this.mockMvc.post("/api/auth/login") {
+        val sut = this.mockMvc.post("/api/v1/auth/login") {
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(loginRequestCommand)
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
@@ -151,7 +151,7 @@ class LoginControllerTest {
 
         // when-then
         // home 으로 redirect
-        this.mockMvc.get("/view/auth/logout") {
+        this.mockMvc.get("/view/v1/auth/logout") {
             cookie(sessionCookie)
         }.andExpect {
             status { is3xxRedirection() }
@@ -166,7 +166,7 @@ class LoginControllerTest {
     fun `LoginFilter Test - 로그인 하지 않고 user-info view 에 접근시, loginForm 으로 redirect 되어야 한다`() {
         // given
         val mockReq = MockHttpServletRequest().apply {
-            requestURI = "/view/auth/user-info"
+            requestURI = "/view/v1/auth/user-info"
         }
         val mockRes = MockHttpServletResponse()
         val mockFilterChain = MockFilterChain()
@@ -191,7 +191,7 @@ class LoginControllerTest {
         // 로그인 성공
         val savedUser = this.saveTestUserAndReturnResponseView()
         val loginRequestCommand = LoginRequestCommand(email = savedUser.email, password = savedUser.password)
-        this.mockMvc.post("/api/auth/login") {
+        this.mockMvc.post("/api/v1/auth/login") {
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(loginRequestCommand)
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
@@ -199,7 +199,7 @@ class LoginControllerTest {
         }.andReturn()
 
         // when-then
-        this.mockMvc.get("/view/auth/user-info") {
+        this.mockMvc.get("/view/v1/auth/user-info") {
             loginCheckFilter.doFilter(mockReq, mockRes, mockFilterChain)
         }.andExpect {
             status { isOk() }

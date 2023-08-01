@@ -7,13 +7,13 @@ import org.springframework.stereotype.Component
 @Component
 class ProductAdditionOrChangeEventExecutor {
 
-//    @Bean("productAdditionOrChangeExecutor")
-//    fun productAdditionOrChangeExecutor() =
-//        ThreadPoolTaskExecutor().apply {
-//            this.corePoolSize = 1
-//            this.maxPoolSize = 4*2
-//            this.queueCapacity = 100
-//            this.threadNamePrefix = "productCRD_T-"
-//        }
+    @Bean("productAdditionOrChangeExecutor")
+    fun productAdditionOrChangeExecutor() =
+        ThreadPoolTaskExecutor().apply {
+            this.corePoolSize = 1
+            this.maxPoolSize = 4*2
+            this.queueCapacity = 100
+            this.setThreadNamePrefix("ProductCRD_T-")
+        }
 
 }
