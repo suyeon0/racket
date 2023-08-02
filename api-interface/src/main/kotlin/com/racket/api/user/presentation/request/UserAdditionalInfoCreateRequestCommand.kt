@@ -1,4 +1,4 @@
-package com.racket.api.user.request
+package com.racket.api.user.presentation.request
 
 import com.racket.api.shared.vo.AddressVO
 import io.swagger.v3.oas.annotations.media.Schema

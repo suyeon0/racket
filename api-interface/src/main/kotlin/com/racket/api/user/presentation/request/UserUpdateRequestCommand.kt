@@ -1,4 +1,4 @@
-package com.racket.api.user.request
+package com.racket.api.user.presentation.request
 
 data class UserUpdateRequestCommand(
     val userName: String,

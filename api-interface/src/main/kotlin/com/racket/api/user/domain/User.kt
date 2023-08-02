@@ -2,8 +2,8 @@ package com.racket.api.user.domain
 
 import com.racket.api.shared.vo.AddressVO
 import com.racket.api.shared.vo.MobileVO
-import com.racket.api.user.enums.UserRoleType
-import com.racket.api.user.enums.UserStatusType
+import com.racket.api.user.domain.enums.UserRoleType
+import com.racket.api.user.domain.enums.UserStatusType
 import javax.persistence.*
 
 @Entity

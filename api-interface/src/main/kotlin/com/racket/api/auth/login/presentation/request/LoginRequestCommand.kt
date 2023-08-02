@@ -1,4 +1,4 @@
-package com.racket.api.auth.login.request
+package com.racket.api.auth.login.presentation.request
 
 data class LoginRequestCommand(
     val email: String,

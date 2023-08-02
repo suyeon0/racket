@@ -1,10 +1,9 @@
-package com.racket.api.product
+package com.racket.api.product.presentation
 
-import com.racket.api.shared.annotation.LongTypeIdInputValidator
-import com.racket.api.product.option.OptionService
 import com.racket.api.product.option.reponse.OptionResponseView
-import com.racket.api.product.response.ProductResponseView
+import com.racket.api.product.presentation.response.ProductResponseView
 import com.racket.api.product.vo.ProductCursorResultVO
+import com.racket.api.shared.annotation.LongTypeIdInputValidator
 import com.racket.api.shared.annotation.SwaggerFailResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -13,22 +12,13 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
-import lombok.extern.slf4j.Slf4j
-import org.springframework.data.domain.PageRequest
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestParam
 
-@Slf4j
-@RestController
-@Tag(name = "상품 API")
-@RequestMapping("/api/v1/product")
-class ProductController(
-    val optionServiceImpl: OptionService,
-    val productService: GetProductService
-) {
-    companion object {
-        private const val CURSOR_SIZE = 10
-    }
+@Tag(name = "Product-API", description = "상품/옵션 API")
+interface ProductSpecification {
 
     @LongTypeIdInputValidator
     @GetMapping("/{productId}")
@@ -44,7 +34,7 @@ class ProductController(
             )
         ]
     )
-    fun getProduct(@PathVariable productId: Long) = ResponseEntity.ok(this.productService.getByProductId(productId))
+    fun getProduct(@PathVariable productId: Long): ResponseEntity<ProductResponseView>
 
     @LongTypeIdInputValidator
     @GetMapping("/options/{productId}")
@@ -61,7 +51,7 @@ class ProductController(
             )
         ]
     )
-    fun getOptions(@PathVariable productId: Long) = ResponseEntity.ok(this.optionServiceImpl.getListByProductId(productId))
+    fun getOptions(@PathVariable productId: Long): ResponseEntity<List<OptionResponseView>>
 
     @LongTypeIdInputValidator
     @GetMapping("/option/{optionId}")
@@ -81,7 +71,7 @@ class ProductController(
             ApiResponse(responseCode = "500", description = "Internal Server Error")
         ]
     )
-    fun getOption(@PathVariable optionId: Long) = ResponseEntity.ok(this.optionServiceImpl.getByOptionId(optionId))
+    fun getOption(@PathVariable optionId: Long): ResponseEntity<OptionResponseView>
 
     @GetMapping("/list")
     @SwaggerFailResponse
@@ -100,7 +90,5 @@ class ProductController(
             ApiResponse(responseCode = "500", description = "Internal Server Error")
         ]
     )
-    fun getProductList(@RequestParam cursorId: Long?) =
-        ResponseEntity.ok(this.productService.getList(cursorId = cursorId, page = PageRequest.of(0, CURSOR_SIZE)))
-
+    fun getProductList(@RequestParam cursorId: Long?): ResponseEntity<ProductCursorResultVO>
 }

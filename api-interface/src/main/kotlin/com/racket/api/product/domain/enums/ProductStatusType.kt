@@ -1,4 +1,4 @@
-package com.racket.api.product.enums
+package com.racket.api.product.domain.enums
 
 enum class ProductStatusType {
     INITIATED,

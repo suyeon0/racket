@@ -1,14 +1,15 @@
-package com.racket.api.user
+package com.racket.api.user.presentation
 
 import com.racket.api.shared.annotation.LongTypeIdInputValidator
 import com.racket.api.shared.annotation.SwaggerFailResponse
-import com.racket.api.user.enums.UserRoleType
-import com.racket.api.user.enums.UserStatusType
-import com.racket.api.user.request.UserAdditionalInfoCreateRequestCommand
-import com.racket.api.user.request.UserCreateRequestCommand
-import com.racket.api.user.request.UserUpdateRequestCommand
-import com.racket.api.user.response.UserAdditionalResponseView
-import com.racket.api.user.response.UserResponseView
+import com.racket.api.user.UserService
+import com.racket.api.user.domain.enums.UserRoleType
+import com.racket.api.user.domain.enums.UserStatusType
+import com.racket.api.user.presentation.request.UserAdditionalInfoCreateRequestCommand
+import com.racket.api.user.presentation.request.UserCreateRequestCommand
+import com.racket.api.user.presentation.request.UserUpdateRequestCommand
+import com.racket.api.user.presentation.response.UserAdditionalResponseView
+import com.racket.api.user.presentation.response.UserResponseView
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content

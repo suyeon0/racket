@@ -4,7 +4,7 @@ import com.racket.api.product.domain.Product
 import com.racket.api.product.domain.ProductRepository
 import com.racket.api.product.exception.InvalidProductStatusException
 import com.racket.api.product.exception.NotFoundProductException
-import com.racket.api.product.response.ProductResponseView
+import com.racket.api.product.presentation.response.ProductResponseView
 import com.racket.api.product.vo.ProductCursorResultVO
 import com.racket.api.product.vo.ProductRedisHashVO
 import com.racket.api.util.RedisUtils

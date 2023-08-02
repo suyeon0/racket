@@ -1,4 +1,4 @@
-package com.racket.api.user.request
+package com.racket.api.user.presentation.request
 
 import com.racket.api.shared.vo.MobileVO
 import com.racket.api.util.isMatchMobileNumberFormat

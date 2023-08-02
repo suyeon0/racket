@@ -1,7 +1,8 @@
-package com.racket.api.auth.login
+package com.racket.api.auth.login.presentation
 
-import com.racket.api.auth.login.request.LoginRequestCommand
-import com.racket.api.auth.login.response.LoginUserResponseView
+import com.racket.api.auth.login.LoginService
+import com.racket.api.auth.login.presentation.request.LoginRequestCommand
+import com.racket.api.auth.login.presentation.response.LoginUserResponseView
 import com.racket.api.auth.login.session.SessionRedisManager
 import io.swagger.v3.oas.annotations.Hidden
 import lombok.RequiredArgsConstructor

@@ -71,8 +71,6 @@ subprojects {
 		// cache
 		implementation("org.springframework.boot:spring-boot-starter-cache:3.1.2")
 
-		implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+")
-
 	}
 
 	dependencyManagement {

@@ -1,7 +1,7 @@
 package com.racket.api.product
 
-import com.racket.api.product.enums.ProductStatusType
-import com.racket.api.product.response.ProductResponseView
+import com.racket.api.product.domain.enums.ProductStatusType
+import com.racket.api.product.presentation.response.ProductResponseView
 
 interface UpdateProductService: ProductService {
 

@@ -1,4 +1,4 @@
-package com.racket.api.user.response
+package com.racket.api.user.presentation.response
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.racket.api.shared.vo.AddressVO

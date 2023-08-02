@@ -1,7 +1,7 @@
 package com.racket.api.product.vo
 
 import com.racket.api.product.domain.Product
-import com.racket.api.product.enums.ProductStatusType
+import com.racket.api.product.domain.enums.ProductStatusType
 
 data class ProductRedisHashVO (
 

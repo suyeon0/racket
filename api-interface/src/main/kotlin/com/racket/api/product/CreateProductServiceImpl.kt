@@ -3,7 +3,7 @@ package com.racket.api.product
 import com.racket.api.admin.product.exception.DuplicateProductException
 import com.racket.api.product.domain.Product
 import com.racket.api.product.domain.ProductRepository
-import com.racket.api.product.response.ProductResponseView
+import com.racket.api.product.presentation.response.ProductResponseView
 import com.racket.api.product.vo.ProductRedisHashVO
 import mu.KotlinLogging
 import org.springframework.context.ApplicationEventPublisher

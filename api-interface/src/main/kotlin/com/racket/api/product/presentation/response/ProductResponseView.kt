@@ -1,6 +1,6 @@
-package com.racket.api.product.response
+package com.racket.api.product.presentation.response
 
-import com.racket.api.product.enums.ProductStatusType
+import com.racket.api.product.domain.enums.ProductStatusType
 import io.swagger.v3.oas.annotations.media.Schema
 
 data class ProductResponseView(

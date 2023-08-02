@@ -1,4 +1,4 @@
-package com.racket.api.auth.login.response
+package com.racket.api.auth.login.presentation.response
 
 import com.racket.api.auth.login.session.vo.SessionVO
 

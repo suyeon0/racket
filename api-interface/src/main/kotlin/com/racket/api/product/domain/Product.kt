@@ -1,6 +1,6 @@
 package com.racket.api.product.domain
 
-import com.racket.api.product.enums.ProductStatusType
+import com.racket.api.product.domain.enums.ProductStatusType
 import javax.persistence.*
 
 @Entity
