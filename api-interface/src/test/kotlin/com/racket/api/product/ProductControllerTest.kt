@@ -10,7 +10,7 @@ import com.racket.api.product.domain.ProductRepository
 import com.racket.api.product.exception.NotFoundOptionException
 import com.racket.api.product.exception.NotFoundProductException
 import com.racket.api.product.option.reponse.OptionResponseView
-import com.racket.api.product.response.ProductResponseView
+import com.racket.api.product.presentation.response.ProductResponseView
 import com.racket.api.product.vo.ProductCursorResultVO
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -44,7 +44,7 @@ class ProductControllerTest {
     private val cursorSize = 10
 
     private fun saveProduct(): Product {
-        val savedProduct = Product(price = 10000, name = "TestProduct")
+        val savedProduct = Product(price = 10000, name = "TestProduct", customerProductCode = "customerProductCode")
         return this.productRepository.save(savedProduct)
     }
 
@@ -164,7 +164,7 @@ class ProductControllerTest {
     fun `Product Test - 상품 정보 리스트 조회시 페이징 처리되어 조회한다 최초 조회시(cursorId가 null) cursorSize 만큼 조회되어야 한다`() {
         // given
         for (i in 1..25) {
-            this.productRepository.save(Product(price = 10000, name = "TestProduct"))
+            this.productRepository.save(Product(price = 10000, name = "TestProduct", customerProductCode = i.toString()))
         }
 
         // when
@@ -208,7 +208,7 @@ class ProductControllerTest {
     fun `Product Test - 상품 리스트 조회시 cursorId 를 지정한 경우 결과 리스트 첫번째 인덱스의 상품 ID 는 cursorId - 1 값과 동일해야 한다`() {
         // given
         for (i in 1..30) {
-            productRepository.save(Product(price = 10000, name = "TestProduct"))
+            productRepository.save(Product(price = 10000, name = "TestProduct", customerProductCode = i.toString()))
         }
 
         // when

@@ -1,6 +1,6 @@
 package com.racket.api.auth.login
 
-import com.racket.api.auth.login.response.LoginUserResponseView
+import com.racket.api.auth.login.presentation.response.LoginUserResponseView
 import com.racket.api.user.UserService
 import com.racket.api.auth.login.exception.LoginFailException
 import com.racket.api.auth.login.session.vo.SessionVO

@@ -4,15 +4,15 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.racket.api.shared.vo.AddressVO
 import com.racket.api.shared.vo.MobileVO
-import com.racket.api.user.enums.UserRoleType
-import com.racket.api.user.enums.UserStatusType
+import com.racket.api.user.domain.enums.UserRoleType
+import com.racket.api.user.domain.enums.UserStatusType
 import com.racket.api.user.exception.DuplicateUserException
 import com.racket.api.user.exception.InvalidUserStatusException
-import com.racket.api.user.request.UserAdditionalInfoCreateRequestCommand
-import com.racket.api.user.request.UserCreateRequestCommand
-import com.racket.api.user.request.UserUpdateRequestCommand
-import com.racket.api.user.response.UserAdditionalResponseView
-import com.racket.api.user.response.UserResponseView
+import com.racket.api.user.presentation.request.UserAdditionalInfoCreateRequestCommand
+import com.racket.api.user.presentation.request.UserCreateRequestCommand
+import com.racket.api.user.presentation.request.UserUpdateRequestCommand
+import com.racket.api.user.presentation.response.UserAdditionalResponseView
+import com.racket.api.user.presentation.response.UserResponseView
 import com.racket.api.user.vo.UserSignedUpEventVO
 import org.junit.jupiter.api.*
 import org.junit.jupiter.params.ParameterizedTest
@@ -32,10 +32,11 @@ import org.springframework.transaction.annotation.Transactional
 
 
 @Transactional
-@SpringBootTest
+//@SpringBootTest
 @AutoConfigureMockMvc
 @RecordApplicationEvents
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UserControllerTest {
 
     val objectMapper = jacksonObjectMapper()
@@ -99,7 +100,7 @@ class UserControllerTest {
         )
 
         // when-then
-        val sut = this.mockMvc.post("/api/v1/user") {
+        this.mockMvc.post("/api/v1/user") {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(invalidUserCreateRequestCommand)
         }.andExpect {
@@ -319,7 +320,7 @@ class UserControllerTest {
         )
 
         // when - then
-        val sut = this.mockMvc.post("/api/v1/user", invalidUserCreateRequestCommand) {
+        this.mockMvc.post("/api/v1/user", invalidUserCreateRequestCommand) {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(invalidUserCreateRequestCommand)
         }.andExpect {

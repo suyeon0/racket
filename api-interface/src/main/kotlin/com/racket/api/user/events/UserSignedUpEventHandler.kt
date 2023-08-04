@@ -18,10 +18,7 @@ class UserSignedUpEventHandler(
 ) {
 
     @Async("userSignedUpSendExecutor")
-    @TransactionalEventListener(
-        classes = [UserSignedUpEventVO::class],
-        phase = TransactionPhase.AFTER_COMMIT
-    )
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun handle(userSignedUpEventVO: UserSignedUpEventVO) {
         val userId = userSignedUpEventVO.userId
         val userName = userSignedUpEventVO.userName

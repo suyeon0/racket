@@ -3,11 +3,11 @@ package com.racket.api.user
 import com.racket.api.shared.vo.AddressVO
 import com.racket.api.shared.vo.MobileVO
 import com.racket.api.user.domain.User
-import com.racket.api.user.enums.UserRoleType
-import com.racket.api.user.enums.UserStatusType
-import com.racket.api.user.request.UserUpdateRequestCommand
-import com.racket.api.user.response.UserAdditionalResponseView
-import com.racket.api.user.response.UserResponseView
+import com.racket.api.user.domain.enums.UserRoleType
+import com.racket.api.user.domain.enums.UserStatusType
+import com.racket.api.user.presentation.request.UserUpdateRequestCommand
+import com.racket.api.user.presentation.response.UserAdditionalResponseView
+import com.racket.api.user.presentation.response.UserResponseView
 import java.util.*
 
 interface UserService {

@@ -1,6 +1,6 @@
 package com.racket.api.product.domain
 
-import com.racket.api.product.enums.ProductStatusType
+import com.racket.api.product.domain.enums.ProductStatusType
 import javax.persistence.*
 
 @Entity
@@ -12,9 +12,11 @@ class Product(
     @Column(name = "product_id")
     var id: Long? = null,
 
-    val name: String,
+    val customerProductCode: String,
 
-    val price: Long,
+    var name: String,
+
+    var price: Long,
 
     @Enumerated(EnumType.STRING)
     var status: ProductStatusType = ProductStatusType.ACTIVE
@@ -25,6 +27,12 @@ class Product(
 
     fun updateStatus(status: ProductStatusType): Product {
         this.status = status
+        return this
+    }
+
+    fun updateProductInfo(name: String, price: Long): Product {
+        this.name = name
+        this.price = price
         return this
     }
 }
