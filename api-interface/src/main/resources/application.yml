@@ -15,6 +15,14 @@ spring:
       password: racket
       driver-class-name: com.mysql.cj.jdbc.Driver
 
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      username: root
+      password: 1234
+      connectionString: mongodb://root:1234@localhost:27017
+
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     properties:

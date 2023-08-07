@@ -71,6 +71,9 @@ subprojects {
 		// cache
 		implementation("org.springframework.boot:spring-boot-starter-cache:3.1.2")
 
+		// mongodb
+		implementation ("org.springframework.boot:spring-boot-starter-data-mongodb")
+
 	}
 
 	dependencyManagement {
