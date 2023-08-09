@@ -1,0 +1,41 @@
+server:
+  port: 28080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    properties:
+      hibernate:
+        format_sql: true
+        implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        hbm2ddl.auto: update
+    open-in-view: false
+    show-sql: true
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: racket
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      retry:
+        back-off-period: 0
+        max-attempts: 3
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
+
+client:
+  serviceUrl:
+    cash:  localhost:18080/api/v1/racket-cash
+    payment:  http://localhost:18081/api/v1/payment
