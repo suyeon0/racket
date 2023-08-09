@@ -17,6 +17,10 @@ allprojects {
 	}
 }
 
+ext {
+	set("springCloudVersion", "2021.0.8")
+}
+
 subprojects {
 	apply(plugin = "kotlin")
 	apply(plugin = "kotlin-spring")
@@ -74,11 +78,15 @@ subprojects {
 		// mongodb
 		implementation ("org.springframework.boot:spring-boot-starter-data-mongodb")
 
+		// feign
+		implementation ("org.springframework.cloud:spring-cloud-starter-openfeign")
+
 	}
 
 	dependencyManagement {
 		imports {
 			mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+			mavenBom("org.springframework.cloud:spring-cloud-dependencies:2021.0.8")
 		}
 
 		dependencies {
@@ -102,4 +110,8 @@ subprojects {
 			extendsFrom(configurations.annotationProcessor.get())
 		}
 	}
+}
+
+project(":module-stream") {
+	dependencies { }
 }
