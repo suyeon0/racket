@@ -1,4 +1,4 @@
-package com.racket.service
+package com.racket.cash.infrastructure.kafka.produce
 
 import mu.KotlinLogging
 import org.springframework.kafka.core.KafkaTemplate
@@ -10,7 +10,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback
 @Service
 class ProduceServiceImpl(
     val kafkaTemplate: KafkaTemplate<String, String>
-): ProduceService {
+) : ProduceService {
 
     private val log = KotlinLogging.logger { }
 
@@ -23,10 +23,11 @@ class ProduceServiceImpl(
             }
 
             override fun onSuccess(result: SendResult<String, String>?) {
-                log.info { "SUCCESS Result-${result}" }
+                log.info {
+                    "Produce Send Result : SUCCESS! " +
+                            " Message :: ${result}"
+                }
             }
         })
-
-        log.info("Produce Message - END {}", message)
     }
 }

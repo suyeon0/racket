@@ -16,6 +16,7 @@ dependencies {
     api ("com.mysql:mysql-connector-j")
     api("org.javassist:javassist:3.29.2-GA")
     api ("org.springframework.boot:spring-boot-starter-data-mongodb")
+    implementation("org.springframework.kafka:spring-kafka")
 
     api ("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation(project(mapOf("path" to ":api-interface:cash-process:cash-domain")))

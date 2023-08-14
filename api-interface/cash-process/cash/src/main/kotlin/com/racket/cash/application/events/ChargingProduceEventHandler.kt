@@ -1,8 +1,7 @@
 package com.racket.cash.application.events
 
-import com.racket.api.shared.request.MessageRequest
 import com.racket.cash.exception.CashProducerException
-import com.racket.cash.infrastructure.client.ProducerApiClient
+import com.racket.cash.infrastructure.kafka.produce.ProduceService
 import mu.KotlinLogging
 import org.bson.types.ObjectId
 import org.springframework.scheduling.annotation.Async
@@ -23,7 +22,7 @@ class ChargingProduceEventHandler(
         try {
             this.chargingProduceEvent.callProduce(chargingProduceEventVO.eventId)
         } catch (e: Exception) {
-            throw CashProducerException(chargingProduceEventVO)
+            throw CashProducerException(chargingProduceEventVO, e)
         }
     }
 
@@ -31,17 +30,15 @@ class ChargingProduceEventHandler(
 
 @Component
 class ChargingProduceEvent(
-    private val producerApiClient: ProducerApiClient
+    private val produceService: ProduceService
 ) {
 
     private val log = KotlinLogging.logger { }
 
     fun callProduce(chargingEventId: ObjectId) {
-        this.producerApiClient.sendMessage(
-            MessageRequest(
-                topic = "charging",
-                message = chargingEventId.toString()
-            )
+        this.produceService.send(
+            topic = "charging",
+            message = chargingEventId.toString()
         )
         log.info { "call Produce done! -${chargingEventId}" }
     }

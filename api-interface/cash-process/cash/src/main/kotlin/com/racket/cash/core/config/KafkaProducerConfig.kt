@@ -1,4 +1,4 @@
-package com.racket.config
+package com.racket.cash.core.config
 
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.springframework.beans.factory.annotation.Value

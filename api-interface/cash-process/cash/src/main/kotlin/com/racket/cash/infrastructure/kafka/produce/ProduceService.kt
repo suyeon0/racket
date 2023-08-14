@@ -1,4 +1,4 @@
-package com.racket.service
+package com.racket.cash.infrastructure.kafka.produce
 
 interface ProduceService {
 
