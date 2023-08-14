@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.servlet.http.HttpServletRequest
 
 @Order(1)
-@RestControllerAdvice(basePackages = ["com.racket.api.cash"])
+@RestControllerAdvice(basePackages = ["com.racket.cash"])
 class CashApiExceptionHandlerAdvice : ResponseEntityExceptionHandler() {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

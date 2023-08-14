@@ -3,16 +3,16 @@ package com.racket.cash.application
 import com.racket.cash.application.events.ChargingProduceEventVO
 import com.racket.cash.entity.CashBalance
 import com.racket.cash.entity.CashTransaction
-import com.racket.cash.entity.UserChargingWayInfo
 import com.racket.cash.enums.CashEventType
+import com.racket.cash.enums.CashTransactionStatusType
 import com.racket.cash.exception.CashTransactionInsertException
-import com.racket.cash.exception.NotExistSavedChargeWayException
 import com.racket.cash.presentation.response.CashBalanceResponseView
 import com.racket.cash.presentation.response.CashTransactionResponseView
 import com.racket.cash.presentation.response.ChargeResponseView
+import com.racket.cash.presentation.response.WithdrawAccountResponseView
+import com.racket.cash.repository.AccountPaymentRepository
 import com.racket.cash.repository.CashBalanceRepository
 import com.racket.cash.repository.CashTransactionRepository
-import com.racket.cash.repository.UserChargingWayInfoRepository
 import mu.KotlinLogging
 import org.bson.types.ObjectId
 import org.springframework.context.ApplicationEventPublisher
@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional
 class CashServiceImpl(
     val cashTransactionRepository: CashTransactionRepository,
     val cashBalanceRepository: CashBalanceRepository,
-    val cashUserChargingWayInfoRepository: UserChargingWayInfoRepository,
+    val accountPaymentRepository: AccountPaymentRepository,
     val eventPublisher: ApplicationEventPublisher
 
 ) : CashService {
@@ -52,15 +52,13 @@ class CashServiceImpl(
 
     private fun createCashTransactionEntity(chargeDTO: CashService.ChargeDTO) =
         CashTransaction(
+            transactionId = ObjectId(),
             userId = chargeDTO.userId,
             amount = chargeDTO.amount,
-            chargingWayId = chargeDTO.chargingWayId,
-            eventType = CashEventType.CHARGING
+            eventType = CashEventType.CHARGING,
+            accountNo = chargeDTO.accountId,
+            status = CashTransactionStatusType.ING
         )
-
-    private fun validateToCharge() {
-
-    }
 
     override fun getBalanceByUserId(userId: Long): CashBalanceResponseView {
         val cashBalance = this.cashBalanceRepository.findById(userId).orElseGet { CashBalance(userId = userId, balance = 0) }
@@ -70,17 +68,27 @@ class CashServiceImpl(
         )
     }
 
-    override fun getChargingWayById(userId: Long): UserChargingWayInfo =
-        this.cashUserChargingWayInfoRepository.findById(userId).orElseThrow { NotExistSavedChargeWayException() }
+    // 사용자가 저장한 계좌 리스트 중 결제 가능한 목록만 출력
+    override fun getWithdrawAccountListByUserId(userId: Long): List<WithdrawAccountResponseView> {
+        val result = this.accountPaymentRepository.findAllByUserIdOrderById(userId = userId).get()
+        return result.stream()
+            .filter { account -> account.isPayable }
+            .map { account ->
+            WithdrawAccountResponseView(
+                id = account.id,
+                bankCode = account.bankCode,
+                accountNumber = account.accountNumber,
+                isPayable = account.isPayable
+            )
+        }.toList()
+    }
 
     override fun getTransactionById(transactionId: ObjectId): CashTransactionResponseView {
         val transaction = this.cashTransactionRepository.findById(transactionId).get()
-        val userChargingWayInfo = this.cashUserChargingWayInfoRepository.findById(transaction.chargingWayId).get()
         return CashTransactionResponseView(
             id = transaction.id.toString(),
             userId = transaction.userId,
             amount = transaction.amount,
-            userChargingWayInfo = userChargingWayInfo,
             createdAt = transaction.id!!.date
         )
     }
@@ -101,5 +109,7 @@ class CashServiceImpl(
             )
         }
     }
+
+    override fun getChargeUnitSet(): Set<Long> = setOf(50_000, 100_000, 150_000)
 
 }

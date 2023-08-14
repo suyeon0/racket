@@ -1,8 +1,10 @@
 package com.racket.cash.entity
 
 import com.racket.cash.enums.CashEventType
+import com.racket.cash.enums.CashTransactionStatusType
 import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.mapping.Document
+import java.math.BigDecimal
 import java.util.*
 import javax.persistence.*
 
@@ -14,7 +16,7 @@ class CashTransaction(
     var id: ObjectId? = null,
 
     @Column(name = "transaction_id", nullable = false)
-    var transactionId: String? = null,
+    var transactionId: ObjectId,
 
     @Column(name = "user_id", nullable = false)
     val userId: Long,
@@ -25,7 +27,10 @@ class CashTransaction(
     @Column(name = "event_type", nullable = false)
     val eventType: CashEventType,
 
-    @Column(name = "charging_way", nullable = false)
-    val chargingWayId: Long
+    @Column(name = "account_no", nullable = false)
+    val accountNo: Long,
+
+    @Column(name = "status")
+    val status: CashTransactionStatusType
 
 )

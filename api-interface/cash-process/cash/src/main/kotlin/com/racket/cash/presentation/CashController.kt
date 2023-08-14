@@ -8,6 +8,7 @@ import com.racket.cash.presentation.request.UpdateBalanceCommand
 import com.racket.cash.presentation.response.CashBalanceResponseView
 import com.racket.cash.presentation.response.CashTransactionResponseView
 import com.racket.cash.presentation.response.ChargeResponseView
+import com.racket.cash.presentation.response.WithdrawAccountResponseView
 import org.bson.types.ObjectId
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -23,6 +24,10 @@ class CashController(
     private val cashService: CashService,
     private val cashUserService: CashUserService
 ) : CashSpecification {
+    override fun getWithdrawAccountList(userId: Long): ResponseEntity<List<WithdrawAccountResponseView>> =
+        ResponseEntity.ok()
+            .body(this.cashService.getWithdrawAccountListByUserId(userId = userId))
+
     override fun postToCharge(chargeCommand: CreateChargeCommand): ResponseEntity<ChargeResponseView> {
         this.validateToCharge(chargeCommand)
 
@@ -32,14 +37,21 @@ class CashController(
                     CashService.ChargeDTO(
                         userId = chargeCommand.userId,
                         amount = chargeCommand.amount,
-                        chargingWayId = chargeCommand.userChargingWayId
+                        accountId = chargeCommand.accountId
                     )
                 )
             )
     }
 
     private fun validateToCharge(chargeCommand: CreateChargeCommand) {
-        chargeCommand.validate()
+        // 1. userId 유효 여부 확인
+        this.cashUserService.validateUserId(userId = chargeCommand.userId)
+
+        // 2. Amount - 충전 단위
+        val validChargeUnitSet = this.cashService.getChargeUnitSet()
+        chargeCommand.validate(validChargeUnitSet)
+
+        // 3. 계좌정보 유효 여부 확인
         this.cashUserService.validateUserId(chargeCommand.userId)
     }
 

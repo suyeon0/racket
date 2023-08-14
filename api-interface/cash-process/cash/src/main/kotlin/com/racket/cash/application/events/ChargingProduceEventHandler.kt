@@ -1,6 +1,7 @@
 package com.racket.cash.application.events
 
 import com.racket.api.shared.request.MessageRequest
+import com.racket.cash.exception.CashProducerException
 import com.racket.cash.infrastructure.client.ProducerApiClient
 import mu.KotlinLogging
 import org.bson.types.ObjectId
@@ -14,10 +15,16 @@ class ChargingProduceEventHandler(
     private val chargingProduceEvent: ChargingProduceEvent
 ) {
 
+    private val log = KotlinLogging.logger { }
+
     @Async("chargingEventExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun handle(chargingProduceEventVO: ChargingProduceEventVO) {
-        this.chargingProduceEvent.callProduce(chargingProduceEventVO.eventId)
+        try {
+            this.chargingProduceEvent.callProduce(chargingProduceEventVO.eventId)
+        } catch (e: Exception) {
+            throw CashProducerException(chargingProduceEventVO)
+        }
     }
 
 }

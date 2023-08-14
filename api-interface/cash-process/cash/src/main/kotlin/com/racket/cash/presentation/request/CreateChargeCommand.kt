@@ -3,11 +3,12 @@ package com.racket.cash.presentation.request
 data class CreateChargeCommand(
     val userId: Long,
     val amount: Long,
-    val userChargingWayId: Long
+    val accountId: Long
 ) {
-    fun validate() {
-        if (this.amount < 100_000) {
-            throw IllegalArgumentException("Charge amount must be greater than 100,000")
+    fun validate(validChargeUnitSet: Set<Long>) {
+        // 충전 단위 체크
+        if(!validChargeUnitSet.contains(this.amount)) {
+            throw IllegalArgumentException("Invalid Charge Unit!")
         }
     }
 }
