@@ -1,9 +1,6 @@
 rootProject.name = "racket"
 
 include("api-interface")
-include("module-stream")
-include("module-stream:kafka-producer")
-findProject(":module-stream:kafka-producer")?.name = "kafka-producer"
 include("api-interface:cash-process")
 findProject(":api-interface:cash-process")?.name = "cash-process"
 include("api-interface:cash-process:cash")

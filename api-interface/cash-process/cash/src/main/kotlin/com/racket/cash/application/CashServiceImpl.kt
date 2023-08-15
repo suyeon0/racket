@@ -29,6 +29,9 @@ class CashServiceImpl(
 ) : CashService {
 
     private val log = KotlinLogging.logger { }
+    companion object {
+        val tempChargeUnitSet: Set<Long> = setOf(50_000, 100_000, 150_000)
+    }
 
     @Transactional
     override fun charge(chargeDTO: CashService.ChargeDTO): ChargeResponseView {
@@ -57,7 +60,7 @@ class CashServiceImpl(
             amount = chargeDTO.amount,
             eventType = CashEventType.CHARGING,
             accountNo = chargeDTO.accountId,
-            status = CashTransactionStatusType.ING
+            status = CashTransactionStatusType.REQUEST
         )
 
     override fun getBalanceByUserId(userId: Long): CashBalanceResponseView {
@@ -114,6 +117,5 @@ class CashServiceImpl(
         }
     }
 
-    override fun getChargeUnitSet(): Set<Long> = setOf(50_000, 100_000, 150_000)
-
+    override fun getChargeUnitSet(): Set<Long> = tempChargeUnitSet
 }

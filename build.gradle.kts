@@ -111,7 +111,3 @@ subprojects {
 		}
 	}
 }
-
-project(":module-stream") {
-	dependencies { }
-}

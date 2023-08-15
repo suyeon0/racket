@@ -37,7 +37,7 @@ class ChargingProduceEvent(
 
     fun callProduce(chargingEventId: ObjectId) {
         this.produceService.send(
-            topic = "charging",
+            topic = "CHARGING",
             message = chargingEventId.toString()
         )
         log.info { "call Produce done! -${chargingEventId}" }

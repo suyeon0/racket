@@ -37,6 +37,6 @@ class CashTransaction(
 
     // 충전이 불가능한 트랜잭션 조건
     fun isImpossibleTransactionToCharge() =
-        this.status == CashTransactionStatusType.DONE || this.eventType != CashEventType.CHARGING
+        this.status == CashTransactionStatusType.COMPLETED || this.eventType != CashEventType.CHARGING
 
 }
