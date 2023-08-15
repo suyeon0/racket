@@ -55,7 +55,6 @@ class CashController(
         this.cashUserService.validateUserId(chargeCommand.userId)
     }
 
-    @LongTypeIdInputValidator
     override fun getBalanceByUserId(userId: Long) = ResponseEntity.ok().body(this.cashService.getBalanceByUserId(userId))
 
     override fun getTransaction(@PathVariable transactionId: String): ResponseEntity<CashTransactionResponseView> {
@@ -63,7 +62,6 @@ class CashController(
     }
 
     override fun postToUpdateBalance(@RequestBody updateBalanceCommand: UpdateBalanceCommand): ResponseEntity<CashBalanceResponseView> {
-        updateBalanceCommand.validate()
         return ResponseEntity.ok().body(
             this.cashService.updateBalance(
                 userId = updateBalanceCommand.userId,

@@ -24,10 +24,11 @@ spring:
     consumer:
       group-id: racket
       auto-offset-reset: earliest
+      enable-auto-commit: false
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       retry:
-        back-off-period: 0
+        back-off-period: 1000
         max-attempts: 3
 
 logging:

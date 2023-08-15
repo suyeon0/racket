@@ -18,6 +18,8 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-validation")
 
     api ("org.springframework.cloud:spring-cloud-starter-openfeign")
+    api("org.springframework.retry:spring-retry")
+    api("org.springframework:spring-aspects")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")

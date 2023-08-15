@@ -20,7 +20,7 @@ interface CashSpecification {
     fun postToCharge(@RequestBody chargeCommand: CreateChargeCommand): ResponseEntity<ChargeResponseView>
 
     @GetMapping("/balance/{userId}")
-    fun getBalanceByUserId(userId: Long): ResponseEntity<CashBalanceResponseView>
+    fun getBalanceByUserId(@PathVariable userId: Long): ResponseEntity<CashBalanceResponseView>
 
     @GetMapping("/transaction/{transactionId}")
     fun getTransaction(@PathVariable transactionId: String): ResponseEntity<CashTransactionResponseView>

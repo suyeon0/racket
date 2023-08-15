@@ -89,7 +89,11 @@ class CashServiceImpl(
             id = transaction.id.toString(),
             userId = transaction.userId,
             amount = transaction.amount,
-            createdAt = transaction.id!!.date
+            createdAt = transaction.id!!.date,
+            transactionId = transaction.transactionId.toString(),
+            accountNo = transaction.accountNo,
+            status = transaction.status,
+            eventType = transaction.eventType
         )
     }
 

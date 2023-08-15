@@ -33,4 +33,10 @@ class CashTransaction(
     @Column(name = "status")
     val status: CashTransactionStatusType
 
-)
+) {
+
+    // 충전이 불가능한 트랜잭션 조건
+    fun isImpossibleTransactionToCharge() =
+        this.status == CashTransactionStatusType.DONE || this.eventType != CashEventType.CHARGING
+
+}
