@@ -9,8 +9,15 @@ import com.racket.cash.exception.UpdateDataAsChargingCompletedException
 import com.racket.cash.presentation.request.CompleteCashChargeCommand
 import com.racket.cash.presentation.response.CashTransactionResponseView
 import mu.KotlinLogging
+import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.springframework.kafka.annotation.DltHandler
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.annotation.RetryableTopic
+import org.springframework.kafka.retrytopic.DltStrategy
+import org.springframework.kafka.support.Acknowledgment
+import org.springframework.kafka.support.KafkaHeaders
+import org.springframework.messaging.handler.annotation.Payload
+import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.stereotype.Service
 
 @Service
@@ -24,10 +31,11 @@ class CashConsumerServiceImpl(
     private val log = KotlinLogging.logger { }
 
     @KafkaListener(
-        topics = ["CHARGING"], groupId = "CHARGING"
+        topics = ["CHARGING"],
+        groupId = "CHARGING"
     )
     @RetryableTopic(
-        autoCreateTopics = "false",
+        autoCreateTopics = "true",
         include = [RetryPaymentCallRequiredException::class])
     override fun consumeChargingProcess(message: String) {
         log.info { "=============================== Charging Process Consume Start! =============================== " }
@@ -49,12 +57,13 @@ class CashConsumerServiceImpl(
         try {
             val balance = this.callCashApiToSaveData(chargeRequestTransactionData).body!!.balance
             log.info { "=========== 충전 완료 DB 반영 성공 -> 잔액: ${balance} 원" }
-        } catch (e: Exception) {
+        } catch (e: UpdateDataAsChargingCompletedException) {
             log.info { "=========== 충전 완료 DB 반영 실패" }
-            throw UpdateDataAsChargingCompletedException()
         }
         log.info { "=============================== Charging Process Consume Done! ===============================" }
     }
+
+
 
     // 결제 API 호출 하기 전 validation
     private fun validateTransactionData(cashTransactionData: CashTransactionResponseView) {
@@ -69,6 +78,7 @@ class CashConsumerServiceImpl(
     private fun payProcess(accountId: Long, amount:Long){
         log.info { "=========== 충전 결제 모듈 연동 시작" }
         this.paymentCallService.call(accountId = accountId, amount = amount)
+        log.info { "=========== 충전 결제 모듈 연동 완료" }
     }
 
     // 충전 결과 DB 반영을 위한 Cash Api 호출

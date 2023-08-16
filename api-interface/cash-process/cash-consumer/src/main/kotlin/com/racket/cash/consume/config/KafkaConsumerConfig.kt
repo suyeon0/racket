@@ -1,15 +1,23 @@
 package com.racket.cash.consume.config
 
-import com.racket.api.payment.presentation.RetryPaymentCallRequiredException
+import mu.KotlinLogging
 import org.apache.kafka.clients.consumer.ConsumerConfig
+import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.kafka.annotation.DltHandler
 import org.springframework.kafka.annotation.EnableKafka
-import org.springframework.kafka.listener.DefaultErrorHandler
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
+import org.springframework.kafka.core.ConsumerFactory
+import org.springframework.kafka.core.DefaultKafkaConsumerFactory
+import org.springframework.kafka.core.KafkaTemplate
+import org.springframework.kafka.retrytopic.RetryTopicConfiguration
+import org.springframework.kafka.retrytopic.RetryTopicConfigurationBuilder
+import org.springframework.kafka.support.KafkaHeaders
+import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.retry.annotation.EnableRetry
-import org.springframework.util.backoff.BackOff
-import org.springframework.util.backoff.FixedBackOff
+
 
 @EnableKafka
 @EnableRetry
@@ -37,22 +45,36 @@ class KafkaConsumerConfig {
     @Value("\${spring.kafka.consumer.auto-offset-reset}")
     private val autoOffSet: String? = null
 
+    private val log = KotlinLogging.logger { }
+
     @Bean
-    fun consumerConfigs(): Map<String, Any> {
-        val props: MutableMap<String, Any> = HashMap()
-        props[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers!!
-        props[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = keyDeserializer as Any
-        props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = valueDeserializer as Any
-        props[ConsumerConfig.GROUP_ID_CONFIG] = groupId!!
-        props[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = autoOffSet!!
-        return props
+    fun consumerFactory(): ConsumerFactory<String, String> {
+        val config: MutableMap<String, Any> = HashMap()
+        config[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers!!
+        config[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = keyDeserializer as Any
+        config[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = valueDeserializer as Any
+        config[ConsumerConfig.GROUP_ID_CONFIG] = groupId!!
+        config[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = autoOffSet!!
+        return DefaultKafkaConsumerFactory(config)
     }
 
     @Bean
-    fun errorHandler(): DefaultErrorHandler {
-        val fixedBackOff: BackOff = FixedBackOff(interval!!, maxAttempts!!)
-        val errorHandler = DefaultErrorHandler(fixedBackOff)
-        errorHandler.addRetryableExceptions(RetryPaymentCallRequiredException::class.java)
-        return errorHandler
+    fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, String> {
+        val factory = ConcurrentKafkaListenerContainerFactory<String, String>()
+        factory.consumerFactory = consumerFactory()
+        return factory
     }
+
+//    @DltHandler
+//    fun consumeChargingProcess(
+//        record: ConsumerRecord<String, String>,
+//        @Payload(KafkaHeaders.RECEIVED_TOPIC) topic: String,
+//        @Payload(KafkaHeaders.RECEIVED_PARTITION_ID) partitionId: Int,
+//        @Payload(KafkaHeaders.OFFSET) offset: Byte,
+//        @Payload(KafkaHeaders.EXCEPTION_MESSAGE) errorMessage: String
+//    ) {
+//        log.error("received message='${record.value()}' with partitionId='$partitionId', offset='$offset', topic='$topic'")
+//    }
+
+
 }

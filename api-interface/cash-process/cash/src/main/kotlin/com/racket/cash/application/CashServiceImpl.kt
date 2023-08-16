@@ -6,6 +6,7 @@ import com.racket.cash.entity.CashTransaction
 import com.racket.cash.enums.CashEventType
 import com.racket.cash.enums.CashTransactionStatusType
 import com.racket.cash.exception.CashTransactionInsertException
+import com.racket.cash.exception.UpdateDataAsChargingCompletedException
 import com.racket.cash.presentation.response.CashBalanceResponseView
 import com.racket.cash.presentation.response.CashTransactionResponseView
 import com.racket.cash.presentation.response.ChargeResponseView
@@ -18,6 +19,7 @@ import org.bson.types.ObjectId
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.lang.RuntimeException
 
 @Service
 class CashServiceImpl(
@@ -102,16 +104,25 @@ class CashServiceImpl(
 
     @Transactional
     override fun completeCharge(chargeDTO: CashService.ChargeDTO): CashBalanceResponseView {
-        log.info { "(1) 충전 합계 테이블 반영" }
-        val updateBalanceResult = this.updateBalance(userId = chargeDTO.userId, amount = chargeDTO.amount)
+        try {
+            log.info { "(1) 충전 합계 테이블 반영" }
+            val updateBalanceResult = updateBalance(userId = chargeDTO.userId, amount = chargeDTO.amount)
 
-        log.info { "(2) 충전 트랜잭션 완료 로그 DB Insert"}
-        val savedData = this.cashTransactionRepository.save(this.createCashTransactionEntity(chargeDTO))
-        log.info { "=========== 트랜잭션 완료 ID-${savedData.id}" }
-
-        return updateBalanceResult
+            log.info { "(2) 충전 트랜잭션 완료 로그 DB Insert" }
+            this.saveChargingCompletedTransaction(chargeDTO)
+            throw RuntimeException("test!!!!!!")
+            return updateBalanceResult
+        } catch (e: Exception) {
+            throw UpdateDataAsChargingCompletedException()
+        }
     }
 
+    // 트랜잭션 완료 로그 저장
+    private fun saveChargingCompletedTransaction(chargeDTO: CashService.ChargeDTO): CashTransaction {
+        val savedData = this.cashTransactionRepository.save(this.createCashTransactionEntity(chargeDTO))
+        log.info { "=========== 트랜잭션 완료 ID-${savedData.id}" }
+        return savedData
+    }
 
     // 캐시 잔액 반영
     private fun updateBalance(userId: Long, amount: Long): CashBalanceResponseView {

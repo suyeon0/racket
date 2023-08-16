@@ -4,7 +4,6 @@ import com.racket.api.payment.presentation.request.AccountPaymentCommand
 import com.racket.api.payment.presentation.response.PaymentApiResponse
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
