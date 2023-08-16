@@ -3,29 +3,21 @@ package com.racket.cash.consume.service.consume
 import com.racket.api.payment.presentation.RetryPaymentCallRequiredException
 import com.racket.cash.consume.client.CashFeignClient
 import com.racket.cash.consume.service.PaymentCallService
-import com.racket.cash.entity.CashTransaction
-import com.racket.cash.enums.CashEventType
-import com.racket.cash.enums.CashTransactionStatusType
 import com.racket.cash.exception.ChargePayException
 import com.racket.cash.exception.InvalidChargingTransactionException
-import com.racket.cash.exception.UpdateBalanceException
-import com.racket.cash.presentation.request.UpdateBalanceCommand
+import com.racket.cash.exception.UpdateDataAsChargingCompletedException
+import com.racket.cash.presentation.request.CompleteCashChargeCommand
 import com.racket.cash.presentation.response.CashTransactionResponseView
-import com.racket.cash.repository.CashTransactionRepository
 import mu.KotlinLogging
-import org.bson.types.ObjectId
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.annotation.RetryableTopic
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
-
 
 @Service
 class CashConsumerServiceImpl(
 
     val paymentCallService: PaymentCallService,
     val cashClient: CashFeignClient,
-    val cashTransactionRepository: CashTransactionRepository
 
     ): CashConsumerService {
 
@@ -37,10 +29,9 @@ class CashConsumerServiceImpl(
     @RetryableTopic(
         autoCreateTopics = "false",
         include = [RetryPaymentCallRequiredException::class])
-    @Transactional
     override fun consumeChargingProcess(message: String) {
         log.info { "=============================== Charging Process Consume Start! =============================== " }
-        log.info { "1. get Temp Transaction Data From MongoDB" }
+        log.info { "1. [Cash API 호출] get Temp Transaction Data From MongoDB" }
         val chargeRequestTransactionData = this.cashClient.getTransaction(transactionId = message).body
             ?: throw ChargePayException("=========== 임시 트랜잭션 데이터를 가져오지 못했습니다-${message}")
 
@@ -51,34 +42,21 @@ class CashConsumerServiceImpl(
         this.validateTransactionData(chargeRequestTransactionData)
         log.info { "2. validate Passed." }
 
-        log.info { "3. 결제 API 호출" }
-        this.payProcess(chargeAmount)
+        log.info { "3. [Payment API 호출] - 결제" }
+        this.payProcess(accountId = chargeRequestTransactionData.accountId, amount = chargeAmount)
 
-        log.info { "4. 충전 합계 테이블 반영" }
-        this.updateBalance(userId = userId, amount = chargeAmount)
-
-        log.info { "5. 충전 트랜잭션 완료 로그 DB Insert"}
-        val savedData = this.saveChargeTransactionCompletionData(chargeRequestTransactionData)
-        log.info { "=========== 트랜잭션 완료 ID-${savedData.id}" }
-
+        log.info { "4. [Cash API 호출] 충전 결과 DB 반영" }
+        try {
+            val balance = this.callCashApiToSaveData(chargeRequestTransactionData).body!!.balance
+            log.info { "=========== 충전 완료 DB 반영 성공 -> 잔액: ${balance} 원" }
+        } catch (e: Exception) {
+            log.info { "=========== 충전 완료 DB 반영 실패" }
+            throw UpdateDataAsChargingCompletedException()
+        }
         log.info { "=============================== Charging Process Consume Done! ===============================" }
     }
 
-    private fun saveChargeTransactionCompletionData(responseView: CashTransactionResponseView): CashTransaction {
-        val transactionEntityToSaveCompletedVersion = this.makeCashTransactionResponseViewToEntity(responseView)
-        return this.cashTransactionRepository.save(transactionEntityToSaveCompletedVersion)
-    }
-
-    private fun makeCashTransactionResponseViewToEntity(responseView: CashTransactionResponseView) =
-        CashTransaction(
-            transactionId = ObjectId(responseView.transactionId),
-            userId = responseView.userId,
-            amount = responseView.amount,
-            eventType = CashEventType.CHARGING,
-            accountNo = responseView.accountNo,
-            status = CashTransactionStatusType.COMPLETED
-        )
-
+    // 결제 API 호출 하기 전 validation
     private fun validateTransactionData(cashTransactionData: CashTransactionResponseView) {
         val cashTransaction = makeCashTransactionResponseToEntity(responseView = cashTransactionData)
         if (cashTransaction.isImpossibleTransactionToCharge()) {
@@ -86,25 +64,21 @@ class CashConsumerServiceImpl(
         }
     }
 
-    private fun updateBalance(userId: Long, amount: Long) {
-        try {
-            val result = this.cashClient.postToUpdateBalance(
-                UpdateBalanceCommand(
-                    userId = userId, amount = amount
-                )
-            )
-            val balance = result.body!!.balance
-            log.info { "=========== 충전 합계 테이블 반영 완료 -> 잔액: ${balance} 원" }
-        } catch (e: Exception) {
-            log.error { e.printStackTrace() }
-            throw UpdateBalanceException()
-        }
-    }
 
-
-    // 결제모듈 연동
-    private fun payProcess(price: Long){
+    // 결제 API 호출
+    private fun payProcess(accountId: Long, amount:Long){
         log.info { "=========== 충전 결제 모듈 연동 시작" }
-        this.paymentCallService.call(price)
+        this.paymentCallService.call(accountId = accountId, amount = amount)
     }
+
+    // 충전 결과 DB 반영을 위한 Cash Api 호출
+    private fun callCashApiToSaveData(chargeRequestTransactionData: CashTransactionResponseView) =
+        this.cashClient.completeCharge(CompleteCashChargeCommand(
+            userId = chargeRequestTransactionData.userId,
+            amount = chargeRequestTransactionData.amount,
+            transactionId = chargeRequestTransactionData.transactionId,
+            accountId = chargeRequestTransactionData.accountId,
+            eventType = chargeRequestTransactionData.eventType
+        ))
+
 }

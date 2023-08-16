@@ -12,7 +12,7 @@ data class CashTransactionResponseView(
     val amount: Long,
     val createdAt: Date,
     val status: CashTransactionStatusType,
-    val accountNo: Long,
+    val accountId: Long,
     val eventType: CashEventType
 
 )

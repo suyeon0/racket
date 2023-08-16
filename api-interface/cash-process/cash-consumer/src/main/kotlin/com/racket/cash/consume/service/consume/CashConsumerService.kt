@@ -15,7 +15,7 @@ interface CashConsumerService {
             status = responseView.status,
             userId = responseView.userId,
             amount = responseView.amount,
-            accountNo = responseView.accountNo,
+            accountId = responseView.accountId,
             eventType = responseView.eventType
         )
 

@@ -16,7 +16,6 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-web")
     api("org.springframework.boot:spring-boot-starter-actuator")
     api("org.springframework.boot:spring-boot-starter-validation")
-    api ("org.springframework.boot:spring-boot-starter-data-mongodb")
 
     api ("org.springframework.cloud:spring-cloud-starter-openfeign")
     api("org.springframework.retry:spring-retry")

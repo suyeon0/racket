@@ -1,5 +1,6 @@
 package com.racket.cash.presentation
 
+import com.racket.cash.presentation.request.CompleteCashChargeCommand
 import com.racket.cash.presentation.request.CreateChargeCommand
 import com.racket.cash.presentation.request.UpdateBalanceCommand
 import com.racket.cash.presentation.response.CashBalanceResponseView
@@ -31,7 +32,7 @@ interface CashSpecification {
     @PostMapping("/use")
     fun postToUse()
 
-    @PostMapping("/balance")
-    fun postToUpdateBalance(@RequestBody updateBalanceCommand: UpdateBalanceCommand): ResponseEntity<CashBalanceResponseView>
+    @PostMapping("/charge/complete")
+    fun completeCharge(@RequestBody completeCashChargeCommand: CompleteCashChargeCommand): ResponseEntity<CashBalanceResponseView>
 
 }

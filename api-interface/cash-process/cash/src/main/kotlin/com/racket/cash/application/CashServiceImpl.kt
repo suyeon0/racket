@@ -34,7 +34,7 @@ class CashServiceImpl(
     }
 
     @Transactional
-    override fun charge(chargeDTO: CashService.ChargeDTO): ChargeResponseView {
+    override fun requestCharge(chargeDTO: CashService.ChargeDTO): ChargeResponseView {
         try {
             val transaction = this.cashTransactionRepository.save(this.createCashTransactionEntity(chargeDTO))
             this.publishAsyncChargingProcessorEvent(eventId = transaction.id!!)
@@ -59,7 +59,7 @@ class CashServiceImpl(
             userId = chargeDTO.userId,
             amount = chargeDTO.amount,
             eventType = CashEventType.CHARGING,
-            accountNo = chargeDTO.accountId,
+            accountId = chargeDTO.accountId,
             status = CashTransactionStatusType.REQUEST
         )
 
@@ -94,13 +94,27 @@ class CashServiceImpl(
             amount = transaction.amount,
             createdAt = transaction.id!!.date,
             transactionId = transaction.transactionId.toString(),
-            accountNo = transaction.accountNo,
+            accountId = transaction.accountId,
             status = transaction.status,
             eventType = transaction.eventType
         )
     }
 
-    override fun updateBalance(userId: Long, amount: Long): CashBalanceResponseView {
+    @Transactional
+    override fun completeCharge(chargeDTO: CashService.ChargeDTO): CashBalanceResponseView {
+        log.info { "(1) 충전 합계 테이블 반영" }
+        val updateBalanceResult = this.updateBalance(userId = chargeDTO.userId, amount = chargeDTO.amount)
+
+        log.info { "(2) 충전 트랜잭션 완료 로그 DB Insert"}
+        val savedData = this.cashTransactionRepository.save(this.createCashTransactionEntity(chargeDTO))
+        log.info { "=========== 트랜잭션 완료 ID-${savedData.id}" }
+
+        return updateBalanceResult
+    }
+
+
+    // 캐시 잔액 반영
+    private fun updateBalance(userId: Long, amount: Long): CashBalanceResponseView {
         val balanceOpt = this.cashBalanceRepository.findById(userId)
         return if (balanceOpt.isPresent) {
             this.cashBalanceRepository.save(balanceOpt.get().updateBalance(amount = amount))

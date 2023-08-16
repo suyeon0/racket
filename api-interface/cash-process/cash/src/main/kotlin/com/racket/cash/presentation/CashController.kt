@@ -1,10 +1,10 @@
 package com.racket.cash.presentation
 
 import com.racket.cash.presentation.request.CreateChargeCommand
-import com.racket.api.shared.annotation.LongTypeIdInputValidator
 import com.racket.cash.application.CashService
 import com.racket.cash.application.CashUserService
-import com.racket.cash.presentation.request.UpdateBalanceCommand
+import com.racket.cash.enums.CashTransactionStatusType
+import com.racket.cash.presentation.request.CompleteCashChargeCommand
 import com.racket.cash.presentation.response.CashBalanceResponseView
 import com.racket.cash.presentation.response.CashTransactionResponseView
 import com.racket.cash.presentation.response.ChargeResponseView
@@ -13,7 +13,6 @@ import org.bson.types.ObjectId
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -33,7 +32,7 @@ class CashController(
 
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(
-                this.cashService.charge(
+                this.cashService.requestCharge(
                     CashService.ChargeDTO(
                         userId = chargeCommand.userId,
                         amount = chargeCommand.amount,
@@ -61,11 +60,15 @@ class CashController(
         return ResponseEntity.ok().body(this.cashService.getTransactionById(ObjectId(transactionId)))
     }
 
-    override fun postToUpdateBalance(@RequestBody updateBalanceCommand: UpdateBalanceCommand): ResponseEntity<CashBalanceResponseView> {
+    override fun completeCharge(completeCashChargeCommand: CompleteCashChargeCommand): ResponseEntity<CashBalanceResponseView> {
         return ResponseEntity.ok().body(
-            this.cashService.updateBalance(
-                userId = updateBalanceCommand.userId,
-                amount = updateBalanceCommand.amount
+            this.cashService.completeCharge(
+                CashService.ChargeDTO(
+                    userId = completeCashChargeCommand.userId,
+                    amount = completeCashChargeCommand.amount,
+                    transactionId = completeCashChargeCommand.transactionId,
+                    accountId = completeCashChargeCommand.accountId,
+                )
             )
         )
     }
@@ -77,5 +80,6 @@ class CashController(
     override fun postToUse() {
         TODO("Not yet implemented")
     }
+
 
 }

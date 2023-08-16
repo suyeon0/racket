@@ -31,14 +31,6 @@ spring:
         back-off-period: 1000
         max-attempts: 3
 
-  data:
-    mongodb:
-      host: localhost
-      port: 27017
-      username: root
-      password: 1234
-      connectionString: mongodb://root:1234@localhost:27017
-
 logging:
   level:
     org.hibernate.SQL: debug

@@ -27,8 +27,8 @@ class CashTransaction(
     @Column(name = "event_type", nullable = false)
     val eventType: CashEventType,
 
-    @Column(name = "account_no", nullable = false)
-    val accountNo: Long,
+    @Column(name = "account_id", nullable = false)
+    val accountId: Long,
 
     @Column(name = "status")
     val status: CashTransactionStatusType
