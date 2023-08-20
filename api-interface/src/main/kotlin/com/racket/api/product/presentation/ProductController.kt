@@ -19,7 +19,6 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
-@Slf4j
 @RestController
 @Tag(name = "상품 API")
 @RequestMapping("/api/v1/product")

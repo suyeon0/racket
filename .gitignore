@@ -38,3 +38,5 @@ out/
 
 ### env ###
 .env
+
+/api-interface/src/main/resources/mongodb/*
