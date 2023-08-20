@@ -1,17 +1,17 @@
-package com.racket.cash.application
+package com.racket.cash
 
-import com.racket.cash.application.events.ChargingProduceEventVO
+import com.racket.cash.events.ChargingProduceEventVO
 import com.racket.cash.entity.CashBalance
 import com.racket.cash.entity.CashTransaction
 import com.racket.cash.enums.CashEventType
 import com.racket.cash.enums.CashTransactionStatusType
 import com.racket.cash.exception.CashTransactionInsertException
 import com.racket.cash.exception.UpdateDataAsChargingCompletedException
-import com.racket.cash.presentation.response.CashBalanceResponseView
-import com.racket.cash.presentation.response.CashTransactionResponseView
-import com.racket.cash.presentation.response.ChargeResponseView
-import com.racket.cash.presentation.response.WithdrawAccountResponseView
-import com.racket.cash.repository.AccountPaymentRepository
+import com.racket.cash.response.CashBalanceResponseView
+import com.racket.cash.response.CashTransactionResponseView
+import com.racket.cash.response.ChargeResponseView
+import com.racket.api.payment.account.response.WithdrawAccountResponseView
+import com.racket.api.payment.account.domain.AccountPaymentRepository
 import com.racket.cash.repository.CashBalanceRepository
 import com.racket.cash.repository.CashTransactionRepository
 import mu.KotlinLogging
@@ -19,13 +19,11 @@ import org.bson.types.ObjectId
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.lang.RuntimeException
 
 @Service
 class CashServiceImpl(
     val cashTransactionRepository: CashTransactionRepository,
     val cashBalanceRepository: CashBalanceRepository,
-    val accountPaymentRepository: AccountPaymentRepository,
     val eventPublisher: ApplicationEventPublisher
 
 ) : CashService {
@@ -73,21 +71,6 @@ class CashServiceImpl(
         )
     }
 
-    // 사용자가 저장한 계좌 리스트 중 결제 가능한 목록만 출력
-    override fun getWithdrawAccountListByUserId(userId: Long): List<WithdrawAccountResponseView> {
-        val result = this.accountPaymentRepository.findAllByUserIdOrderById(userId = userId).get()
-        return result.stream()
-            .filter { account -> account.isPayable }
-            .map { account ->
-            WithdrawAccountResponseView(
-                id = account.id,
-                bankCode = account.bankCode,
-                accountNumber = account.accountNumber,
-                isPayable = account.isPayable
-            )
-        }.toList()
-    }
-
     override fun getTransactionById(transactionId: ObjectId): CashTransactionResponseView {
         val transaction = this.cashTransactionRepository.findById(transactionId).get()
         return CashTransactionResponseView(
@@ -105,12 +88,9 @@ class CashServiceImpl(
     @Transactional
     override fun completeCharge(chargeDTO: CashService.ChargeDTO): CashBalanceResponseView {
         try {
-            log.info { "(1) 충전 합계 테이블 반영" }
             val updateBalanceResult = updateBalance(userId = chargeDTO.userId, amount = chargeDTO.amount)
 
-            log.info { "(2) 충전 트랜잭션 완료 로그 DB Insert" }
             this.saveChargingCompletedTransaction(chargeDTO)
-            throw RuntimeException("test!!!!!!")
             return updateBalanceResult
         } catch (e: Exception) {
             throw UpdateDataAsChargingCompletedException()

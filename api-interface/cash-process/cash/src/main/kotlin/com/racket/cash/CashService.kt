@@ -1,21 +1,15 @@
-package com.racket.cash.application
+package com.racket.cash
 
-import com.racket.cash.enums.CashEventType
-import com.racket.cash.enums.CashTransactionStatusType
-import com.racket.cash.presentation.response.CashBalanceResponseView
-import com.racket.cash.presentation.response.CashTransactionResponseView
-import com.racket.cash.presentation.response.ChargeResponseView
-import com.racket.cash.presentation.response.WithdrawAccountResponseView
+import com.racket.cash.response.CashBalanceResponseView
+import com.racket.cash.response.CashTransactionResponseView
+import com.racket.cash.response.ChargeResponseView
 import org.bson.types.ObjectId
-import java.util.*
 
 interface CashService {
 
     fun requestCharge(chargeDTO: ChargeDTO): ChargeResponseView
 
     fun getBalanceByUserId(userId: Long): CashBalanceResponseView
-
-    fun getWithdrawAccountListByUserId(userId: Long): List<WithdrawAccountResponseView>
 
     fun getTransactionById(transactionId: ObjectId): CashTransactionResponseView
 

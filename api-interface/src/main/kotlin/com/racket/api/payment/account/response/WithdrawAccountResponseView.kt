@@ -1,4 +1,4 @@
-package com.racket.cash.presentation.response
+package com.racket.api.payment.account.response
 
 data class WithdrawAccountResponseView (
 

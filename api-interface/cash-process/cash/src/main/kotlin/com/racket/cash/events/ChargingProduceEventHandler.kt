@@ -1,7 +1,7 @@
-package com.racket.cash.application.events
+package com.racket.cash.events
 
 import com.racket.cash.exception.CashProducerException
-import com.racket.cash.infrastructure.kafka.produce.ProduceService
+import com.racket.cash.publish.PublishService
 import mu.KotlinLogging
 import org.bson.types.ObjectId
 import org.springframework.scheduling.annotation.Async
@@ -30,13 +30,13 @@ class ChargingProduceEventHandler(
 
 @Component
 class ChargingProduceEvent(
-    private val produceService: ProduceService
+    private val publishService: PublishService
 ) {
 
     private val log = KotlinLogging.logger { }
 
     fun callProduce(chargingEventId: ObjectId) {
-        this.produceService.send(
+        this.publishService.send(
             topic = "CHARGING",
             message = chargingEventId.toString()
         )

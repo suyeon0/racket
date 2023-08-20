@@ -6,18 +6,12 @@ import com.racket.cash.consume.service.PaymentCallService
 import com.racket.cash.exception.ChargePayException
 import com.racket.cash.exception.InvalidChargingTransactionException
 import com.racket.cash.exception.UpdateDataAsChargingCompletedException
-import com.racket.cash.presentation.request.CompleteCashChargeCommand
-import com.racket.cash.presentation.response.CashTransactionResponseView
+import com.racket.cash.request.CompleteCashChargeCommand
+import com.racket.cash.response.CashTransactionResponseView
+import com.racket.cash.response.makeCashTransactionResponseToEntity
 import mu.KotlinLogging
-import org.apache.kafka.clients.consumer.ConsumerRecord
-import org.springframework.kafka.annotation.DltHandler
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.annotation.RetryableTopic
-import org.springframework.kafka.retrytopic.DltStrategy
-import org.springframework.kafka.support.Acknowledgment
-import org.springframework.kafka.support.KafkaHeaders
-import org.springframework.messaging.handler.annotation.Payload
-import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.stereotype.Service
 
 @Service
@@ -51,7 +45,7 @@ class CashConsumerServiceImpl(
         log.info { "2. validate Passed." }
 
         log.info { "3. [Payment API 호출] - 결제" }
-        this.payProcess(accountId = chargeRequestTransactionData.accountId, amount = chargeAmount)
+        this.paymentCallService.call(accountId = chargeRequestTransactionData.accountId, amount = chargeAmount)
 
         log.info { "4. [Cash API 호출] 충전 결과 DB 반영" }
         try {
@@ -63,32 +57,23 @@ class CashConsumerServiceImpl(
         log.info { "=============================== Charging Process Consume Done! ===============================" }
     }
 
-
-
     // 결제 API 호출 하기 전 validation
     private fun validateTransactionData(cashTransactionData: CashTransactionResponseView) {
-        val cashTransaction = makeCashTransactionResponseToEntity(responseView = cashTransactionData)
-        if (cashTransaction.isImpossibleTransactionToCharge()) {
+        if (!cashTransactionData.makeCashTransactionResponseToEntity().isImpossibleTransactionToCharge()) {
             throw InvalidChargingTransactionException()
         }
     }
 
-
-    // 결제 API 호출
-    private fun payProcess(accountId: Long, amount:Long){
-        log.info { "=========== 충전 결제 모듈 연동 시작" }
-        this.paymentCallService.call(accountId = accountId, amount = amount)
-        log.info { "=========== 충전 결제 모듈 연동 완료" }
-    }
-
     // 충전 결과 DB 반영을 위한 Cash Api 호출
     private fun callCashApiToSaveData(chargeRequestTransactionData: CashTransactionResponseView) =
-        this.cashClient.completeCharge(CompleteCashChargeCommand(
+        this.cashClient.completeCharge(
+            CompleteCashChargeCommand(
             userId = chargeRequestTransactionData.userId,
             amount = chargeRequestTransactionData.amount,
             transactionId = chargeRequestTransactionData.transactionId,
             accountId = chargeRequestTransactionData.accountId,
             eventType = chargeRequestTransactionData.eventType
-        ))
+        )
+        )
 
 }

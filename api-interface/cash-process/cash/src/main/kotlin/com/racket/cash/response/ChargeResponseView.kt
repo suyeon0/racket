@@ -1,4 +1,4 @@
-package com.racket.cash.presentation.response
+package com.racket.cash.response
 
 import org.bson.types.ObjectId
 

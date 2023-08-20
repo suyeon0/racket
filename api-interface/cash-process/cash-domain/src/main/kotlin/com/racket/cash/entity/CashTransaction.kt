@@ -4,7 +4,6 @@ import com.racket.cash.enums.CashEventType
 import com.racket.cash.enums.CashTransactionStatusType
 import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.mapping.Document
-import java.math.BigDecimal
 import java.util.*
 import javax.persistence.*
 
@@ -37,6 +36,6 @@ class CashTransaction(
 
     // 충전이 불가능한 트랜잭션 조건
     fun isImpossibleTransactionToCharge() =
-        this.status == CashTransactionStatusType.COMPLETED || this.eventType != CashEventType.CHARGING
+        this.status != CashTransactionStatusType.REQUEST && this.eventType != CashEventType.CHARGING
 
 }

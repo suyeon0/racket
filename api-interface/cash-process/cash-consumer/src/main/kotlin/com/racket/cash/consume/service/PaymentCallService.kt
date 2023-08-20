@@ -3,10 +3,8 @@ package com.racket.cash.consume.service
 import com.racket.api.payment.presentation.PaymentErrorCodeConstants
 import com.racket.api.payment.presentation.RetryPaymentCallRequiredException
 import com.racket.api.payment.presentation.response.PaymentApiResponse
-import com.racket.cash.consume.client.CashFeignClient
 import com.racket.cash.consume.client.PaymentFeignClient
 import com.racket.cash.exception.ChargePayException
-import com.racket.cash.repository.AccountPaymentRepository
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service

@@ -1,4 +1,4 @@
-package com.racket.cash.entity
+package com.racket.api.payment.account.domain
 
 import javax.persistence.*
 

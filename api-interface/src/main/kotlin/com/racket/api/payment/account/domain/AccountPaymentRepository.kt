@@ -1,6 +1,5 @@
-package com.racket.cash.repository
+package com.racket.api.payment.account.domain
 
-import com.racket.cash.entity.AccountPayment
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import java.util.*

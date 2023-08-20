@@ -1,4 +1,4 @@
-package com.racket.cash.presentation.request
+package com.racket.cash.request
 
 import com.racket.cash.enums.CashEventType
 import com.racket.cash.enums.CashTransactionStatusType

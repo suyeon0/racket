@@ -1,4 +1,4 @@
-package com.racket.cash.infrastructure.kafka.produce
+package com.racket.cash.publish
 
 import mu.KotlinLogging
 import org.springframework.kafka.core.KafkaTemplate
@@ -8,9 +8,9 @@ import org.springframework.util.concurrent.ListenableFuture
 import org.springframework.util.concurrent.ListenableFutureCallback
 
 @Service
-class ProduceServiceImpl(
+class KafkaPublishServiceImpl(
     val kafkaTemplate: KafkaTemplate<String, String>
-) : ProduceService {
+) : PublishService {
 
     private val log = KotlinLogging.logger { }
 

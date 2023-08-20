@@ -1,4 +1,4 @@
-package com.racket.cash.application.events
+package com.racket.cash.events
 
 import org.springframework.context.annotation.Bean
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor

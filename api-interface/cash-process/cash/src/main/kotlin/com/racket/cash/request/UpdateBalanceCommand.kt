@@ -1,4 +1,4 @@
-package com.racket.cash.presentation.request
+package com.racket.cash.request
 
 data class UpdateBalanceCommand (
 
