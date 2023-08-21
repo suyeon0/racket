@@ -1,6 +1,6 @@
 package com.racket.cash.consume.client
 
-import com.racket.cash.request.CompleteCashChargeCommand
+import com.racket.cash.request.CashChargeCommand
 import com.racket.cash.response.CashBalanceResponseView
 import com.racket.cash.response.CashTransactionResponseView
 import org.springframework.cloud.openfeign.FeignClient
@@ -17,5 +17,5 @@ interface CashFeignClient {
     fun getTransaction(@PathVariable transactionId: String): ResponseEntity<CashTransactionResponseView>
 
     @PostMapping("/charge/complete")
-    fun completeCharge(@RequestBody completeCashChargeCommand: CompleteCashChargeCommand): ResponseEntity<CashBalanceResponseView>
+    fun completeCharge(@RequestBody chargeCommand: CashChargeCommand): ResponseEntity<CashBalanceResponseView>
 }

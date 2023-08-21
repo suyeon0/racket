@@ -11,3 +11,10 @@ include("api-interface:cash-process:cash-consumer")
 findProject(":api-interface:cash-process:cash-consumer")?.name = "cash-consumer"
 include("api-interface:api-shared")
 findProject(":api-interface:api-shared")?.name = "api-shared"
+include("api-interface:api-shared:user")
+findProject(":api-interface:api-shared:user")?.name = "user"
+include("shared")
+include("shared:domain")
+findProject(":shared:domain")?.name = "domain"
+include("api-interface:api-shared:payment")
+findProject(":api-interface:api-shared:payment")?.name = "payment"

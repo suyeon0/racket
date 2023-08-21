@@ -1,17 +1,17 @@
 package com.racket.api.user
 
-import com.racket.api.shared.vo.AddressVO
-import com.racket.api.user.domain.User
-import com.racket.api.user.domain.enums.UserRoleType
-import com.racket.api.user.domain.UserRepository
 import com.racket.api.user.vo.UserSignedUpEventVO
-import com.racket.api.user.domain.enums.UserStatusType
-import com.racket.api.user.exception.DuplicateUserException
-import com.racket.api.user.exception.InvalidUserStatusException
-import com.racket.api.user.exception.NotFoundUserException
 import com.racket.api.user.presentation.request.UserUpdateRequestCommand
 import com.racket.api.user.presentation.response.UserAdditionalResponseView
 import com.racket.api.user.presentation.response.UserResponseView
+import com.racket.share.domain.user.User
+import com.racket.share.domain.user.UserRepository
+import com.racket.share.domain.user.enums.UserRoleType
+import com.racket.share.domain.user.enums.UserStatusType
+import com.racket.share.domain.user.exception.DuplicateUserException
+import com.racket.share.domain.user.exception.InvalidUserStatusException
+import com.racket.share.domain.user.exception.NotFoundUserException
+import com.racket.share.vo.AddressVO
 import mu.KotlinLogging
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
@@ -107,12 +107,9 @@ class UserServiceImpl(
         )
 
     override fun getUserByEmail(email: String): UserResponseView {
-        val optUser = this.userRepository.findByEmail(email)
-        if (optUser.isPresent) {
-            return this.makeUserResponseViewFromUser(optUser.get())
-        } else {
-            throw NotFoundUserException()
-        }
+        val user = this.userRepository.findByEmail(email)
+            .orElseThrow { NotFoundUserException() }
+        return this.makeUserResponseViewFromUser(user)
     }
 
     override fun getUserByEmailAndPassword(email: String, password: String): Optional<User> =

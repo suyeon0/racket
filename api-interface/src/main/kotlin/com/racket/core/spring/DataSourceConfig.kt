@@ -18,7 +18,7 @@ import javax.sql.DataSource
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-    basePackages = ["com.racket.api", "com.racket.shared"],
+    basePackages = ["com.racket", "com.racket"],
     entityManagerFactoryRef = "entityManagerFactory",
     transactionManagerRef = "transactionManager"
 )
