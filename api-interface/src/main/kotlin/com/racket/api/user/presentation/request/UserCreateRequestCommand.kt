@@ -1,7 +1,7 @@
 package com.racket.api.user.presentation.request
 
-import com.racket.api.shared.vo.MobileVO
 import com.racket.api.util.isMatchMobileNumberFormat
+import com.racket.share.vo.MobileVO
 import io.swagger.v3.oas.annotations.media.Schema
 
 data class UserCreateRequestCommand(

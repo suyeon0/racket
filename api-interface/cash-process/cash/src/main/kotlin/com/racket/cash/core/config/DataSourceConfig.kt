@@ -18,7 +18,7 @@ import javax.sql.DataSource
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-    basePackages = ["com.racket.cash"],
+    basePackages = ["com.racket.cash", "com.racket.share"],
     entityManagerFactoryRef = "entityManagerFactory",
     transactionManagerRef = "transactionManager"
 )
@@ -44,7 +44,7 @@ class DataSourceConfig {
     ): LocalContainerEntityManagerFactoryBean {
         return builder
             .dataSource(dataSource)
-            .packages("com.racket.cash")
+            .packages("com.racket.cash", "com.racket.share")
             .build()
     }
 

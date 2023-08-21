@@ -1,6 +1,7 @@
 package com.racket.cash.core.advice
 
 import com.racket.api.shared.response.ApiError
+import com.racket.cash.exception.InvalidChargingTransactionException
 import com.racket.cash.exception.NotExistSavedChargeWayException
 import com.racket.cash.exception.UpdateDataAsChargingCompletedException
 import org.springframework.core.annotation.Order
@@ -18,7 +19,9 @@ class CashApiExceptionHandlerAdvice : ResponseEntityExceptionHandler() {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(
         value = [
-            IllegalArgumentException::class, NotExistSavedChargeWayException::class
+            IllegalArgumentException::class,
+            NotExistSavedChargeWayException::class,
+            InvalidChargingTransactionException::class
         ]
     )
     fun cashBadRequestException(e: RuntimeException, httpServletRequest: HttpServletRequest) =

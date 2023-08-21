@@ -4,7 +4,7 @@ import com.racket.api.auth.login.presentation.response.LoginUserResponseView
 import com.racket.api.user.UserService
 import com.racket.api.auth.login.exception.LoginFailException
 import com.racket.api.auth.login.session.vo.SessionVO
-import com.racket.api.user.domain.User
+import com.racket.share.domain.user.User
 import org.springframework.stereotype.Service
 
 @Service

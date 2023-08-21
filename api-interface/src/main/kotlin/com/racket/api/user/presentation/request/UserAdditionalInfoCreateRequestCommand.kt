@@ -1,6 +1,6 @@
 package com.racket.api.user.presentation.request
 
-import com.racket.api.shared.vo.AddressVO
+import com.racket.share.vo.AddressVO
 import io.swagger.v3.oas.annotations.media.Schema
 
 data class UserAdditionalInfoCreateRequestCommand(

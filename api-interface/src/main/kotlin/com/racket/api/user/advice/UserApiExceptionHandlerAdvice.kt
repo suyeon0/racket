@@ -1,9 +1,9 @@
 package com.racket.api.user.advice
 
 import com.racket.api.shared.response.ApiError
-import com.racket.api.user.exception.DuplicateUserException
-import com.racket.api.user.exception.InvalidUserStatusException
-import com.racket.api.user.exception.NotFoundUserException
+import com.racket.share.domain.user.exception.DuplicateUserException
+import com.racket.share.domain.user.exception.InvalidUserStatusException
+import com.racket.share.domain.user.exception.NotFoundUserException
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ExceptionHandler

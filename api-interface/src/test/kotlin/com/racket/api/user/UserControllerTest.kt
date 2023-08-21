@@ -2,18 +2,18 @@ package com.racket.api.user
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.racket.api.shared.vo.AddressVO
-import com.racket.api.shared.vo.MobileVO
-import com.racket.api.user.domain.enums.UserRoleType
-import com.racket.api.user.domain.enums.UserStatusType
-import com.racket.api.user.exception.DuplicateUserException
-import com.racket.api.user.exception.InvalidUserStatusException
 import com.racket.api.user.presentation.request.UserAdditionalInfoCreateRequestCommand
 import com.racket.api.user.presentation.request.UserCreateRequestCommand
 import com.racket.api.user.presentation.request.UserUpdateRequestCommand
 import com.racket.api.user.presentation.response.UserAdditionalResponseView
 import com.racket.api.user.presentation.response.UserResponseView
 import com.racket.api.user.vo.UserSignedUpEventVO
+import com.racket.share.domain.user.enums.UserRoleType
+import com.racket.share.domain.user.enums.UserStatusType
+import com.racket.share.domain.user.exception.DuplicateUserException
+import com.racket.share.domain.user.exception.InvalidUserStatusException
+import com.racket.share.vo.AddressVO
+import com.racket.share.vo.MobileVO
 import org.junit.jupiter.api.*
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
@@ -23,8 +23,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
-import org.springframework.retry.annotation.Backoff
-import org.springframework.retry.annotation.Retryable
 import org.springframework.test.context.event.ApplicationEvents
 import org.springframework.test.context.event.RecordApplicationEvents
 import org.springframework.test.web.servlet.*

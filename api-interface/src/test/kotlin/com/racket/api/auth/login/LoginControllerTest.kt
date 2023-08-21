@@ -11,9 +11,9 @@ import com.racket.api.auth.login.session.SessionManager
 import com.racket.api.auth.login.session.SessionRedisManager
 import com.racket.api.auth.login.session.domain.SessionUser
 import com.racket.api.auth.login.session.domain.SessionRedisRepository
-import com.racket.api.shared.vo.MobileVO
 import com.racket.api.user.UserService
 import com.racket.api.user.presentation.response.UserResponseView
+import com.racket.share.vo.MobileVO
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*

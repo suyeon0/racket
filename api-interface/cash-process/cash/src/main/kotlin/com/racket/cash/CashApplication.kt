@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableAsync
 @EnableAsync
 @EnableFeignClients(basePackages = ["com.racket.cash"])
 @ServletComponentScan
-@SpringBootApplication(scanBasePackages = ["com.racket.cash"])
+@SpringBootApplication(scanBasePackages = ["com.racket.cash", "com.racket.api.shared"])
 class CashApplication {
 }
 
