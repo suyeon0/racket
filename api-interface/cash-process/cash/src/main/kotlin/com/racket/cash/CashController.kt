@@ -1,5 +1,7 @@
 package com.racket.cash
 
+import com.racket.api.shared.user.BaseUserComponent
+import com.racket.cash.exception.InvalidChargingTransactionException
 import com.racket.cash.request.CreateChargeCommand
 import com.racket.cash.request.CompleteCashChargeCommand
 import com.racket.cash.response.CashBalanceResponseView
@@ -16,7 +18,9 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/v1/racket-cash")
 @Tag(name = "RacketCash-API", description = "캐시 충전 및 사용을 담당")
 class CashController(
-    private val cashService: CashService
+    private val cashService: CashService,
+    private val baseUserComponent: BaseUserComponent
+
 )  {
     @PostMapping("/charge")
     fun postToCharge(@RequestBody chargeCommand: CreateChargeCommand): ResponseEntity<ChargeResponseView> {
@@ -34,15 +38,19 @@ class CashController(
     }
 
     private fun validateToCharge(chargeCommand: CreateChargeCommand) {
-        // 1. userId 유효 여부 확인
-        //this.cashUserService.validateUserId(userId = chargeCommand.userId)
+        try {
+            // 1. userId 유효 여부 확인
+            this.baseUserComponent.validateUserByUserId(userId = chargeCommand.userId)
 
-        // 2. Amount - 충전 단위
-        val validChargeUnitSet = this.cashService.getChargeUnitSet()
-        chargeCommand.validate(validChargeUnitSet)
+            // 2. Amount - 충전 단위
+            val validChargeUnitSet = this.cashService.getChargeUnitSet()
+            chargeCommand.validate(validChargeUnitSet)
 
-        // 3. 계좌정보 유효 여부 확인
-        //this.cashUserService.validateUserId(chargeCommand.userId)
+            // 3. 계좌정보 유효 여부 확인
+            //this.cashUserService.validateUserId(chargeCommand.userId)
+        } catch (e: Exception) {
+            throw InvalidChargingTransactionException(message = e.message!!)
+        }
     }
 
     @GetMapping("/balance/{userId}")

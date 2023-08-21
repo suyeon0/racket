@@ -1,4 +1,4 @@
-package com.racket.api.user.domain.enums
+package com.racket.share.domain.user.enums
 
 enum class UserRoleType {
     USER, ADMIN

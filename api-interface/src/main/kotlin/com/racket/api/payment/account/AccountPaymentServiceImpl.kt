@@ -2,7 +2,9 @@ package com.racket.api.payment.account
 
 import com.racket.api.payment.account.domain.AccountPaymentRepository
 import com.racket.api.payment.account.response.WithdrawAccountResponseView
+import org.springframework.stereotype.Service
 
+@Service
 class AccountPaymentServiceImpl(
 
     private val accountPaymentRepository: AccountPaymentRepository

@@ -1,4 +1,4 @@
-package com.racket.api.user.domain
+package com.racket.share.domain.user
 
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository

@@ -1,4 +1,4 @@
-package com.racket.api.shared.vo
+package com.racket.share.vo
 
 import javax.persistence.Column
 import javax.persistence.Embeddable

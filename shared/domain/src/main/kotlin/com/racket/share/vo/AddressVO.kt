@@ -1,4 +1,4 @@
-package com.racket.api.shared.vo
+package com.racket.share.vo
 
 import io.swagger.v3.oas.annotations.media.Schema
 import javax.persistence.Column
