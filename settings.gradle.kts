@@ -16,3 +16,5 @@ findProject(":api-interface:api-shared:user")?.name = "user"
 include("shared")
 include("shared:domain")
 findProject(":shared:domain")?.name = "domain"
+include("api-interface:api-shared:payment")
+findProject(":api-interface:api-shared:payment")?.name = "payment"

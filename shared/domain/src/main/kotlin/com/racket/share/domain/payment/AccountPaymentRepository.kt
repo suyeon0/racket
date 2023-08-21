@@ -1,4 +1,4 @@
-package com.racket.api.payment.account.domain
+package com.racket.share.domain.payment
 
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository

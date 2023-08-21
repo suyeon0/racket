@@ -2,16 +2,16 @@ package com.racket.api.user
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.racket.api.user.exception.DuplicateUserException
-import com.racket.api.user.exception.InvalidUserStatusException
 import com.racket.api.user.presentation.request.UserAdditionalInfoCreateRequestCommand
 import com.racket.api.user.presentation.request.UserCreateRequestCommand
 import com.racket.api.user.presentation.request.UserUpdateRequestCommand
 import com.racket.api.user.presentation.response.UserAdditionalResponseView
 import com.racket.api.user.presentation.response.UserResponseView
 import com.racket.api.user.vo.UserSignedUpEventVO
-import com.racket.domain.user.enums.UserRoleType
-import com.racket.domain.user.enums.UserStatusType
+import com.racket.share.domain.user.enums.UserRoleType
+import com.racket.share.domain.user.enums.UserStatusType
+import com.racket.share.domain.user.exception.DuplicateUserException
+import com.racket.share.domain.user.exception.InvalidUserStatusException
 import com.racket.share.vo.AddressVO
 import com.racket.share.vo.MobileVO
 import org.junit.jupiter.api.*

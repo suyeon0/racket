@@ -8,8 +8,8 @@ import java.util.*
 
 data class CashTransactionResponseView(
 
-    val id: String,
-    val transactionId: String,
+    val id: ObjectId,
+    val transactionId: ObjectId,
     val userId: Long,
     val amount: Long,
     val createdAt: Date,
@@ -21,8 +21,8 @@ data class CashTransactionResponseView(
 
 fun CashTransactionResponseView.makeCashTransactionResponseToEntity(): CashTransaction {
     return CashTransaction(
-        id = ObjectId(id),
-        transactionId = ObjectId(transactionId),
+        id = id,
+        transactionId = transactionId,
         status = status,
         userId = userId,
         amount = amount,
