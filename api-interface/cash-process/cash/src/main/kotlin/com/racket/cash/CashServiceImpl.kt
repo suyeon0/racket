@@ -27,7 +27,7 @@ class CashServiceImpl(
     @Transactional
     override fun requestCharge(chargeVO: ChargeVO): ChargeResponseView {
         val savedEvent = this.cashTransactionLogService.insertChargeTransaction(chargeVO)
-        this.eventPublisher.publishEvent(ChargingProduceEventVO(eventId = savedEvent.id!!))
+        this.eventPublisher.publishEvent(ChargingProduceEventVO(transactionId = savedEvent.transactionId))
 
         return ChargeResponseView(
             id = savedEvent.id!!,

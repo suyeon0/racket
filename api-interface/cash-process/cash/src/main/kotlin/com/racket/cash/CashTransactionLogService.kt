@@ -8,7 +8,7 @@ import org.bson.types.ObjectId
 
 interface CashTransactionLogService {
 
-    fun getTransactionById(transactionId: ObjectId): CashTransactionResponseView
+    fun getTransactionListByTransactionId(transactionId: ObjectId): List<CashTransactionResponseView>
 
     fun insertChargeTransaction(chargeVO: ChargeVO): CashTransaction
 

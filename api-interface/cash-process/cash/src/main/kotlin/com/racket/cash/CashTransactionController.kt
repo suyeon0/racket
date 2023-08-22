@@ -16,7 +16,7 @@ class CashTransactionController(
 ) {
 
     @GetMapping("/{transactionId}")
-    fun getTransaction(@PathVariable transactionId: String) =
-        ResponseEntity.ok().body(this.cashTransactionLogService.getTransactionById(ObjectId(transactionId)))
+    fun getTransaction(@PathVariable transactionId: ObjectId) =
+        ResponseEntity.ok().body(this.cashTransactionLogService.getTransactionListByTransactionId(transactionId))
 
 }

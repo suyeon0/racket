@@ -20,7 +20,7 @@ class ChargingProduceEventHandler(
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun handle(chargingProduceEventVO: ChargingProduceEventVO) {
         try {
-            this.chargingProduceEvent.callProduce(chargingProduceEventVO.eventId)
+            this.chargingProduceEvent.callProduce(chargingProduceEventVO.transactionId)
         } catch (e: Exception) {
             throw CashProducerException(chargingProduceEventVO, e)
         }
@@ -37,7 +37,7 @@ class ChargingProduceEvent(
 
     fun callProduce(chargingEventId: ObjectId) {
         this.publishService.send(
-            topic = "CHARGING",
+            topic = "cash",
             message = chargingEventId.toString()
         )
         log.info { "call Produce done! -${chargingEventId}" }
@@ -45,5 +45,5 @@ class ChargingProduceEvent(
 }
 
 data class ChargingProduceEventVO(
-    val eventId: ObjectId
+    val transactionId: ObjectId
 )

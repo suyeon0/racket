@@ -14,22 +14,23 @@ import org.springframework.stereotype.Service
 @Service
 class CashTransactionLogServiceImpl(
     private val cashTransactionRepository: CashTransactionRepository
-): CashTransactionLogService {
+) : CashTransactionLogService {
 
-    override fun getTransactionById(transactionId: ObjectId): CashTransactionResponseView {
-        val transaction = this.cashTransactionRepository.findById(transactionId)
-            .orElseThrow { NotFoundCashTransactionException() }
+    override fun getTransactionListByTransactionId(transactionId: ObjectId): List<CashTransactionResponseView> {
+        val transactionList = this.cashTransactionRepository.findAllByTransactionId(transactionId)
 
-        return CashTransactionResponseView(
-            id = transaction.id!!,
-            userId = transaction.userId,
-            amount = transaction.amount,
-            createdAt = transaction.id!!.date,
-            transactionId = transaction.transactionId,
-            accountId = transaction.accountId,
-            status = transaction.status,
-            eventType = transaction.eventType
-        )
+        return transactionList.stream().map { transaction ->
+            CashTransactionResponseView(
+                id = transaction.id!!,
+                userId = transaction.userId,
+                amount = transaction.amount,
+                createdAt = transaction.id!!.date,
+                transactionId = transaction.transactionId,
+                accountId = transaction.accountId,
+                status = transaction.status,
+                eventType = transaction.eventType
+            )
+        }.toList()
     }
 
     override fun insertChargeTransaction(chargeVO: ChargeVO): CashTransaction {

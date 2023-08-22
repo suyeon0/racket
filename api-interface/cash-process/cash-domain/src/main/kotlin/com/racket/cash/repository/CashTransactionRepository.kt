@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface CashTransactionRepository: MongoRepository<CashTransaction, ObjectId> {
-    fun findByUserId(userId: Long): List<CashTransaction?>
+    fun findAllByUserId(userId: Long): List<CashTransaction>
+    fun findAllByTransactionId(transactionId: ObjectId): List<CashTransaction>
 }

@@ -3,6 +3,7 @@ package com.racket.cash.consume.client
 import com.racket.cash.request.CashChargeCommand
 import com.racket.cash.response.CashBalanceResponseView
 import com.racket.cash.response.CashTransactionResponseView
+import org.bson.types.ObjectId
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -14,7 +15,7 @@ interface CashFeignClient {
      * Consumer - Cache Charging Process 처리
      */
     @GetMapping("/transaction/{transactionId}")
-    fun getTransaction(@PathVariable transactionId: String): ResponseEntity<CashTransactionResponseView>
+    fun getTransaction(@PathVariable transactionId: ObjectId): ResponseEntity<List<CashTransactionResponseView>>
 
     @PostMapping("/charge/complete")
     fun completeCharge(@RequestBody chargeCommand: CashChargeCommand): ResponseEntity<CashBalanceResponseView>

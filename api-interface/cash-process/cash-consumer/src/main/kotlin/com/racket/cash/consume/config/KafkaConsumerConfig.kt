@@ -1,21 +1,13 @@
 package com.racket.cash.consume.config
 
-import mu.KotlinLogging
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.kafka.annotation.DltHandler
 import org.springframework.kafka.annotation.EnableKafka
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.core.ConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
-import org.springframework.kafka.core.KafkaTemplate
-import org.springframework.kafka.retrytopic.RetryTopicConfiguration
-import org.springframework.kafka.retrytopic.RetryTopicConfigurationBuilder
-import org.springframework.kafka.support.KafkaHeaders
-import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.retry.annotation.EnableRetry
 
 
@@ -36,16 +28,8 @@ class KafkaConsumerConfig {
     @Value("\${spring.kafka.consumer.value-deserializer}")
     private val valueDeserializer: Any? = null
 
-    @Value("\${spring.kafka.consumer.retry.back-off-period}")
-    private val interval: Long? = null
-
-    @Value("\${spring.kafka.consumer.retry.max-attempts}")
-    private val maxAttempts: Long? = null
-
     @Value("\${spring.kafka.consumer.auto-offset-reset}")
     private val autoOffSet: String? = null
-
-    private val log = KotlinLogging.logger { }
 
     @Bean
     fun consumerFactory(): ConsumerFactory<String, String> {
@@ -64,17 +48,5 @@ class KafkaConsumerConfig {
         factory.consumerFactory = consumerFactory()
         return factory
     }
-
-//    @DltHandler
-//    fun consumeChargingProcess(
-//        record: ConsumerRecord<String, String>,
-//        @Payload(KafkaHeaders.RECEIVED_TOPIC) topic: String,
-//        @Payload(KafkaHeaders.RECEIVED_PARTITION_ID) partitionId: Int,
-//        @Payload(KafkaHeaders.OFFSET) offset: Byte,
-//        @Payload(KafkaHeaders.EXCEPTION_MESSAGE) errorMessage: String
-//    ) {
-//        log.error("received message='${record.value()}' with partitionId='$partitionId', offset='$offset', topic='$topic'")
-//    }
-
 
 }
