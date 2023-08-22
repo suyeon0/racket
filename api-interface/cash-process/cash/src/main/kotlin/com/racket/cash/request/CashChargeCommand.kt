@@ -2,10 +2,11 @@ package com.racket.cash.request
 
 import com.racket.cash.enums.CashEventType
 import com.racket.cash.enums.CashTransactionStatusType
+import org.bson.types.ObjectId
 
 data class CashChargeCommand(
 
-    val transactionId: String? = null,
+    val transactionId: ObjectId? = null,
     val userId: Long,
     val amount: Long,
     val accountId: Long,

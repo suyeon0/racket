@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service
 @Service
 class CashConsumerServiceImpl(
 
-    val paymentCallService: PaymentCallService,
-    val cashClient: CashFeignClient
+    private val paymentCallService: PaymentCallService,
+    private val cashClient: CashFeignClient
 
     ) : CashConsumerService {
 
@@ -42,7 +42,16 @@ class CashConsumerServiceImpl(
             val balance = this.callCashApiToSaveData(requestTransactionData).body!!.balance
             log.info { "=========== 충전 완료 DB 반영 성공 -> 잔액 :${balance} 원" }
         } catch (e: UpdateDataAsChargingCompletedException) {
-            log.info { "=========== 충전 완료 DB 반영 실패" }
+            this.cashClient.postTransaction(
+                CashChargeCommand(
+                    status = CashTransactionStatusType.FAILED,
+                    transactionId = requestTransactionData.transactionId,
+                    userId = requestTransactionData.userId,
+                    amount = requestTransactionData.amount,
+                    accountId = requestTransactionData.accountId,
+                    eventType = requestTransactionData.eventType
+                )
+            )
         }
     }
 
@@ -61,7 +70,7 @@ class CashConsumerServiceImpl(
             CashChargeCommand(
                 userId = chargeRequestTransactionData.userId,
                 amount = chargeRequestTransactionData.amount,
-                transactionId = chargeRequestTransactionData.transactionId.toString(),
+                transactionId = chargeRequestTransactionData.transactionId,
                 accountId = chargeRequestTransactionData.accountId,
                 eventType = chargeRequestTransactionData.eventType,
                 status = CashTransactionStatusType.COMPLETED

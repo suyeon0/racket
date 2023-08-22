@@ -19,4 +19,7 @@ interface CashFeignClient {
 
     @PostMapping("/charge/complete")
     fun completeCharge(@RequestBody chargeCommand: CashChargeCommand): ResponseEntity<CashBalanceResponseView>
+
+    @PostMapping("/transaction")
+    fun postTransaction(@RequestBody transactionCommand: CashChargeCommand)
 }

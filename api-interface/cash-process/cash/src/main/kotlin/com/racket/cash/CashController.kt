@@ -59,7 +59,7 @@ class CashController(
         return ResponseEntity.ok().body(
             this.cashService.completeCharge(
                 ChargeVO(
-                    transactionId = ObjectId(chargeCommand.transactionId),
+                    transactionId = chargeCommand.transactionId,
                     userId = chargeCommand.userId,
                     amount = chargeCommand.amount,
                     accountId = chargeCommand.accountId,
