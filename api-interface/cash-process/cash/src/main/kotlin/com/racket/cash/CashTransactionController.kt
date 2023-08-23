@@ -15,9 +15,13 @@ class CashTransactionController(
     private val cashTransactionLogService: CashTransactionLogService
 ) {
 
-    @GetMapping("/{transactionId}")
-    fun getTransaction(@PathVariable transactionId: ObjectId) =
+    @GetMapping("/list/{transactionId}")
+    fun getTransactionListByTransactionId(@PathVariable transactionId: ObjectId) =
         ResponseEntity.ok().body(this.cashTransactionLogService.getTransactionListByTransactionId(transactionId))
+
+    @GetMapping("/{eventId}")
+    fun getTransaction(@PathVariable eventId: ObjectId) =
+        ResponseEntity.ok().body(this.cashTransactionLogService.getTransactionById(eventId))
 
     @PostMapping
     fun postTransaction(@RequestBody transactionCommand: CashChargeCommand) =

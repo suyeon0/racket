@@ -44,4 +44,20 @@ class CashTransactionLogServiceImpl(
         }
     }
 
+    override fun getTransactionById(eventId: ObjectId): CashTransactionResponseView {
+        val transaction = this.cashTransactionRepository.findById(eventId)
+            .orElseThrow { NotFoundCashTransactionException() }
+        return CashTransactionResponseView(
+            id = transaction.id!!,
+            userId = transaction.userId,
+            amount = transaction.amount,
+            createdAt = transaction.id!!.date,
+            transactionId = transaction.transactionId,
+            accountId = transaction.accountId,
+            status = transaction.status,
+            eventType = transaction.eventType
+        )
+    }
+
+
 }

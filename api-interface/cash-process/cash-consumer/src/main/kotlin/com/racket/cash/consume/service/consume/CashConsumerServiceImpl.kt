@@ -27,7 +27,7 @@ class CashConsumerServiceImpl(
         topics = ["cash"]
     )
     override fun consumeChargingProcess(message: String) {
-        val transactionDataList = this.cashClient.getTransaction(transactionId = ObjectId(message)).body
+        val transactionDataList = this.cashClient.getTransactionList(transactionId = ObjectId(message)).body
             ?: throw ChargePayException("임시 트랜잭션 데이터를 가져오지 못했습니다-${message}")
 
         this.validateTransactionData(transactionDataList)
