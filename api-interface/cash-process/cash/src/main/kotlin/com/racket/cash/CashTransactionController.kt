@@ -16,7 +16,7 @@ class CashTransactionController(
 ) {
 
     @GetMapping("/list/{transactionId}")
-    fun getTransactionListByTransactionId(@PathVariable transactionId: ObjectId) =
+    fun getTransactionListByTransactionId(@PathVariable transactionId: String) =
         ResponseEntity.ok().body(this.cashTransactionLogService.getTransactionListByTransactionId(transactionId))
 
     @GetMapping("/{eventId}")

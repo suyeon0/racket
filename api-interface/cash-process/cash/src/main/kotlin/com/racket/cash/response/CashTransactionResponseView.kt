@@ -16,11 +16,7 @@ data class CashTransactionResponseView(
     @JsonSerialize(using = ObjectIdSerializer::class)
     @JsonDeserialize(using = ObjectIdDeserializer::class)
     val id: ObjectId,
-
-    @JsonSerialize(using = ObjectIdSerializer::class)
-    @JsonDeserialize(using = ObjectIdDeserializer::class)
-    val transactionId: ObjectId,
-
+    val transactionId: String,
     val userId: Long,
     val amount: Long,
     val status: CashTransactionStatusType,

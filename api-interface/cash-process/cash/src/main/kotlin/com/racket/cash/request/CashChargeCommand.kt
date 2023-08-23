@@ -6,7 +6,7 @@ import org.bson.types.ObjectId
 
 data class CashChargeCommand(
 
-    val transactionId: ObjectId? = null,
+    val transactionId: String? = null,
     val userId: Long,
     val amount: Long,
     val accountId: Long,

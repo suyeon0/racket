@@ -14,8 +14,8 @@ interface CashFeignClient {
     /**
      * Consumer - Cache Charging Process 처리
      */
-    @GetMapping("/list/transaction/{transactionId}")
-    fun getTransactionList(@PathVariable transactionId: ObjectId): ResponseEntity<List<CashTransactionResponseView>>
+    @GetMapping("/transaction/list/{transactionId}")
+    fun getTransactionList(@PathVariable transactionId: String): ResponseEntity<List<CashTransactionResponseView>>
 
     @PostMapping("/charge/complete")
     fun completeCharge(@RequestBody chargeCommand: CashChargeCommand): ResponseEntity<CashBalanceResponseView>

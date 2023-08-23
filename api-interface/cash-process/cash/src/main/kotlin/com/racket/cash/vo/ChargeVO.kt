@@ -7,7 +7,7 @@ import org.bson.types.ObjectId
 
 data class ChargeVO(
 
-    var transactionId: ObjectId? = null,
+    var transactionId: String? = null,
     val userId: Long,
     val amount: Long,
     val accountId: Long,

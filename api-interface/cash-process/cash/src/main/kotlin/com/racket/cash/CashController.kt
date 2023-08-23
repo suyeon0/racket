@@ -2,6 +2,7 @@ package com.racket.cash
 
 import com.racket.api.shared.payment.BasePaymentComponent
 import com.racket.api.shared.user.BaseUserComponent
+import com.racket.cash.enums.CashTransactionStatusType
 import com.racket.cash.exception.InvalidChargingTransactionException
 import com.racket.cash.request.CashChargeCommand
 import com.racket.cash.response.CashBalanceResponseView
@@ -63,7 +64,7 @@ class CashController(
                     amount = chargeCommand.amount,
                     accountId = chargeCommand.accountId,
                     eventType = chargeCommand.eventType,
-                    status = chargeCommand.status
+                    status = CashTransactionStatusType.COMPLETED
                 )
             )
         )

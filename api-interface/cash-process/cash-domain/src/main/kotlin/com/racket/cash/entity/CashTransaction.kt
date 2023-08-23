@@ -15,7 +15,7 @@ class CashTransaction(
     var id: ObjectId? = null,
 
     @Column(name = "transaction_id", nullable = false)
-    var transactionId: ObjectId,
+    var transactionId: String,
 
     @Column(name = "user_id", nullable = false)
     val userId: Long,

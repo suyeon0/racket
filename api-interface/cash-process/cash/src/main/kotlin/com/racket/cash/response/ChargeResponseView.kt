@@ -11,6 +11,7 @@ data class ChargeResponseView(
     @JsonSerialize(using = ObjectIdSerializer::class)
     @JsonDeserialize(using = ObjectIdDeserializer::class)
     val id: ObjectId,
+    val transactionId: String,
     val userId: Long,
     val amount: Long
 

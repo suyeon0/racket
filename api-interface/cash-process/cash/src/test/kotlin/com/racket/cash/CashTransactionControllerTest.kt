@@ -29,6 +29,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import org.springframework.transaction.annotation.Transactional
+import java.util.UUID
 
 @Transactional
 @AutoConfigureMockMvc
@@ -48,7 +49,22 @@ class CashTransactionControllerTest {
     @Test
     fun `Cash Transaction - 캐시 충전 이력 조회 성공시 200 status & userId, amount, status 값을 리턴한다`() {
         // given
-        val eventId = "64e56bc8013d855d43711d6e"
+        val command = CashChargeCommand(
+            userId = 28,
+            amount = 50000,
+            accountId = 1,
+            eventType = CashEventType.CHARGING,
+            status = CashTransactionStatusType.REQUEST
+        )
+        val savedData = this.mockMvc.post("${CashControllerTest.cashRequestURL}/charge/request") {
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(command)
+        }.andExpect {
+            status { isCreated() }
+        }.andReturn()
+        val eventId = objectMapper.registerModule(JavaTimeModule())
+            .readValue(savedData.response.contentAsString, ChargeResponseView::class.java)
+            .id
 
         // when
         val sut = this.mockMvc.get("${cashTransactionRequestURL}/{event_id}", eventId) {}
@@ -81,7 +97,7 @@ class CashTransactionControllerTest {
         val mockRepository = mock(CashTransactionRepository::class.java)
         val service = CashTransactionLogServiceImpl(mockRepository)
         val chargeVO = ChargeVO(
-            transactionId = ObjectId(),
+            transactionId = UUID.randomUUID().toString(),
             userId = 1L,
             amount = 50000,
             eventType = CashEventType.CHARGING,

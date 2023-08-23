@@ -4,16 +4,13 @@ import com.racket.api.payment.presentation.PaymentErrorCodeConstants
 import com.racket.api.payment.presentation.RetryPaymentCallRequiredException
 import com.racket.cash.consume.client.CashFeignClient
 import com.racket.cash.consume.service.PaymentCallService
-import com.racket.cash.consume.service.PaymentCallServiceImpl
 import com.racket.cash.enums.CashTransactionStatusType
 import com.racket.cash.exception.*
 import com.racket.cash.request.CashChargeCommand
-import com.racket.cash.response.CashBalanceResponseView
 import com.racket.cash.response.CashTransactionResponseView
 import mu.KotlinLogging
 import org.bson.types.ObjectId
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Service
 
@@ -28,12 +25,13 @@ class CashConsumerServiceImpl(
     private val log = KotlinLogging.logger { }
 
     @KafkaListener(
-        topics = ["cash"]
+        topics = ["cash"], groupId = "racket"
     )
     override fun consumeChargingProcess(message: String) {
         val requestTransactionData = this.getRequestTransactionData(transactionId = message)
 
-        val response = this.paymentCallService.call(accountId = requestTransactionData.accountId, amount = requestTransactionData.amount)
+        val response =
+            this.paymentCallService.call(accountId = requestTransactionData.accountId, amount = requestTransactionData.amount)
         when (response.code) {
             PaymentErrorCodeConstants.RETRY_REQUIRED -> throw RetryPaymentCallRequiredException()
             HttpStatus.OK.value() -> {
@@ -52,6 +50,7 @@ class CashConsumerServiceImpl(
                     )
                 }
             }
+
             else -> throw ChargePayException("Payment Api Call Failed. - ${response.desc}")
         }
     }
@@ -59,7 +58,7 @@ class CashConsumerServiceImpl(
     override fun getRequestTransactionData(transactionId: String): CashTransactionResponseView {
         val transactionDataList: ArrayList<CashTransactionResponseView>
         try {
-            val response = cashClient.getTransactionList(transactionId = ObjectId(transactionId))
+            val response = cashClient.getTransactionList(transactionId = transactionId)
             transactionDataList = response.body as ArrayList<CashTransactionResponseView>
         } catch (e: Exception) {
             log.error { e.message }
@@ -76,16 +75,16 @@ class CashConsumerServiceImpl(
     }
 
     // 충전 결과 DB 반영을 위한 Cash Api 호출
-    private fun callCashApiToSaveData(chargeRequestTransactionData: CashTransactionResponseView) =
-        this.cashClient.completeCharge(
-            CashChargeCommand(
-                userId = chargeRequestTransactionData.userId,
-                amount = chargeRequestTransactionData.amount,
-                transactionId = chargeRequestTransactionData.transactionId,
-                accountId = chargeRequestTransactionData.accountId,
-                eventType = chargeRequestTransactionData.eventType,
-                status = CashTransactionStatusType.COMPLETED
-            )
+    private fun callCashApiToSaveData(chargeRequestTransactionData: CashTransactionResponseView) {
+        val command = CashChargeCommand(
+            userId = chargeRequestTransactionData.userId,
+            amount = chargeRequestTransactionData.amount,
+            transactionId = chargeRequestTransactionData.transactionId,
+            accountId = chargeRequestTransactionData.accountId,
+            eventType = chargeRequestTransactionData.eventType,
+            status = CashTransactionStatusType.COMPLETED
         )
+        this.cashClient.completeCharge(command)
+    }
 
 }

@@ -10,13 +10,14 @@ import com.racket.cash.vo.ChargeVO
 import com.racket.cash.vo.makeCashTransactionEntity
 import org.bson.types.ObjectId
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class CashTransactionLogServiceImpl(
     private val cashTransactionRepository: CashTransactionRepository
 ) : CashTransactionLogService {
 
-    override fun getTransactionListByTransactionId(transactionId: ObjectId): List<CashTransactionResponseView> {
+    override fun getTransactionListByTransactionId(transactionId: String): List<CashTransactionResponseView> {
         val transactionList = this.cashTransactionRepository.findAllByTransactionId(transactionId)
 
         return transactionList.stream().map { transaction ->
@@ -35,7 +36,7 @@ class CashTransactionLogServiceImpl(
     override fun insertChargeTransaction(chargeVO: ChargeVO): CashTransaction {
         return try {
             if (chargeVO.status == CashTransactionStatusType.REQUEST) {
-                chargeVO.transactionId = ObjectId()
+                chargeVO.transactionId = UUID.randomUUID().toString()
             }
             this.cashTransactionRepository.save(chargeVO.makeCashTransactionEntity())
         } catch (e: Exception) {

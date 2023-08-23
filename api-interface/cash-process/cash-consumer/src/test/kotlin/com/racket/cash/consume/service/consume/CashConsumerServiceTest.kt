@@ -3,22 +3,27 @@ package com.racket.cash.consume.service.consume
 import com.racket.api.payment.presentation.PaymentErrorCodeConstants
 import com.racket.api.payment.presentation.RetryPaymentCallRequiredException
 import com.racket.api.payment.presentation.response.PaymentApiResponse
+import com.racket.cash.CashTransactionLogService
 import com.racket.cash.consume.client.CashFeignClient
 import com.racket.cash.consume.service.PaymentCallServiceImpl
+import com.racket.cash.entity.CashTransaction
 import com.racket.cash.enums.CashEventType
 import com.racket.cash.enums.CashTransactionStatusType
 import com.racket.cash.exception.CashApiCallException
 import com.racket.cash.exception.ChargePayException
 import com.racket.cash.exception.InvalidChargingTransactionException
+import com.racket.cash.repository.CashTransactionRepository
 import com.racket.cash.response.CashTransactionResponseView
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import java.util.UUID
 
 
 @SpringBootTest
@@ -32,7 +37,7 @@ class CashConsumerServiceTest {
 
     companion object {
         private val eventId = ObjectId()
-        private val transactionId = ObjectId()
+        private val transactionId = UUID.randomUUID().toString()
     }
 
     @Test
@@ -40,11 +45,11 @@ class CashConsumerServiceTest {
         // given
         val cashConsumerService =
             CashConsumerServiceImpl(cashClient = cashFeignClient, paymentCallService = paymentCallService)
-        `when`(cashFeignClient.getTransactionList(eventId)).thenThrow(RuntimeException("feign client runtime Exception 발생"))
+        `when`(cashFeignClient.getTransactionList(transactionId)).thenThrow(RuntimeException("feign client runtime Exception 발생"))
 
         // when-then
         Assertions.assertThrows(CashApiCallException::class.java) {
-            cashConsumerService.consumeChargingProcess(message = eventId.toString())
+            cashConsumerService.consumeChargingProcess(message = transactionId)
         }
     }
 
@@ -58,7 +63,7 @@ class CashConsumerServiceTest {
 
         // when-then
         Assertions.assertThrows(InvalidChargingTransactionException::class.java) {
-            cashConsumerService.getRequestTransactionData(transactionId = transactionId.toString())
+            cashConsumerService.getRequestTransactionData(transactionId = transactionId)
         }
     }
 
@@ -67,7 +72,7 @@ class CashConsumerServiceTest {
         // given
         val cashConsumerService =
             CashConsumerServiceImpl(cashClient = cashFeignClient, paymentCallService = paymentCallService)
-        `when`(cashFeignClient.getTransactionList(eventId)).thenReturn(ResponseEntity.ok(this.getMockTransactionDataList()))
+        `when`(cashFeignClient.getTransactionList(transactionId)).thenReturn(ResponseEntity.ok(this.getMockTransactionDataList()))
         `when`(
             paymentCallService.call(
                 accountId = this.getMockTransactionDataList()[0].accountId,
@@ -83,7 +88,7 @@ class CashConsumerServiceTest {
 
         // then
         Assertions.assertThrows(RetryPaymentCallRequiredException::class.java) {
-            cashConsumerService.consumeChargingProcess(message = eventId.toString())
+            cashConsumerService.consumeChargingProcess(message = transactionId)
         }
     }
 
@@ -92,7 +97,7 @@ class CashConsumerServiceTest {
         // given
         val cashConsumerService =
             CashConsumerServiceImpl(cashClient = cashFeignClient, paymentCallService = paymentCallService)
-        `when`(cashFeignClient.getTransactionList(eventId)).thenReturn(ResponseEntity.ok(this.getMockTransactionDataList()))
+        `when`(cashFeignClient.getTransactionList(transactionId)).thenReturn(ResponseEntity.ok(this.getMockTransactionDataList()))
         `when`(
             paymentCallService.call(
                 accountId = this.getMockTransactionDataList()[0].accountId,
@@ -102,13 +107,13 @@ class CashConsumerServiceTest {
             .thenReturn(
                 PaymentApiResponse(
                     code = HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    desc = HttpStatus.INTERNAL_SERVER_ERROR.reasonPhrase
+                    desc = HttpStatus.INTERNAL_SERVER_ERROR.name
                 )
             )
 
         // then
         Assertions.assertThrows(ChargePayException::class.java) {
-            cashConsumerService.consumeChargingProcess(message = eventId.toString())
+            cashConsumerService.consumeChargingProcess(message = transactionId)
         }
     }
 
@@ -116,7 +121,7 @@ class CashConsumerServiceTest {
         arrayListOf(
             CashTransactionResponseView(
                 id = eventId,
-                transactionId = ObjectId(),
+                transactionId = transactionId,
                 amount = 100000,
                 userId = 28L,
                 status = CashTransactionStatusType.REQUEST,

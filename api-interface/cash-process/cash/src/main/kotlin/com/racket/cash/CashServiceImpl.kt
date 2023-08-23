@@ -31,6 +31,7 @@ class CashServiceImpl(
 
         return ChargeResponseView(
             id = savedEvent.id!!,
+            transactionId = savedEvent.transactionId,
             amount = savedEvent.amount,
             userId = savedEvent.userId
         )
