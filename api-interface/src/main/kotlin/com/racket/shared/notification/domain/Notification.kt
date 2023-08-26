@@ -19,9 +19,6 @@ abstract class Notification protected constructor() {
     @Column(nullable = false, columnDefinition = "TEXT")
     open var message: String? = null
 
-    @CreationTimestamp
-    open var createdAt: LocalDateTime = LocalDateTime.now()
-
     @Transient
     open var retryCount = 1
 

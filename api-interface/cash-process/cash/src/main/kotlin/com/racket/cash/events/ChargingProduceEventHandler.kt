@@ -3,7 +3,6 @@ package com.racket.cash.events
 import com.racket.cash.exception.CashProducerException
 import com.racket.cash.publish.PublishService
 import mu.KotlinLogging
-import org.bson.types.ObjectId
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import org.springframework.transaction.event.TransactionPhase
@@ -20,7 +19,7 @@ class ChargingProduceEventHandler(
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun handle(chargingProduceEventVO: ChargingProduceEventVO) {
         try {
-            this.chargingProduceEvent.callProduce(chargingProduceEventVO.eventId)
+            this.chargingProduceEvent.callProduce(chargingProduceEventVO.transactionId)
         } catch (e: Exception) {
             throw CashProducerException(chargingProduceEventVO, e)
         }
@@ -35,15 +34,15 @@ class ChargingProduceEvent(
 
     private val log = KotlinLogging.logger { }
 
-    fun callProduce(chargingEventId: ObjectId) {
+    fun callProduce(chargingTransactionId: String) {
         this.publishService.send(
-            topic = "CHARGING",
-            message = chargingEventId.toString()
+            topic = "cash",
+            message = chargingTransactionId.toString()
         )
-        log.info { "call Produce done! -${chargingEventId}" }
+        log.info { "call Produce done! -${chargingTransactionId}" }
     }
 }
 
 data class ChargingProduceEventVO(
-    val eventId: ObjectId
+    val transactionId: String
 )

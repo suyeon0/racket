@@ -2,13 +2,13 @@ package com.racket.cash
 
 import com.racket.api.shared.payment.BasePaymentComponent
 import com.racket.api.shared.user.BaseUserComponent
+import com.racket.cash.enums.CashTransactionStatusType
 import com.racket.cash.exception.InvalidChargingTransactionException
 import com.racket.cash.request.CashChargeCommand
 import com.racket.cash.response.CashBalanceResponseView
 import com.racket.cash.response.ChargeResponseView
 import com.racket.cash.vo.ChargeVO
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.bson.types.ObjectId
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -59,12 +59,12 @@ class CashController(
         return ResponseEntity.ok().body(
             this.cashService.completeCharge(
                 ChargeVO(
-                    transactionId = ObjectId(chargeCommand.transactionId),
+                    transactionId = chargeCommand.transactionId,
                     userId = chargeCommand.userId,
                     amount = chargeCommand.amount,
                     accountId = chargeCommand.accountId,
                     eventType = chargeCommand.eventType,
-                    status = chargeCommand.status
+                    status = CashTransactionStatusType.COMPLETED
                 )
             )
         )

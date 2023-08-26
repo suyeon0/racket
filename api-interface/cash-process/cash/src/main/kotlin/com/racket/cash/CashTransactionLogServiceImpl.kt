@@ -10,21 +10,47 @@ import com.racket.cash.vo.ChargeVO
 import com.racket.cash.vo.makeCashTransactionEntity
 import org.bson.types.ObjectId
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class CashTransactionLogServiceImpl(
     private val cashTransactionRepository: CashTransactionRepository
-): CashTransactionLogService {
+) : CashTransactionLogService {
 
-    override fun getTransactionById(transactionId: ObjectId): CashTransactionResponseView {
-        val transaction = this.cashTransactionRepository.findById(transactionId)
+    override fun getTransactionListByTransactionId(transactionId: String): List<CashTransactionResponseView> {
+        val transactionList = this.cashTransactionRepository.findAllByTransactionId(transactionId)
+
+        return transactionList.stream().map { transaction ->
+            CashTransactionResponseView(
+                id = transaction.id!!,
+                userId = transaction.userId,
+                amount = transaction.amount,
+                transactionId = transaction.transactionId,
+                accountId = transaction.accountId,
+                status = transaction.status,
+                eventType = transaction.eventType
+            )
+        }.toList()
+    }
+
+    override fun insertChargeTransaction(chargeVO: ChargeVO): CashTransaction {
+        return try {
+            if (chargeVO.status == CashTransactionStatusType.REQUEST) {
+                chargeVO.transactionId = UUID.randomUUID().toString()
+            }
+            this.cashTransactionRepository.save(chargeVO.makeCashTransactionEntity())
+        } catch (e: Exception) {
+            throw InsertCashTransactionException()
+        }
+    }
+
+    override fun getTransactionById(eventId: ObjectId): CashTransactionResponseView {
+        val transaction = this.cashTransactionRepository.findById(eventId)
             .orElseThrow { NotFoundCashTransactionException() }
-
         return CashTransactionResponseView(
             id = transaction.id!!,
             userId = transaction.userId,
             amount = transaction.amount,
-            createdAt = transaction.id!!.date,
             transactionId = transaction.transactionId,
             accountId = transaction.accountId,
             status = transaction.status,
@@ -32,15 +58,5 @@ class CashTransactionLogServiceImpl(
         )
     }
 
-    override fun insertChargeTransaction(chargeVO: ChargeVO): CashTransaction {
-        return try {
-            if (chargeVO.status == CashTransactionStatusType.REQUEST) {
-                chargeVO.transactionId = ObjectId()
-            }
-            this.cashTransactionRepository.save(chargeVO.makeCashTransactionEntity())
-        } catch (e: Exception) {
-            throw InsertCashTransactionException()
-        }
-    }
 
 }

@@ -1,5 +1,5 @@
 package com.racket.cash.exception
 
-class UpdateDataAsChargingCompletedException: RuntimeException() {
+class ChargingProcessingException: RuntimeException() {
     override val message: String = "Failed to Update Database as charging completed"
 }

@@ -19,7 +19,7 @@ class PaymentController: PaymentSpecification {
         Thread.sleep(this.getRandomNumber())
         log.info { "결제 요청 정보-${request}"}
         //return PaymentApiResponse(code = PaymentErrorCodeConstants.RETRY_REQUIRED, desc = "RETRY 오류 발생")
-        return PaymentApiResponse(code = HttpStatus.OK.value(), desc = "success")
+        return PaymentApiResponse(code = HttpStatus.OK.value(), message = "success")
     }
 
     private fun getRandomNumber(): Long {

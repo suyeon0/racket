@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional
 
 
 @Transactional
-//@SpringBootTest
 @AutoConfigureMockMvc
 @RecordApplicationEvents
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
