@@ -23,6 +23,9 @@ class CashConsumerServiceImpl(
 
     private val log = KotlinLogging.logger { }
 
+    private val paymentRequestRetryCode = PaymentErrorCodeConstants.RETRY_REQUIRED
+    private val paymentRequestSuccessCode = HttpStatus.OK.value()
+
     @KafkaListener(
         topics = ["cash"], groupId = "racket"
     )
@@ -32,11 +35,11 @@ class CashConsumerServiceImpl(
         val response =
             this.paymentCallService.call(accountId = requestTransactionData.accountId, amount = requestTransactionData.amount)
         when (response.code) {
-            PaymentErrorCodeConstants.RETRY_REQUIRED -> throw RetryPaymentCallRequiredException()
-            HttpStatus.OK.value() -> {
+            this.paymentRequestRetryCode -> throw RetryPaymentCallRequiredException()
+            this.paymentRequestSuccessCode -> {
                 try {
                     this.callCashApiToSaveData(requestTransactionData)
-                } catch (e: UpdateDataAsChargingCompletedException) {
+                } catch (e: ChargingProcessingException) {
                     this.cashClient.postTransaction(
                         CashChargeCommand(
                             status = CashTransactionStatusType.FAILED,
@@ -50,15 +53,13 @@ class CashConsumerServiceImpl(
                 }
             }
 
-            else -> throw ChargePayException("Payment Api Call Failed. - ${response.desc}")
+            else -> throw ChargePayException("Payment Api Call Failed. - ${response.message}")
         }
     }
 
     override fun getRequestTransactionData(transactionId: String): CashTransactionResponseView {
-        val transactionDataList: ArrayList<CashTransactionResponseView>
-        try {
-            val response = cashClient.getTransactionList(transactionId = transactionId)
-            transactionDataList = response.body as ArrayList<CashTransactionResponseView>
+        val transactionDataList = try {
+            cashClient.getTransactionList(transactionId = transactionId).body as ArrayList<CashTransactionResponseView>
         } catch (e: Exception) {
             log.error { e.message }
             throw CashApiCallException()
@@ -74,16 +75,15 @@ class CashConsumerServiceImpl(
     }
 
     // 충전 결과 DB 반영을 위한 Cash Api 호출
-    private fun callCashApiToSaveData(chargeRequestTransactionData: CashTransactionResponseView) {
-        val command = CashChargeCommand(
-            userId = chargeRequestTransactionData.userId,
-            amount = chargeRequestTransactionData.amount,
-            transactionId = chargeRequestTransactionData.transactionId,
-            accountId = chargeRequestTransactionData.accountId,
-            eventType = chargeRequestTransactionData.eventType,
-            status = CashTransactionStatusType.COMPLETED
+    private fun callCashApiToSaveData(chargeRequestTransactionData: CashTransactionResponseView) =
+        this.cashClient.completeCharge(
+            CashChargeCommand(
+                userId = chargeRequestTransactionData.userId,
+                amount = chargeRequestTransactionData.amount,
+                transactionId = chargeRequestTransactionData.transactionId,
+                accountId = chargeRequestTransactionData.accountId,
+                eventType = chargeRequestTransactionData.eventType,
+                status = CashTransactionStatusType.COMPLETED
+            )
         )
-        this.cashClient.completeCharge(command)
-    }
-
 }

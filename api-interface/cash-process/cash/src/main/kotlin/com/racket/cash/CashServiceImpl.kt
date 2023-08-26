@@ -2,7 +2,7 @@ package com.racket.cash
 
 import com.racket.cash.events.ChargingProduceEventVO
 import com.racket.cash.entity.CashBalance
-import com.racket.cash.exception.UpdateDataAsChargingCompletedException
+import com.racket.cash.exception.ChargingProcessingException
 import com.racket.cash.response.CashBalanceResponseView
 import com.racket.cash.response.ChargeResponseView
 import com.racket.cash.repository.CashBalanceRepository
@@ -53,7 +53,7 @@ class CashServiceImpl(
             this.updateBalance(userId = chargeVO.userId, amount = chargeVO.amount)
         } catch (e: Exception) {
             log.error { e }
-            throw UpdateDataAsChargingCompletedException()
+            throw ChargingProcessingException()
         }
     }
 

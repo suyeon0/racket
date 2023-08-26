@@ -4,7 +4,7 @@ import com.racket.api.shared.response.ApiError
 import com.racket.cash.exception.InvalidChargingTransactionException
 import com.racket.cash.exception.NotExistSavedChargeWayException
 import com.racket.cash.exception.NotFoundCashTransactionException
-import com.racket.cash.exception.UpdateDataAsChargingCompletedException
+import com.racket.cash.exception.ChargingProcessingException
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -36,7 +36,7 @@ class CashApiExceptionHandlerAdvice : ResponseEntityExceptionHandler() {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(
         value = [
-            UpdateDataAsChargingCompletedException::class
+            ChargingProcessingException::class
         ]
     )
     fun cashInternalServerError(e: RuntimeException, httpServletRequest: HttpServletRequest) =
