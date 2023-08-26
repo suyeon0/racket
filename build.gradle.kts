@@ -51,22 +51,10 @@ subprojects {
 		testImplementation("org.springframework.boot:spring-boot-starter-test")
 		testImplementation("org.springframework.security:spring-security-test")
 		testImplementation("org.junit.jupiter:junit-jupiter-params")
-		testImplementation("it.ozimov:embedded-redis:0.7.2")
 
 		//DB
 		implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-		implementation ("com.mysql:mysql-connector-j")
 		implementation("org.javassist:javassist:3.29.2-GA")
-
-		//thymeleaf
-		implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-
-		//Redis
-		implementation("org.springframework.boot:spring-boot-starter-data-redis:2.5.4")
-
-		//swagger
-		implementation("org.springdoc:springdoc-openapi-ui:1.7.0")
-		implementation("org.springdoc:springdoc-openapi-kotlin:1.7.0")
 
 		//spring-retry
 		implementation("org.springframework.retry:spring-retry")
@@ -75,12 +63,8 @@ subprojects {
 		// cache
 		implementation("org.springframework.boot:spring-boot-starter-cache:3.1.2")
 
-		// mongodb
-		implementation ("org.springframework.boot:spring-boot-starter-data-mongodb")
-
 		// feign
 		implementation ("org.springframework.cloud:spring-cloud-starter-openfeign")
-
 	}
 
 	dependencyManagement {

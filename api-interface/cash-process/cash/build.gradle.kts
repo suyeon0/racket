@@ -9,12 +9,21 @@ object Versions {
 }
 
 dependencies {
-    implementation("org.springframework.kafka:spring-kafka")
     implementation(project(mapOf("path" to ":api-interface:cash-process:cash-domain")))
     implementation(project(mapOf("path" to ":api-interface:api-shared:user")))
     implementation(project(mapOf("path" to ":api-interface:api-shared:payment")))
     implementation(project(mapOf("path" to ":shared:util")))
     implementation(project(mapOf("path" to ":api-interface")))
+
+    // kafka
+    implementation("org.springframework.kafka:spring-kafka")
+
+    // mongodb
+    implementation ("org.springframework.boot:spring-boot-starter-data-mongodb")
+
+    //swagger
+    implementation("org.springdoc:springdoc-openapi-ui:1.7.0")
+    implementation("org.springdoc:springdoc-openapi-kotlin:1.7.0")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
