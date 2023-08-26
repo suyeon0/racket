@@ -1,11 +1,4 @@
-dependencyManagement {
-    imports {
-        mavenBom ("org.springframework.cloud:spring-cloud-dependencies:2021.0.8")
-    }
-}
-
 dependencies {
-
     implementation(project(mapOf("path" to ":api-interface")))
 
     implementation("org.springframework.kafka:spring-kafka")
@@ -22,7 +15,6 @@ dependencies {
     api("org.springframework:spring-aspects")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0'")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
 }
 
