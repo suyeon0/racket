@@ -18,8 +18,9 @@ class PaymentController: PaymentSpecification {
         // 결제하는 것처럼 임의 시간 줌(최대 5초)
         Thread.sleep(this.getRandomNumber())
         log.info { "결제 요청 정보-${request}"}
-        //return PaymentApiResponse(code = PaymentErrorCodeConstants.RETRY_REQUIRED, desc = "RETRY 오류 발생")
-        return PaymentApiResponse(code = HttpStatus.OK.value(), message = "success")
+        return PaymentApiResponse(code = 500, message = "서버 오류 발생")
+        //return PaymentApiResponse(code = PaymentErrorCodeConstants.RETRY_REQUIRED, message = "RETRY 오류 발생")
+        //return PaymentApiResponse(code = HttpStatus.OK.value(), message = "success")
     }
 
     private fun getRandomNumber(): Long {
