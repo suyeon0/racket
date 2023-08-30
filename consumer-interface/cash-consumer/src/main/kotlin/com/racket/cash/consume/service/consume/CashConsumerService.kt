@@ -2,6 +2,7 @@ package com.racket.cash.consume.service.consume
 
 import com.racket.api.payment.presentation.PaymentErrorCodeConstants
 import com.racket.api.payment.presentation.RetryPaymentCallRequiredException
+import com.racket.api.payment.presentation.response.PaymentApiResponse
 import com.racket.cash.consume.client.CashFeignClient
 import com.racket.cash.consume.const.DeadLetterType
 import com.racket.cash.consume.service.PaymentCallService
@@ -44,7 +45,6 @@ class CashConsumerService(
     ) {
         try {
             val requestTransactionData = this.getRequestTransactionData(transactionId = message)
-
             val response =
                 this.paymentCallService.call(accountId = requestTransactionData.accountId, amount = requestTransactionData.amount)
             when (response.code) {
@@ -70,16 +70,20 @@ class CashConsumerService(
             }
         } catch (e: Exception) {
             val deadLetterType = when (e) {
-                is ChargePayException -> DeadLetterType.INSERT_DB
                 is RetryPaymentCallRequiredException -> DeadLetterType.RETRY
-                else -> DeadLetterType.REQUEST_ADMIN
+                else -> DeadLetterType.INSERT_DB
             }
+
             this.publishCashDeadLetterQueue(
                 topic = deadLetterType,
-                value = DeadLetterQueueVO(payload = message, errorMessage = e.message ?: "Exception: ${e::class.simpleName}")
+                value = DeadLetterQueueVO(
+                    payload = message,
+                    errorMessage = e.message ?: "Exception: ${e::class.simpleName}"
+                )
             )
         }
         consumer.commitSync()
+        log.info { "cash consume offset commit!" }
     }
 
     fun getRequestTransactionData(transactionId: String): CashTransactionResponseView {
@@ -100,7 +104,7 @@ class CashConsumerService(
     }
 
     // 충전 결과 DB 반영을 위한 Cash Api 호출
-    private fun callCashApiToSaveData(chargeRequestTransactionData: CashTransactionResponseView) =
+    fun callCashApiToSaveData(chargeRequestTransactionData: CashTransactionResponseView) =
         this.cashClient.completeCharge(
             CashChargeCommand(
                 userId = chargeRequestTransactionData.userId,
@@ -112,7 +116,7 @@ class CashConsumerService(
             )
         )
 
-    private fun publishCashDeadLetterQueue(topic: String, value: DeadLetterQueueVO) {
+    fun publishCashDeadLetterQueue(topic: String, value: DeadLetterQueueVO) {
         val listenableFuture: ListenableFuture<SendResult<String, DeadLetterQueueVO>> =
             this.deadLetterQueueKafkaProduceTemplate.send(topic, value)
         listenableFuture.addCallback(object : ListenableFutureCallback<SendResult<String, DeadLetterQueueVO>> {
