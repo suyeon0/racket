@@ -1,39 +1,19 @@
-server:
-  port: 28080
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health, info
-
 spring:
+  datasource:
+    jdbc-url: jdbc:h2:tcp://localhost/./racket
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
   jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
     properties:
       hibernate:
         format_sql: true
-        implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
-        physical_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
-        hbm2ddl.auto: update
+        hbm2ddl.auto: create
     open-in-view: false
     show-sql: true
-
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: racket
-      auto-offset-reset: earliest
-      enable-auto-commit: false
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
 logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
-
-client:
-  serviceUrl:
-    cash:  localhost:18080/api/v1/racket-cash
-    payment:  http://localhost:18081/api/v1/payment
