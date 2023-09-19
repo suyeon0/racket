@@ -1,11 +1,14 @@
 package com.racket.api.cart
 
+import com.racket.api.cart.client.DeliveryClient
 import com.racket.api.cart.client.ProductClient
 import com.racket.api.cart.domain.Cart
 import com.racket.api.cart.domain.CartRepository
+import com.racket.api.cart.exception.CartStockException
 import com.racket.api.cart.vo.CartItemRequestVO
 import com.racket.api.shared.user.BaseUserComponent
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 import kotlin.IllegalArgumentException
 
 @Service
@@ -13,29 +16,39 @@ class CartServiceImpl(
     private val cartRepository: CartRepository,
     private val baseUserComponent: BaseUserComponent,
     private val productClient: ProductClient
+    //private val deliveryClient: DeliveryClient
 ) : CartService {
-    override fun addItem(userId: Long, item: CartItemRequestVO) {
+    override fun addItem(request: CartItemRequestVO) {
         // 1. validate user
-        val user = this.baseUserComponent.validateUserByUserId(userId = userId)
+        this.baseUserComponent.validateUserByUserId(userId = request.userId)
 
-        // 2. get option
-        val option = this.productClient.getOption(optionId = item.optionId).body
+        // 2. stock
+        val option = this.productClient.getOption(optionId = request.optionId).body ?: throw Exception("option not found")
+        val availableStock = option.stock
+        if (availableStock < request.orderQuantity) {
+           throw CartStockException(optionId = option.id)
+        }
+
+        // 3. delivery info
+        //val deliveryInfo = this.deliveryClient.getInfo()
 
         val cart = Cart(
-            userId = userId,
-            optionId = item.optionId,
+            userId = request.userId,
+            productId = request.productId,
+            optionId = request.optionId,
             originPrice = option.additionalPrice,
-            calculatedPrice = item.
+            calculatedPrice = request.price,
+            orderQuantity = request.orderQuantity,
+            deliveryCost = 0L,
+            estimatedDeliveryDate = LocalDate.now()
         )
         this.cartRepository.save(cart)
-
-
     }
 
     override fun deleteItem(cartItemId: Long) {
-        val cartItem = cartRepository.findById(cartItemId)
+        val cartItem = this.cartRepository.findById(cartItemId)
         if (cartItem.isPresent) {
-            cartRepository.delete(cartItem.get())
+            this.cartRepository.delete(cartItem.get())
         } else {
             throw IllegalArgumentException("Cart item not found")
         }

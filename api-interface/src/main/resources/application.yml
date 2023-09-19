@@ -52,5 +52,6 @@ logging:
 
 client:
   serviceUrl:
-    producer:  http://localhost:18082/produce/v1
+    producer: http://localhost:18082/produce/v1
     product: localhost:18081/api/v1/product
+    delivery: localhost:18085/api/v1/delivery

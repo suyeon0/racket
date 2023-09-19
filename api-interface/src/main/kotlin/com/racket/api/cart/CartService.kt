@@ -4,7 +4,7 @@ import com.racket.api.cart.vo.CartItemRequestVO
 
 interface CartService {
 
-    fun addItem(userId: Long, item: CartItemRequestVO)
+    fun addItem(item: CartItemRequestVO)
 
     fun deleteItem(cartItemId: Long)
 
