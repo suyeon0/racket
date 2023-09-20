@@ -2,6 +2,7 @@ package com.racket.api.cart
 
 import com.racket.api.cart.annotation.CartApiV1
 import com.racket.api.cart.request.CartCreateRequestCommand
+import com.racket.api.cart.response.CartResponseView
 import com.racket.api.cart.vo.CartItemRequestVO
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -17,7 +18,7 @@ class CartController(
 ) {
 
     @PostMapping
-    fun postItem(@RequestBody request: CartCreateRequestCommand): ResponseEntity<Unit> {
+    fun postItem(@RequestBody request: CartCreateRequestCommand): ResponseEntity<CartResponseView> {
         request.validate()
         return ResponseEntity.ok(
             this.cartService.addItem(
@@ -35,8 +36,8 @@ class CartController(
     }
 
     @PatchMapping("/quantity/{cartItemId}/{quantity}")
-    fun updateItemQuantity(@PathVariable cartItemId: Long, @PathVariable quantity: Long): ResponseEntity<Unit> {
-        if (quantity <= 0) throw IllegalArgumentException()
+    fun updateItemQuantity(@PathVariable cartItemId: Long, @PathVariable quantity: Long): ResponseEntity<CartResponseView> {
+        if (quantity <= 0) throw IllegalArgumentException("quantity must be bigger than zero")
         return ResponseEntity.ok(this.cartService.updateOrderQuantity(cartItemId = cartItemId, quantity = quantity))
     }
 
@@ -49,12 +50,5 @@ class CartController(
         // TODO: user cart item 확인
         return ResponseEntity.ok(this.cartService.deleteItem(cartItemId = cartItemId))
     }
-
-
-    @GetMapping
-    fun getCartItemCount() {
-
-    }
-
 
 }
