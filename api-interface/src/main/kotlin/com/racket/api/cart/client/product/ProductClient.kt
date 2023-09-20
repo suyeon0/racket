@@ -1,4 +1,4 @@
-package com.racket.api.cart.client
+package com.racket.api.cart.client.product
 
 import com.racket.api.product.option.reponse.OptionResponseView
 import org.springframework.cloud.openfeign.FeignClient

@@ -1,6 +1,6 @@
-package com.racket.api.cart.client
+package com.racket.api.cart.client.delivery
 
-import com.racket.api.cart.client.response.DeliveryResponseView
+import com.racket.api.cart.client.delivery.DeliveryResponseView
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping

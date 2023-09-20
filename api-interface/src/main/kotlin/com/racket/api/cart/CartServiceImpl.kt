@@ -1,8 +1,8 @@
 package com.racket.api.cart
 
-import com.racket.api.cart.client.DeliveryClient
-import com.racket.api.cart.client.ProductClient
-import com.racket.api.cart.client.response.DeliveryResponseView
+import com.racket.api.cart.client.delivery.DeliveryClient
+import com.racket.api.cart.client.product.ProductClient
+import com.racket.api.cart.client.delivery.DeliveryResponseView
 import com.racket.api.cart.domain.Cart
 import com.racket.api.cart.domain.CartRepository
 import com.racket.api.cart.exception.CartDeliveryFeignException
@@ -12,6 +12,7 @@ import com.racket.api.cart.response.CartResponseView
 import com.racket.api.cart.vo.CartItemRequestVO
 import com.racket.api.product.exception.NotFoundOptionException
 import com.racket.api.shared.user.BaseUserComponent
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -38,12 +39,14 @@ class CartServiceImpl(
         }
 
         // 3. delivery info
-        val deliveryInfo: DeliveryResponseView?
-        val response = this.deliveryClient.get(optionId = optionId) ?: throw CartDeliveryFeignException(null)
-        if (response.statusCode.is2xxSuccessful) {
-            deliveryInfo = response.body ?: throw CartDeliveryFeignException(null)
-        } else {
-            throw CartDeliveryFeignException(null)
+        val deliveryResponse: DeliveryResponseView
+        try {
+            deliveryResponse = this.deliveryClient.get(optionId = optionId)?.body!!
+            if(deliveryResponse.statusCode.toInt() != HttpStatus.OK.value()) {
+                throw CartDeliveryFeignException(deliveryResponse.statusMessage)
+            }
+        } catch (e: Exception) {
+            throw CartDeliveryFeignException("delivery api call fail!")
         }
 
         val cart = Cart(
@@ -53,8 +56,8 @@ class CartServiceImpl(
             originalPrice = item.originalPrice,
             calculatedPrice = item.calculatedPrice,
             orderQuantity = item.orderQuantity,
-            deliveryCost = deliveryInfo.deliveryCost,
-            estimatedDeliveryDate = deliveryInfo.expectedDate
+            deliveryCost = deliveryResponse.deliveryCost,
+            estimatedDeliveryDate = deliveryResponse.expectedDate
         )
         return CartResponseView.makeView(this.cartRepository.save(cart))
     }
