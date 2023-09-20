@@ -1,5 +1,5 @@
 server:
-  port: 18081
+  port: 18083
 
 management:
   endpoints:
@@ -15,14 +15,6 @@ spring:
       password: racket
       driver-class-name: com.mysql.cj.jdbc.Driver
 
-  data:
-    mongodb:
-      host: localhost
-      port: 27017
-      username: root
-      password: 1234
-      connectionString: mongodb://root:1234@localhost:27017
-
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     properties:
@@ -34,24 +26,7 @@ spring:
     open-in-view: false
     show-sql: true
 
-  redis:
-    host: 127.0.0.1
-    password: 1234
-    port: 6379
-  session:
-    store-type: redis
-
-  config:
-    import: swagger.yml
-
 logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
-
-
-client:
-  serviceUrl:
-    producer: http://localhost:18082/produce/v1
-    product: localhost:18081/api/v1/product
-    delivery: localhost:18083/api/v1/delivery

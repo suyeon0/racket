@@ -11,6 +11,6 @@ interface CartService {
 
     fun getItemListByUserId(userId: Long): List<CartResponseView>
 
-    fun updateOrderQuantity(cartItemId: Long, quantity: Long): CartResponseView
+    fun updateOrderQuantity(cartItemId: Long, orderQuantity: Long): CartResponseView
 
 }

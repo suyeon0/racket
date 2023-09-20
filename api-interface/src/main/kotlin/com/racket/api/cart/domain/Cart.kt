@@ -24,8 +24,8 @@ class Cart (
     @Column(name = "option_id")
     val optionId: Long,
 
-    @Column(name = "origin_price")
-    val originPrice: Long,
+    @Column(name = "original_price")
+    val originalPrice: Long,
 
     @Column(name = "calculated_price")
     val calculatedPrice: Long,

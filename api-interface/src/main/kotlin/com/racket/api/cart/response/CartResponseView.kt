@@ -12,7 +12,7 @@ data class CartResponseView(
 
     val optionId: Long,
 
-    val originPrice: Long,
+    val originalPrice: Long,
 
     val calculatedPrice: Long,
 
@@ -28,7 +28,7 @@ data class CartResponseView(
                 userId = cart.userId,
                 productId = cart.productId,
                 optionId = cart.optionId,
-                originPrice = cart.originPrice,
+                originalPrice = cart.originalPrice,
                 calculatedPrice = cart.calculatedPrice,
                 orderQuantity = cart.orderQuantity,
                 deliveryInformationVO = DeliveryInformationVO(

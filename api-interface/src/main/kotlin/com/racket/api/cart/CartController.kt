@@ -2,6 +2,7 @@ package com.racket.api.cart
 
 import com.racket.api.cart.annotation.CartApiV1
 import com.racket.api.cart.request.CartCreateRequestCommand
+import com.racket.api.cart.request.CartUpdateRequestCommand
 import com.racket.api.cart.response.CartResponseView
 import com.racket.api.cart.vo.CartItemRequestVO
 import org.springframework.http.ResponseEntity
@@ -27,7 +28,8 @@ class CartController(
                     productId = request.productId,
                     optionId = request.optionId,
                     optionName = request.optionName,
-                    price = request.price,
+                    originalPrice = request.originalPrice,
+                    calculatedPrice = request.calculatedPrice,
                     orderQuantity = request.orderQuantity,
                     deliveryInformation = request.deliveryInformation
                 )
@@ -35,10 +37,10 @@ class CartController(
         )
     }
 
-    @PatchMapping("/quantity/{cartItemId}/{quantity}")
-    fun updateItemQuantity(@PathVariable cartItemId: Long, @PathVariable quantity: Long): ResponseEntity<CartResponseView> {
-        if (quantity <= 0) throw IllegalArgumentException("quantity must be bigger than zero")
-        return ResponseEntity.ok(this.cartService.updateOrderQuantity(cartItemId = cartItemId, quantity = quantity))
+    @PatchMapping("/{cartItemId}/quantity")
+    fun updateItemQuantity(@PathVariable cartItemId: Long, @RequestBody request: CartUpdateRequestCommand): ResponseEntity<CartResponseView> {
+        request.validate()
+        return ResponseEntity.ok(this.cartService.updateOrderQuantity(cartItemId = cartItemId, orderQuantity = request.orderQuantity))
     }
 
     @GetMapping("/{userId}")

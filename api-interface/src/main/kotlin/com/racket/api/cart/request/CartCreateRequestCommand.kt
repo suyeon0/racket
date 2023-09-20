@@ -7,7 +7,8 @@ data class CartCreateRequestCommand(
     val productId: Long,
     val optionId: Long,
     val optionName: String,
-    val price: Long,
+    val originalPrice: Long,
+    val calculatedPrice: Long,
     val orderQuantity: Long,
     val deliveryInformation: DeliveryInformationVO
 ) {
