@@ -11,6 +11,8 @@ class DeliveryServiceImpl(
 ): DeliveryService {
     override fun get(optionId: Long): DeliveryResponseView {
         return DeliveryResponseView(
+            statusCode = null,
+            statusMessage = null,
             deliveryCost = 5000L,
             expectedDate = LocalDate.now().plusDays(1)
         )

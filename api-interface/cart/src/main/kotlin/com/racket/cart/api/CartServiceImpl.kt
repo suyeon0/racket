@@ -12,10 +12,11 @@ import com.racket.api.cart.response.CartResponseView
 import com.racket.cart.api.vo.CartItemRequestVO
 import com.racket.api.product.exception.NotFoundOptionException
 import com.racket.api.shared.user.BaseUserComponent
+import com.racket.cart.api.exception.CartProductFeignException
+import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-
 
 @Service
 class CartServiceImpl(
@@ -25,29 +26,26 @@ class CartServiceImpl(
     private val deliveryClient: DeliveryClient
 ) : CartService {
 
+    private val log = KotlinLogging.logger { }
+
+    /**
+     * 장바구니에는 그 시점 시냅샷 데이터를 담는다 (가용재고 체크, 상품 가격, 배송 정보)
+     * - 주문서 작성 시점에 데이터 재조회 : 가용재고 체크, 상품 가격, 배송 정보
+     * - 품절 반영 일배치
+     */
     @Transactional
     override fun addItem(item: CartItemRequestVO): CartResponseView {
         val optionId = item.optionId
 
         // 1. validate user
         this.baseUserComponent.validateUserByUserId(userId = item.userId)
+        // TODO: Shared 에서 발생하는 exception handle 방법..?
 
         // 2. stock
-        val availableStock = this.productClient.getOption(optionId = optionId).body?.stock ?: throw Exception("option not found")
-        if (availableStock < item.orderQuantity) {
-            throw CartStockException(optionId = optionId)
-        }
+        this.validateAvailableStock(optionId = optionId, orderQuantity = item.orderQuantity)
 
         // 3. delivery info
-        val deliveryResponse: DeliveryResponseView
-        try {
-            deliveryResponse = this.deliveryClient.get(optionId = optionId)?.body!!
-            if(deliveryResponse.statusCode.toInt() != HttpStatus.OK.value()) {
-                throw CartDeliveryFeignException(deliveryResponse.statusMessage)
-            }
-        } catch (e: Exception) {
-            throw CartDeliveryFeignException("delivery api call fail!")
-        }
+        val deliveryResponse = this.getDeliveryInfoByOptionId(optionId = optionId)
 
         val cart = Cart(
             userId = item.userId,
@@ -57,9 +55,38 @@ class CartServiceImpl(
             calculatedPrice = item.calculatedPrice,
             orderQuantity = item.orderQuantity,
             deliveryCost = deliveryResponse.deliveryCost,
-            estimatedDeliveryDate = deliveryResponse.expectedDate
+            estimatedDeliveryDay = deliveryResponse.estimatedDeliveryDay
         )
         return CartResponseView.makeView(this.cartRepository.save(cart))
+    }
+
+    private fun validateAvailableStock(optionId: Long, orderQuantity: Long) {
+        try {
+            val availableStock =
+                this.productClient.getOption(optionId = optionId).body?.stock ?: throw Exception("option not found")
+            if (availableStock < orderQuantity) {
+                throw CartStockException(optionId = optionId)
+            }
+        } catch (e: Exception) {
+            log.error { "error:::${e}" }
+            throw CartProductFeignException("product api call fail!")
+        }
+    }
+
+    private fun getDeliveryInfoByOptionId(optionId: Long): DeliveryResponseView {
+        try {
+            val deliveryResponse = this.deliveryClient.get(optionId = optionId)?.body!!
+            if (deliveryResponse.statusCode.toInt() != HttpStatus.OK.value()) {
+                throw CartDeliveryFeignException(deliveryResponse.statusMessage)
+            }
+            return deliveryResponse
+        } catch (e: CartDeliveryFeignException) {
+            log.error { "error:::${e}" }
+            throw e
+        } catch (e: Exception) {
+            log.error { "error:::${e}" }
+            throw CartDeliveryFeignException("delivery api call fail! - ${e.message}")
+        }
     }
 
     @Transactional

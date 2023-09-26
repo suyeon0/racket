@@ -2,6 +2,7 @@ package com.racket.api.cart.response
 
 import com.racket.cart.api.domain.Cart
 import com.racket.cart.api.vo.DeliveryInformationVO
+import java.time.LocalDate
 
 data class CartResponseView(
     val id: Long,
@@ -33,7 +34,7 @@ data class CartResponseView(
                 orderQuantity = cart.orderQuantity,
                 deliveryInformationVO = DeliveryInformationVO(
                     deliveryCost = cart.deliveryCost,
-                    expectedDate = cart.estimatedDeliveryDate
+                    expectedDate = LocalDate.now().plusDays(cart.estimatedDeliveryDay)
                 )
             )
     }

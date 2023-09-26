@@ -7,7 +7,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.scheduling.annotation.EnableAsync
 
 @EnableAsync
-@EnableFeignClients(basePackages = ["com.racket.delivery"])
 @ServletComponentScan
 @SpringBootApplication(scanBasePackages = ["com.racket.delivery"])
 class CashApplication {

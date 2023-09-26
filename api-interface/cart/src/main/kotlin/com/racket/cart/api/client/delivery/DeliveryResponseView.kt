@@ -8,6 +8,6 @@ data class DeliveryResponseView (
     val statusMessage: String,
 
     val deliveryCost: Long,
-    val expectedDate: LocalDate
+    val estimatedDeliveryDay: Long
 
 )

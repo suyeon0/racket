@@ -3,6 +3,8 @@ package com.racket.cart.api.advice
 import com.racket.cart.api.exception.CartStockException
 import com.racket.cart.api.exception.NotFoundCartItemException
 import com.racket.api.shared.response.ApiError
+import com.racket.cart.api.exception.CartDeliveryFeignException
+import com.racket.cart.api.exception.CartProductFeignException
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -48,6 +50,19 @@ class CartApiExceptionHandlerAdvice : ResponseEntityExceptionHandler() {
     fun cartStockException(e: RuntimeException, httpServletRequest: HttpServletRequest) =
         ApiError(
             code = HttpStatus.BAD_REQUEST.value(),
+            message = e.message.toString()
+        )
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(
+        value = [
+            CartDeliveryFeignException::class,
+            CartProductFeignException::class
+        ]
+    )
+    fun cartFeignException(e: RuntimeException, httpServletRequest: HttpServletRequest) =
+        ApiError(
+            code = HttpStatus.INTERNAL_SERVER_ERROR.value(),
             message = e.message.toString()
         )
 

@@ -36,8 +36,8 @@ class Cart (
     @Column(name = "delivery_cost")
     val deliveryCost: Long,
 
-    @Column(name = "estimated_delivery_date")
-    val estimatedDeliveryDate: LocalDate
+    @Column(name = "estimated_delivery_day")
+    val estimatedDeliveryDay: Long
 
 ) {
     fun updateOrderQuantity(quantity: Long) {
