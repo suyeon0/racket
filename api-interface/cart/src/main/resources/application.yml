@@ -1,0 +1,37 @@
+server:
+  port: 18084
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+
+spring:
+  datasource:
+    hikari:
+      jdbc-url: jdbc:mysql://localhost:3306/racket?useSSL=false&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true
+      username: suyeon
+      password: racket
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    properties:
+      hibernate:
+        format_sql: true
+        implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        hbm2ddl.auto: update
+    open-in-view: false
+    show-sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
+
+client:
+  serviceUrl:
+    product: localhost:18081/api/v1/product
+    delivery: localhost:18083/api/v1/delivery

@@ -13,3 +13,4 @@ include("shared:util")
 
 include("consumer-interface:cash-consumer")
 include("api-interface:delivery")
+include("api-interface:cart")
