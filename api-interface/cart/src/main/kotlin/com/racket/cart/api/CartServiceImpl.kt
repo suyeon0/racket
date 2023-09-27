@@ -5,13 +5,10 @@ import com.racket.cart.api.client.delivery.DeliveryResponseView
 import com.racket.cart.api.client.product.ProductClient
 import com.racket.cart.api.domain.Cart
 import com.racket.cart.api.domain.CartRepository
-import com.racket.cart.api.exception.CartDeliveryFeignException
-import com.racket.cart.api.exception.CartStockException
-import com.racket.cart.api.exception.NotFoundCartItemException
 import com.racket.cart.api.vo.CartItemRequestVO
 import com.racket.api.product.exception.NotFoundOptionException
 import com.racket.api.shared.user.BaseUserComponent
-import com.racket.cart.api.exception.CartProductFeignException
+import com.racket.cart.api.exception.*
 import com.racket.cart.api.response.CartResponseView
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
@@ -38,7 +35,7 @@ class CartServiceImpl(
         val optionId = item.optionId
 
         // 1. validate user
-        this.baseUserComponent.validateUserByUserId(userId = item.userId)
+        this.validateUser(userId = item.userId)
         // TODO: Shared 에서 발생하는 exception handle 방법..?
 
         // 2. stock
@@ -58,6 +55,14 @@ class CartServiceImpl(
             estimatedDeliveryDays = deliveryResponse.deliveryDays
         )
         return CartResponseView.makeView(this.cartRepository.save(cart))
+    }
+
+    private fun validateUser(userId: Long) {
+        try {
+            this.baseUserComponent.validateUserByUserId(userId = userId)
+        } catch (e: Exception) {
+            throw CartInvalidException(e.message)
+        }
     }
 
     private fun validateAvailableStock(optionId: Long, orderQuantity: Long) {

@@ -1,10 +1,7 @@
 package com.racket.cart.api.advice
 
-import com.racket.cart.api.exception.CartStockException
-import com.racket.cart.api.exception.NotFoundCartItemException
 import com.racket.api.shared.response.ApiError
-import com.racket.cart.api.exception.CartDeliveryFeignException
-import com.racket.cart.api.exception.CartProductFeignException
+import com.racket.cart.api.exception.*
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -20,7 +17,8 @@ class CartApiExceptionHandlerAdvice : ResponseEntityExceptionHandler() {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(
         value = [
-            IllegalArgumentException::class
+            IllegalArgumentException::class,
+            CartInvalidException::class
         ]
     )
     fun cartBadRequestException(e: RuntimeException, httpServletRequest: HttpServletRequest) =
