@@ -17,4 +17,7 @@ class DeliveryController(
     fun getDeliveryDaysByOption(@PathVariable optionId: Long) =
         ResponseEntity.ok(this.deliveryService.getDeliveryDaysByOption(optionId = optionId))
 
+    fun getDeliveryInformation() =
+        this.deliveryService.getDeliveryInformation(invoiceNumber = "", deliveryCompany = "")
+
 }

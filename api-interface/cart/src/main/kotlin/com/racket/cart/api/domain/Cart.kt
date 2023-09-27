@@ -1,6 +1,5 @@
 package com.racket.cart.api.domain
 
-import java.time.LocalDate
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -40,6 +39,7 @@ class Cart(
     val estimatedDeliveryDays: Long
 
 ) {
+
     fun updateOrderQuantity(quantity: Long) {
         this.orderQuantity = quantity
     }

@@ -1,29 +1,20 @@
 package com.racket.cart.api
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.racket.api.cart.response.CartResponseView
 import com.racket.api.product.domain.Option
 import com.racket.api.product.domain.OptionRepository
 import com.racket.api.product.domain.Product
 import com.racket.api.product.domain.ProductRepository
-import com.racket.api.product.option.reponse.OptionResponseView
 import com.racket.api.user.UserService
-import com.racket.api.user.presentation.response.UserResponseView
 import com.racket.cart.api.client.delivery.DeliveryClient
 import com.racket.cart.api.client.product.ProductClient
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.event.RecordApplicationEvents
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.get
 import org.springframework.transaction.annotation.Transactional
 
 @Transactional
@@ -45,6 +36,8 @@ class CartControllerTest {
 
     @Autowired
     lateinit var userService: UserService
+
+        //// 여기에서는 userRepository 로 직접 밀어넣기!!!
 
     @Autowired lateinit var productClient: ProductClient
     @Autowired lateinit var deliveryClient: DeliveryClient
@@ -97,16 +90,6 @@ class CartControllerTest {
         return this.optionRepository.saveAll(options).toList()
     }
 
-    //TODO :   MobileVO 가 없어서 shared 를 import 해야했음. 이렇게 하는 것이 맞낭...?
-//    fun saveUser() {
-//        val userRegisterDTO = UserService.UserRegisterDTO(
-//            userName = "tdd_user",
-//            email = "tdd_user@naver.com",
-//            password = "1234567",
-//            mobileVO = MobileVO(number = "01012341234")
-//        )
-//        return this.userService.registerUser(userRegisterDTO)
-//    }
 
 
 

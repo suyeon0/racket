@@ -1,8 +1,6 @@
 package com.racket.delivery.response
 
-import java.time.LocalDate
-
-data class DeliveryResponseView (
+data class OptionDeliveryDaysResponseView (
 
     val statusCode: Long,
     val statusMessage: String,

@@ -9,10 +9,9 @@ object Versions {
 }
 
 dependencies {
-    implementation(project(mapOf("path" to ":api-interface:api-shared:user")))
-    implementation(project(mapOf("path" to ":shared:util")))
-    implementation(project(mapOf("path" to ":api-interface")))
-
+    implementation(project(":api-interface:api-shared:user"))
+    implementation(project(":shared:util"))
+    implementation(project(":api-interface"))
     // Test
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
