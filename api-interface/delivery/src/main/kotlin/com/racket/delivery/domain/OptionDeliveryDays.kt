@@ -6,9 +6,13 @@ import javax.persistence.Id
 import javax.persistence.Table
 
 @Entity
-@Table(name = "delivery_information")
-class Delivery {
+@Table(name = "option_delivery_days")
+class OptionDeliveryDays (
 
     @Id @GeneratedValue
-    val id: Long = 0L
-}
+    val id: Long = 0L,
+
+    val optionId: Long,
+
+    val days: Long
+)

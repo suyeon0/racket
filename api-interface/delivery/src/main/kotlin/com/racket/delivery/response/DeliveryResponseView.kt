@@ -4,10 +4,11 @@ import java.time.LocalDate
 
 data class DeliveryResponseView (
 
-    val statusCode: Long?,
-    val statusMessage: String?,
+    val statusCode: Long,
+    val statusMessage: String,
 
-    val deliveryCost: Long?,
-    val expectedDate: LocalDate?
+    val optionId: Long,
+    val deliveryCost: Long,
+    val deliveryDays: Long
 
 )

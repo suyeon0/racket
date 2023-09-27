@@ -4,7 +4,7 @@ package com.racket.cart.api
 import com.racket.cart.api.annotation.CartApiV1
 import com.racket.cart.api.request.CartCreateRequestCommand
 import com.racket.cart.api.request.CartUpdateRequestCommand
-import com.racket.api.cart.response.CartResponseView
+import com.racket.cart.api.response.CartResponseView
 import com.racket.cart.api.vo.CartItemRequestVO
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping

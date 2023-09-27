@@ -1,6 +1,6 @@
 package com.racket.cart.api
 
-import com.racket.api.cart.response.CartResponseView
+import com.racket.cart.api.response.CartResponseView
 import com.racket.cart.api.vo.CartItemRequestVO
 
 interface CartService {

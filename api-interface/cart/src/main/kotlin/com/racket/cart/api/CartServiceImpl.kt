@@ -8,11 +8,11 @@ import com.racket.cart.api.domain.CartRepository
 import com.racket.cart.api.exception.CartDeliveryFeignException
 import com.racket.cart.api.exception.CartStockException
 import com.racket.cart.api.exception.NotFoundCartItemException
-import com.racket.api.cart.response.CartResponseView
 import com.racket.cart.api.vo.CartItemRequestVO
 import com.racket.api.product.exception.NotFoundOptionException
 import com.racket.api.shared.user.BaseUserComponent
 import com.racket.cart.api.exception.CartProductFeignException
+import com.racket.cart.api.response.CartResponseView
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -55,7 +55,7 @@ class CartServiceImpl(
             calculatedPrice = item.calculatedPrice,
             orderQuantity = item.orderQuantity,
             deliveryCost = deliveryResponse.deliveryCost,
-            estimatedDeliveryDay = deliveryResponse.estimatedDeliveryDay
+            estimatedDeliveryDays = deliveryResponse.deliveryDays
         )
         return CartResponseView.makeView(this.cartRepository.save(cart))
     }

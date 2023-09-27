@@ -9,7 +9,7 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "cart")
-class Cart (
+class Cart(
 
     @Id @GeneratedValue
     @Column(name = "id")
@@ -36,8 +36,8 @@ class Cart (
     @Column(name = "delivery_cost")
     val deliveryCost: Long,
 
-    @Column(name = "estimated_delivery_day")
-    val estimatedDeliveryDay: Long
+    @Column(name = "estimated_delivery_days")
+    val estimatedDeliveryDays: Long
 
 ) {
     fun updateOrderQuantity(quantity: Long) {
