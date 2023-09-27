@@ -74,6 +74,10 @@ class GetProductServiceImpl(
         )
     }
 
+    override fun getByProductIdAndOptionId(productId: Long, optionId: Long): ProductResponseView {
+        TODO("Not yet implemented")
+    }
+
     private fun hasNextCursor(id: Long?): Boolean {
         if (id == null) return false // 조회 결과가 없는 경우
         return this.productRepository.existsByIdLessThan(id)

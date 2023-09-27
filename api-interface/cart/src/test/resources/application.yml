@@ -13,7 +13,13 @@ spring:
     open-in-view: false
     show-sql: true
 
+
 logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+
+client:
+  serviceUrl:
+    product: localhost:18081/api/v1/product
+    delivery: localhost:18083/api/v1/delivery

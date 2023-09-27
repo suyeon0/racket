@@ -12,22 +12,22 @@ import org.springframework.data.redis.serializer.StringRedisSerializer
 
 @Configuration
 class RedisConfig(
-    @Value("\${spring.redis.host}")
-    val host: String,
-
-    @Value("\${spring.redis.port}")
-    val port: Int,
-
-    @Value("\${spring.redis.password}")
-    val password: String
+//    @Value("\${spring.redis.host}")
+//    val host: String,
+//
+//    @Value("\${spring.redis.port}")
+//    val port: Int,
+//
+//    @Value("\${spring.redis.password}")
+//    val password: String
 ) {
 
     @Bean
     fun redisConnectionFactory(): RedisConnectionFactory {
         val redisStandaloneConfiguration = RedisStandaloneConfiguration()
-        redisStandaloneConfiguration.hostName = host
-        redisStandaloneConfiguration.port = port
-        redisStandaloneConfiguration.setPassword(password)
+        redisStandaloneConfiguration.hostName = "127.0.0.1"
+        redisStandaloneConfiguration.port = 6379
+        redisStandaloneConfiguration.setPassword("1234")
         return LettuceConnectionFactory(redisStandaloneConfiguration)
     }
 

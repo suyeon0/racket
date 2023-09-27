@@ -39,4 +39,7 @@ class ProductController(
     override fun getProductList(@RequestParam cursorId: Long?) =
         ResponseEntity.ok(this.productService.getList(cursorId = cursorId, page = PageRequest.of(0, CURSOR_SIZE)))
 
+    fun getAvailableStock(@PathVariable productId: Long, @PathVariable optionId: Long) =
+        ResponseEntity.ok(this.productService.getByProductId(productId))
+
 }

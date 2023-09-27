@@ -10,4 +10,6 @@ interface GetProductService: ProductService {
 
     fun getList(cursorId: Long?, page: Pageable): ProductCursorResultVO
 
+    fun getByProductIdAndOptionId(productId: Long, optionId: Long): ProductResponseView
+
 }
