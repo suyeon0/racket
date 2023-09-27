@@ -3,7 +3,6 @@ package com.racket.api.product.option
 import com.racket.api.product.domain.Option
 import com.racket.api.product.domain.OptionRepository
 import com.racket.api.product.exception.NotFoundOptionException
-import com.racket.api.product.exception.NotFoundProductException
 import com.racket.api.product.option.reponse.OptionResponseView
 import org.springframework.stereotype.Service
 
@@ -14,7 +13,7 @@ class OptionServiceImpl(
 ) : OptionService {
     override fun getListByProductId(productId: Long): List<OptionResponseView> {
         val optionList = optionRepository.findByProductId(productId)
-        require(optionList.isNotEmpty()) { throw NotFoundProductException() }
+        require(optionList.isNotEmpty()) { throw NotFoundOptionException() }
 
         val resultList = ArrayList<OptionResponseView>()
         for(option in optionList) {
