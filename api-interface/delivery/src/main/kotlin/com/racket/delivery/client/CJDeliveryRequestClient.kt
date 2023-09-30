@@ -1,15 +1,14 @@
 package com.racket.delivery.client
 
+import com.racket.delivery.client.feign.CJFeignClient
 import com.racket.delivery.vo.DeliveryResponseVO
 
 class CJDeliveryRequestClient(
-   // private val cjClient: CjClient
+    private val client: CJFeignClient
 
-): DeliveryRequestClient {
+) : DeliveryRequestClient {
     override fun call(): DeliveryResponseVO {
-//        val response = cjClient.call()
-//        response -> DeliveryResponseVO
-//        return  DeliveryResponseVO()
-        return DeliveryResponseVO(invoiceNumber = "", driver = "", timeLine = "")
+        TODO("Not yet implemented")
     }
+
 }

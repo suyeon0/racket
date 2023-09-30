@@ -2,8 +2,8 @@ package com.racket.delivery
 
 import com.racket.delivery.client.DeliveryClientFactory
 import com.racket.delivery.domain.OptionDeliveryDaysRepository
+import com.racket.delivery.enums.DeliveryCompanyType
 import com.racket.delivery.response.OptionDeliveryDaysResponseView
-import com.racket.delivery.vo.DeliveryResponseVO
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 
@@ -25,9 +25,8 @@ class DeliveryServiceImpl(
             RuntimeException("Delivery Day with ID $optionId not found")
         }
 
-    override fun getDeliveryInformation(invoiceNumber: String, deliveryCompany: String): DeliveryResponseVO {
-        val deliveryClient = this.deliveryClientFactory.createDeliveryClient(invoiceNumber, deliveryCompany)
-        return deliveryClient.call()
-    }
+    override fun trackDelivery(deliveryCompany: DeliveryCompanyType, invoiceNumber: String) =
+        this.deliveryClientFactory.createDeliveryClient(deliveryCompany = deliveryCompany, invoiceNo = invoiceNumber).call()
+
 
 }
