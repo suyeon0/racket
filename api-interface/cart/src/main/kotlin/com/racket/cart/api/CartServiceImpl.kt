@@ -36,7 +36,6 @@ class CartServiceImpl(
 
         // 1. validate user
         this.validateUser(userId = item.userId)
-        // TODO: Shared 에서 발생하는 exception handle 방법..?
 
         // 2. stock
         this.validateAvailableStock(optionId = optionId, orderQuantity = item.orderQuantity)

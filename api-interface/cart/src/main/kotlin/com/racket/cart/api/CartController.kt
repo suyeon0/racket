@@ -1,6 +1,5 @@
 package com.racket.cart.api
 
-
 import com.racket.cart.api.annotation.CartApiV1
 import com.racket.cart.api.request.CartCreateRequestCommand
 import com.racket.cart.api.request.CartUpdateRequestCommand
@@ -46,12 +45,12 @@ class CartController(
 
     @GetMapping("/{userId}")
     fun getItemList(@PathVariable userId: Long) =
-        ResponseEntity.ok(this.cartService.getItemListByUserId(userId = userId))
+        ResponseEntity.ok(this.cartService.getItemListByUserId(userId))
 
     @DeleteMapping("/{cartItemId}")
     fun deleteItem(@PathVariable cartItemId: Long): ResponseEntity<Unit> {
         // TODO: user cart item 확인
-        return ResponseEntity.ok(this.cartService.deleteItem(cartItemId = cartItemId))
+        return ResponseEntity.ok(this.cartService.deleteItem(cartItemId))
     }
 
 }

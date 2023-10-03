@@ -11,6 +11,7 @@ object Versions {
 dependencies {
     implementation(project(":api-interface:api-shared:user"))
     implementation(project(":shared:util"))
+    implementation(project(":shared:domain"))
     implementation(project(":api-interface"))
     // Test
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
