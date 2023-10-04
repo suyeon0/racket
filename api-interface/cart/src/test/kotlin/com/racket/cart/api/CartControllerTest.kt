@@ -8,6 +8,7 @@ import com.racket.api.product.domain.Option
 import com.racket.api.product.domain.OptionRepository
 import com.racket.api.product.domain.Product
 import com.racket.api.product.domain.ProductRepository
+import com.racket.cart.api.domain.CartRepository
 import com.racket.cart.api.exception.CartStockException
 import com.racket.cart.api.request.CartCreateRequestCommand
 import com.racket.cart.api.request.CartUpdateRequestCommand
@@ -18,6 +19,7 @@ import com.racket.cart.mock.api.MockProductApi
 import com.racket.share.domain.user.User
 import com.racket.share.domain.user.UserRepository
 import com.racket.share.vo.MobileVO
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -51,10 +53,20 @@ class CartControllerTest {
     @Autowired
     lateinit var userRepository: UserRepository
     @Autowired
+    lateinit var cartRepository: CartRepository
+    @Autowired
     lateinit var productWireMockServer: WireMockServer
 
     companion object {
         const val cartRequestURL = "/api/v1/cart"
+    }
+
+    @AfterEach
+    fun deleteAll() {
+        this.userRepository.deleteAll()
+        this.optionRepository.deleteAll()
+        this.productRepository.deleteAll()
+        this.cartRepository.deleteAll()
     }
 
     @Test
@@ -244,7 +256,7 @@ class CartControllerTest {
 
     private fun saveProducts(): ArrayList<Product> {
         val productList = ArrayList<Product>()
-        for (i in 0 until 3) {
+        for (i in 1 until 3) {
             val product =
                 Product(price = 1000 * i.toLong(), name = "product${i}", customerProductCode = "customerProductCode${i}")
             productList.add(this.productRepository.save(product))
@@ -254,8 +266,8 @@ class CartControllerTest {
 
     private fun saveOptions(): List<Option> {
         val optionList = ArrayList<Option>()
-        for (i in 0 until 3) {   // product
-            for (j in 0 until 3) {   // option
+        for (i in 1 until 3) {   // product
+            for (j in 1 until 3) {   // option
                 val option = Option(
                     productId = i.toLong(),
                     optionNo = "product${i} - option${j}",
