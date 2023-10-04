@@ -1,5 +1,6 @@
 package com.racket.cart.api.domain
 
+import java.time.LocalDate
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -35,8 +36,8 @@ class Cart(
     @Column(name = "delivery_cost")
     val deliveryCost: Long,
 
-    @Column(name = "estimated_delivery_days")
-    val estimatedDeliveryDays: Long? = 0L
+    @Column(name = "estimated_delivery_day")
+    val estimatedDeliveryDay: LocalDate
 
 ) {
 

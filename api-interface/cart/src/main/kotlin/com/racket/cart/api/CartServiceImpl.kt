@@ -1,7 +1,5 @@
 package com.racket.cart.api
 
-import com.racket.cart.api.client.delivery.DeliveryClient
-import com.racket.cart.api.client.delivery.DeliveryResponseView
 import com.racket.cart.api.client.product.ProductClient
 import com.racket.cart.api.domain.Cart
 import com.racket.cart.api.domain.CartRepository
@@ -11,7 +9,6 @@ import com.racket.api.shared.user.BaseUserComponent
 import com.racket.cart.api.exception.*
 import com.racket.cart.api.response.CartResponseView
 import mu.KotlinLogging
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -19,15 +16,15 @@ import org.springframework.transaction.annotation.Transactional
 class CartServiceImpl(
     private val cartRepository: CartRepository,
     private val baseUserComponent: BaseUserComponent,
-    private val productClient: ProductClient,
-    private val deliveryClient: DeliveryClient
+    private val productClient: ProductClient
 ) : CartService {
 
     private val log = KotlinLogging.logger { }
 
     /**
      * 장바구니에는 그 시점 시냅샷 데이터를 담는다 (가용재고 체크, 상품 가격, 배송 정보)
-     * - 주문서 작성 시점에 데이터 재조회 : 가용재고 체크, 상품 가격, 배송 정보
+     * -> val deliveryResponse = this.getDeliveryInfoByOptionId(optionId = optionId) 삭제
+     * -> 주문서 작성 시점에 데이터 재조회 : 가용재고 체크, 상품 가격, 배송 정보
      * - 품절 반영 일배치
      */
     @Transactional
@@ -40,9 +37,6 @@ class CartServiceImpl(
         // 2. stock
         this.validateAvailableStock(optionId = optionId, orderQuantity = item.orderQuantity)
 
-        // 3. delivery info
-        val deliveryResponse = this.getDeliveryInfoByOptionId(optionId = optionId)
-
         val cart = Cart(
             userId = item.userId,
             productId = item.productId,
@@ -50,8 +44,8 @@ class CartServiceImpl(
             originalPrice = item.originalPrice,
             calculatedPrice = item.calculatedPrice,
             orderQuantity = item.orderQuantity,
-            deliveryCost = deliveryResponse.deliveryCost,
-            estimatedDeliveryDays = deliveryResponse.deliveryDays
+            deliveryCost = item.deliveryInformation.deliveryCost,
+            estimatedDeliveryDay = item.deliveryInformation.expectedDate
         )
         return CartResponseView.makeView(this.cartRepository.save(cart))
     }
@@ -74,22 +68,6 @@ class CartServiceImpl(
         } catch (e: Exception) {
             log.error { "error:::${e}" }
             throw CartProductFeignException("product api call fail!")
-        }
-    }
-
-    private fun getDeliveryInfoByOptionId(optionId: Long): DeliveryResponseView {
-        try {
-            val deliveryResponse = this.deliveryClient.get(optionId = optionId)?.body!!
-            if (deliveryResponse.statusCode.toInt() != HttpStatus.OK.value()) {
-                throw CartDeliveryFeignException(deliveryResponse.statusMessage)
-            }
-            return deliveryResponse
-        } catch (e: CartDeliveryFeignException) {
-            log.error { "error:::${e}" }
-            throw e
-        } catch (e: Exception) {
-            log.error { "error:::${e}" }
-            throw CartDeliveryFeignException("delivery api call fail! - ${e.message}")
         }
     }
 
