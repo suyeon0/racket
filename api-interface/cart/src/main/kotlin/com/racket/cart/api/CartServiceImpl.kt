@@ -61,10 +61,8 @@ class CartServiceImpl(
     private fun validateAvailableStock(optionId: Long, orderQuantity: Long) {
         try {
             val availableStock =
-                this.productClient.getOption(optionId = optionId).body?.stock ?: throw Exception("option not found")
-            if (availableStock < orderQuantity) {
-                throw CartStockException(optionId = optionId)
-            }
+                this.productClient.getOption(optionId).body?.stock ?: throw Exception("option not found")
+            require(availableStock >= orderQuantity) { throw CartStockException(optionId = optionId) }
         } catch (e: Exception) {
             log.error { "error:::${e}" }
             throw CartProductFeignException("product api call fail!")
@@ -84,10 +82,8 @@ class CartServiceImpl(
         val cartItem = this.cartRepository.findById(cartItemId).orElseThrow { NotFoundCartItemException(cartItemId = cartItemId) }
 
         val availableStock =
-            this.productClient.getOption(optionId = cartItem.optionId).body?.stock ?: throw NotFoundOptionException()
-        if (availableStock < orderQuantity) {
-            throw CartStockException(optionId = cartItem.optionId)
-        }
+            this.productClient.getOption(cartItem.optionId).body?.stock ?: throw NotFoundOptionException()
+        require(availableStock >= orderQuantity) { throw CartStockException(optionId = cartItem.optionId) }
 
         cartItem.updateOrderQuantity(quantity = orderQuantity)
         return CartResponseView.makeView(this.cartRepository.save(cartItem))

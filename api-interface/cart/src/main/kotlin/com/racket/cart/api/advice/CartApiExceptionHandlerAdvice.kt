@@ -18,7 +18,8 @@ class CartApiExceptionHandlerAdvice : ResponseEntityExceptionHandler() {
     @ExceptionHandler(
         value = [
             IllegalArgumentException::class,
-            CartInvalidException::class
+            CartInvalidException::class,
+            CartStockException::class
         ]
     )
     fun cartBadRequestException(e: RuntimeException, httpServletRequest: HttpServletRequest) =
@@ -36,18 +37,6 @@ class CartApiExceptionHandlerAdvice : ResponseEntityExceptionHandler() {
     fun cartNotFoundException(e: RuntimeException, httpServletRequest: HttpServletRequest) =
         ApiError(
             code = HttpStatus.NOT_FOUND.value(),
-            message = e.message.toString()
-        )
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(
-        value = [
-            CartStockException::class
-        ]
-    )
-    fun cartStockException(e: RuntimeException, httpServletRequest: HttpServletRequest) =
-        ApiError(
-            code = HttpStatus.BAD_REQUEST.value(),
             message = e.message.toString()
         )
 

@@ -22,4 +22,3 @@ logging:
 client:
   serviceUrl:
     product: localhost:18081/api/v1/product
-    delivery: localhost:18083/api/v1/delivery

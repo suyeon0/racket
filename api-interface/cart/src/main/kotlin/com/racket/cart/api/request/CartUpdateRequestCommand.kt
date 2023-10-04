@@ -5,7 +5,7 @@ data class CartUpdateRequestCommand(
 ) {
 
     fun validate() {
-        if (orderQuantity < 0 ) {
+        if (orderQuantity <= 0 ) {
             throw IllegalArgumentException("quantity is must be greater than zero.")
         }
     }

@@ -5,6 +5,7 @@ import com.racket.cart.api.request.CartCreateRequestCommand
 import com.racket.cart.api.request.CartUpdateRequestCommand
 import com.racket.cart.api.response.CartResponseView
 import com.racket.cart.api.vo.CartItemRequestVO
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,7 +22,7 @@ class CartController(
     @PostMapping
     fun postItem(@RequestBody request: CartCreateRequestCommand): ResponseEntity<CartResponseView> {
         request.validate()
-        return ResponseEntity.ok(
+        return ResponseEntity.status(HttpStatus.CREATED).body(
             this.cartService.addItem(
                 item = CartItemRequestVO(
                     userId = request.userId,
@@ -38,9 +39,17 @@ class CartController(
     }
 
     @PatchMapping("/{cartItemId}/quantity")
-    fun updateItemQuantity(@PathVariable cartItemId: Long, @RequestBody request: CartUpdateRequestCommand): ResponseEntity<CartResponseView> {
+    fun updateItemQuantity(
+        @PathVariable cartItemId: Long,
+        @RequestBody request: CartUpdateRequestCommand
+    ): ResponseEntity<CartResponseView> {
         request.validate()
-        return ResponseEntity.ok(this.cartService.updateOrderQuantity(cartItemId = cartItemId, orderQuantity = request.orderQuantity))
+        return ResponseEntity.ok(
+            this.cartService.updateOrderQuantity(
+                cartItemId = cartItemId,
+                orderQuantity = request.orderQuantity
+            )
+        )
     }
 
     @GetMapping("/{userId}")

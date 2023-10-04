@@ -19,6 +19,7 @@ dependencies {
     testImplementation("com.h2database:h2:${Versions.h2}")
     testImplementation("it.ozimov:embedded-redis:0.7.2")
     testImplementation("org.assertj:assertj-core:3.24.2")
+    testImplementation("com.github.tomakehurst:wiremock:2.27.2")
 }
 
 tasks.getByName<Test>("test") {
