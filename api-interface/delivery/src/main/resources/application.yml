@@ -30,3 +30,8 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+
+client:
+  serviceUrl:
+    cj: localhost:9999
+    hanjin: localhost:8888
