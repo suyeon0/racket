@@ -11,10 +11,16 @@ repositories {
 
 dependencies {
 
-    implementation(project(mapOf("path" to ":api-interface")))
-    implementation(project(mapOf("path" to ":api-interface:api-shared:user")))
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    implementation(project(":api-interface"))
+    implementation(project(":api-interface:api-shared:user"))
+
+    // mongodb
+    implementation ("org.springframework.boot:spring-boot-starter-data-mongodb")
+    // kafka
+    implementation("org.springframework.kafka:spring-kafka")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 }
 
 tasks.getByName<Test>("test") {
