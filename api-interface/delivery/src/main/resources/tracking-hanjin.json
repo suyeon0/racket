@@ -1,0 +1,36 @@
+{
+  "invoice": "789012",
+  "driver": "Jane Smith",
+  "timeLine": [
+    {
+      "timestamp": 1633996800,
+      "status": "PICKUP",
+      "location": "Warehouse X"
+    },
+    {
+      "timestamp": 1634007600,
+      "status": "OUT_FOR_DELIVERY",
+      "location": "City Y"
+    },
+    {
+      "timestamp": 1634018400,
+      "status": "IN_TRANSIT",
+      "location": "City Z"
+    },
+    {
+      "timestamp": 1634029200,
+      "status": "ARRIVED_AT_DESTINATION",
+      "location": "City W"
+    },
+    {
+      "timestamp": 1634040000,
+      "status": "ON_DELIVERY",
+      "location": "Recipient Address"
+    },
+    {
+      "timestamp": 1634050800,
+      "status": "DELIVERED",
+      "location": "Recipient Address"
+    }
+  ]
+}
