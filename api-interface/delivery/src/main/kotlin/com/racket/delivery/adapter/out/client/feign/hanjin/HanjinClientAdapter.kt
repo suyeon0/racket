@@ -6,6 +6,7 @@ import com.racket.delivery.adapter.out.kafka.DeliveryApiLogProducer
 import com.racket.delivery.application.port.out.client.DeliveryRequestClientPort
 import com.racket.delivery.common.enums.DeliveryCompanyType
 import mu.KotlinLogging
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -13,7 +14,7 @@ import java.time.Instant
 
 @Component
 class HanjinClientAdapter(
-    private val client: HanjinDeliveryApiFeignClient,
+    @Qualifier("hanjinFakeFeignClient") private val client: HanjinDeliveryApiFeignClient,
     private val deliveryApiLogProducer: DeliveryApiLogProducer
 ) : DeliveryRequestClientPort {
 

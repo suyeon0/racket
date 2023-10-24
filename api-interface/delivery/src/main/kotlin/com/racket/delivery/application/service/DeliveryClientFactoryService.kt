@@ -10,7 +10,7 @@ class DeliveryClientFactoryService(
     private val hanjinClientAdapter: DeliveryRequestClientPort
 ) {
 
-    fun getClient(deliveryCompanyType: DeliveryCompanyType) =
+    fun getClientAdapterByDeliveryCompanyType(deliveryCompanyType: DeliveryCompanyType) =
         when (deliveryCompanyType) {
             DeliveryCompanyType.CJ -> cjClientAdapter
             DeliveryCompanyType.HANJIN -> hanjinClientAdapter

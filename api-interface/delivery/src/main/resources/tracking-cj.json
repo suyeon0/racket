@@ -1,18 +1,17 @@
 {
-  "company": "CJ",
   "invoice": "123456",
   "driver": "suyeonee",
   "driverPhone": "555-555-5555",
   "timeLine": [
     {
-      "timestamp": 1633996800,
-      "status": "PICKUP",
-      "location": "Warehouse A"
+      "timestamp": "2023-10-20T14:04:00.420929Z",
+      "deliveryStatus": "PICKUP",
+      "currentLocation": "Warehouse A"
     },
     {
-      "timestamp": 1634007600,
-      "status": "OUT_FOR_DELIVERY",
-      "location": "City B"
+      "timestamp": "2023-10-21T14:04:00.420929Z",
+      "deliveryStatus": "OUT_FOR_DELIVERY",
+      "currentLocation": "City B"
     }
   ]
 }

@@ -1,6 +1,7 @@
 package com.racket.delivery.adapter.out.client.feign.cj
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.ResponseEntity
@@ -22,11 +23,11 @@ interface CJDeliveryApiFeignClient{
 @Qualifier("cjFakeFeignClient")
 class CjFakeFeignClient: CJDeliveryApiFeignClient {
 
-    private val objectMapper = ObjectMapper()
+    private val objectMapper = jacksonObjectMapper().registerModule(JavaTimeModule())
 
     override fun getTrackingDeliveryList(request: CjDeliveryApiRequest): ResponseEntity<CjDeliveryApiResponse> {
         return try {
-            val jsonFile = File("src/main/resources/tracking-cj.json")
+            val jsonFile = File("api-interface/delivery/src/main/resources/tracking-cj.json")
             val fakeResponse = objectMapper.readValue(jsonFile, CjDeliveryApiResponse::class.java)
             ResponseEntity.ok(fakeResponse)
         } catch (e: IOException) {

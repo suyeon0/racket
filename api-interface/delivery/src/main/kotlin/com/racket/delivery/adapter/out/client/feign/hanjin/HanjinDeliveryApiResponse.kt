@@ -8,6 +8,7 @@ import java.time.Instant
 
 data class HanjinDeliveryApiResponse(
 
+    val company: String,
     val invoice: String,
     val driver: String,
     val timeLine: List<HanjinTrackingVO>

@@ -43,6 +43,5 @@ class CjClientAdapter(
             // TODO : delivery log exception
             log.error { e }
         }
-
     }
 }

@@ -14,7 +14,7 @@ class TrackDeliveryService(
 ): TrackDeliveryUseCase {
 
     override fun trackDelivery(deliveryCompany: DeliveryCompanyType, invoiceNumber: String): TrackingDeliveryResponseView {
-        val client = this.deliveryClientFactoryService.getClient(deliveryCompanyType = deliveryCompany)
+        val client = this.deliveryClientFactoryService.getClientAdapterByDeliveryCompanyType(deliveryCompany)
         return client.call(invoiceNo = invoiceNumber)
     }
 

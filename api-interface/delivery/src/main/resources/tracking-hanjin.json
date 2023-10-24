@@ -1,36 +1,37 @@
 {
+  "company": "Hanjin",
   "invoice": "789012",
   "driver": "Jane Smith",
   "timeLine": [
     {
       "timestamp": 1633996800,
-      "status": "PICKUP",
-      "location": "Warehouse X"
+      "deliveryStatus": "PICKUP",
+      "currentLocation": "Warehouse X"
     },
     {
       "timestamp": 1634007600,
-      "status": "OUT_FOR_DELIVERY",
-      "location": "City Y"
+      "deliveryStatus": "OUT_FOR_DELIVERY",
+      "currentLocation": "City Y"
     },
     {
       "timestamp": 1634018400,
-      "status": "IN_TRANSIT",
-      "location": "City Z"
+      "deliveryStatus": "IN_TRANSIT",
+      "currentLocation": "City Z"
     },
     {
       "timestamp": 1634029200,
-      "status": "ARRIVED_AT_DESTINATION",
-      "location": "City W"
+      "deliveryStatus": "ARRIVED_AT_DESTINATION",
+      "currentLocation": "City W"
     },
     {
       "timestamp": 1634040000,
-      "status": "ON_DELIVERY",
-      "location": "Recipient Address"
+      "deliveryStatus": "ON_DELIVERY",
+      "currentLocation": "Recipient Address"
     },
     {
       "timestamp": 1634050800,
-      "status": "DELIVERED",
-      "location": "Recipient Address"
+      "deliveryStatus": "DELIVERED",
+      "currentLocation": "Recipient Address"
     }
   ]
 }
