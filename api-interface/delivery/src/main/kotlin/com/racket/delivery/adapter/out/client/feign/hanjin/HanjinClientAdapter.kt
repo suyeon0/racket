@@ -5,8 +5,10 @@ import com.racket.delivery.adapter.out.kafka.DeliveryApiLogPayloadVO
 import com.racket.delivery.adapter.out.kafka.DeliveryApiLogProducer
 import com.racket.delivery.application.port.out.client.DeliveryRequestClientPort
 import com.racket.delivery.common.enums.DeliveryCompanyType
+import com.racket.delivery.common.exception.TrackingClientFailException
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -22,10 +24,17 @@ class HanjinClientAdapter(
 
     @Transactional
     override fun call(invoiceNo: String): TrackingDeliveryResponseView {
-        val response =
-            this.client.getTrackingDeliveryList(request = HanjinDeliveryApiRequest(invoiceNo = invoiceNo)).body as HanjinDeliveryApiResponse
-        this.callLogProducer(response)
-        return response.toCommonView()
+        val response = this.client.getTrackingDeliveryList(request = HanjinDeliveryApiRequest(invoiceNo = invoiceNo))
+            ?: throw TrackingClientFailException()
+
+        return when (response.statusCode) {
+            HttpStatus.OK -> {
+                val result = response.body as HanjinDeliveryApiResponse
+                callLogProducer(result)
+                result.toCommonView()
+            }
+            else -> throw TrackingClientFailException()
+        }
     }
 
 
