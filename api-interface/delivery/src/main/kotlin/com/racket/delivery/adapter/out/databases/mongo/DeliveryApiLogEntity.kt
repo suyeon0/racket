@@ -6,6 +6,7 @@ import org.bson.json.JsonObject
 import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.Instant
+import java.time.LocalDateTime
 import javax.persistence.Column
 import javax.persistence.Id
 
@@ -23,7 +24,7 @@ class DeliveryApiLogEntity(
     val invoiceNo: String,
 
     @Column(name = "response_at", nullable = false)
-    val responseTime: Instant,
+    val responseTime: LocalDateTime,
 
     @Column(name = "response", nullable = true)
     val response: JsonObject

@@ -5,25 +5,27 @@ import com.racket.delivery.common.enums.DeliveryCompanyType
 import com.racket.delivery.domain.DeliveryApiLog
 import org.springframework.stereotype.Repository
 import java.time.Instant
+import java.time.LocalDateTime
 import java.util.*
 
 @Repository
 class DeliveryApiLogRepositoryAdapter(
     private val deliveryApiLogMongoRepository: DeliveryApiLogMongoRepository
 ) : DeliveryApiLogRepositoryPort {
-    override fun findByCompanyTypeAndInvoiceNoAndResponseTimeBetween(
+
+    override fun findTop1ByCompanyTypeAndInvoiceNoAndResponseTimeBetween(
         companyType: DeliveryCompanyType,
-        invoiceNo: Long,
-        start: Instant,
-        end: Instant
-    ): List<DeliveryApiLog> {
-        val entityList = this.deliveryApiLogMongoRepository.findByCompanyTypeAndInvoiceNoAndResponseTimeBetween(
+        invoiceNo: String,
+        start: LocalDateTime,
+        end: LocalDateTime
+    ): Optional<DeliveryApiLog> {
+        val entity = this.deliveryApiLogMongoRepository.findTop1ByCompanyTypeAndInvoiceNoAndResponseTimeBetween(
             companyType,
             invoiceNo,
             start,
             end
         )
-        return entityList.stream().map { it.toDomain() }.toList()
+        return Optional.ofNullable(entity).map { it.toDomain() }
     }
 
     override fun save(log: DeliveryApiLog): Optional<DeliveryApiLog> {

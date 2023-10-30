@@ -10,8 +10,6 @@ data class CjDeliveryApiResponse(
 
     val company: DeliveryCompanyType = DeliveryCompanyType.CJ,
     val invoice: String,
-    val driver: String,
-    val driverPhone: String,
     val timeLine: List<CjTrackingVO>
 
 )
@@ -19,7 +17,6 @@ fun CjDeliveryApiResponse.toCommonView() =
     TrackingDeliveryResponseView(
         deliveryCompany = company,
         invoiceNumber = invoice,
-        driver = driver,
         timeLine = timeLine.stream().map{it.toCommonVO()}.toList()
     )
 
@@ -28,12 +25,15 @@ data class CjTrackingVO (
 
     val timestamp: Instant, // 처리일시
     val currentLocation: String, // 현재위치
-    val deliveryStatus: DeliveryStatusType // 배송상태
+    val deliveryStatus: DeliveryStatusType, // 배송상태
+    val driver: String,
+    val driverPhone: String
 
 )
 fun CjTrackingVO.toCommonVO() =
     TrackingVO(
         timestamp = timestamp,
         currentLocation = currentLocation,
-        deliveryStatus = deliveryStatus
+        deliveryStatus = deliveryStatus,
+        driver = driver
     )

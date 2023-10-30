@@ -2,17 +2,17 @@ package com.racket.delivery.application.port.out.databases
 
 import com.racket.delivery.common.enums.DeliveryCompanyType
 import com.racket.delivery.domain.DeliveryApiLog
-import java.time.Instant
+import java.time.LocalDateTime
 import java.util.*
 
 interface DeliveryApiLogRepositoryPort {
 
-    fun findByCompanyTypeAndInvoiceNoAndResponseTimeBetween(
+    fun findTop1ByCompanyTypeAndInvoiceNoAndResponseTimeBetween(
         companyType: DeliveryCompanyType,
-        invoiceNo: Long,
-        start: Instant,
-        end: Instant
-    ): List<DeliveryApiLog>
+        invoiceNo: String,
+        start: LocalDateTime,
+        end: LocalDateTime
+    ): Optional<DeliveryApiLog>
 
     fun save(entity: DeliveryApiLog): Optional<DeliveryApiLog>
 

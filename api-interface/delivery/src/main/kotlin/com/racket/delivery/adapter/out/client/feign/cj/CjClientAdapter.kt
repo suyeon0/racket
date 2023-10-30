@@ -30,7 +30,7 @@ class CjClientAdapter(
         return when (response.statusCode) {
             HttpStatus.OK -> {
                 val result = response.body as CjDeliveryApiResponse
-                callLogProducer(result)
+                this.callLogProducer(result)
                 result.toCommonView()
             }
             else -> throw TrackingClientFailException()

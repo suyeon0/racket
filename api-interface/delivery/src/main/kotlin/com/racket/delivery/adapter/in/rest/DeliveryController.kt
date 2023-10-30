@@ -27,15 +27,11 @@ class DeliveryController(
      * 실시간 배송 조회
      */
     @GetMapping("/tracking")
-    fun trackDelivery(@RequestBody trackDeliveryRequest: TrackDeliveryRequest): ResponseEntity<TrackingDeliveryResponseView> {
-        trackDeliveryRequest.validate()
-        return ResponseEntity.ok(
+    fun trackDelivery(@RequestBody trackDeliveryRequest: TrackDeliveryRequest) =
+        ResponseEntity.ok(
             this.trackingDeliveryUseCase.trackDelivery(
                 invoiceNumber = trackDeliveryRequest.invoiceNumber,
                 deliveryCompany = trackDeliveryRequest.deliveryCompanyType
             )
         )
-    }
-
-
 }

@@ -9,8 +9,5 @@ data class TrackingDeliveryResponseView(
 
     val invoiceNumber: String,
 
-    val driver: String,
-
     val timeLine: List<TrackingVO>
-
 )

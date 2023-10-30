@@ -7,6 +7,7 @@ data class TrackingVO (
 
     val timestamp: Instant, // 처리일시
     val currentLocation: String, // 현재위치
+    val driver: String,
     val deliveryStatus: DeliveryStatusType // 배송상태
 
 )
