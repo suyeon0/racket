@@ -4,7 +4,6 @@ import com.racket.delivery.application.port.out.databases.DeliveryApiLogReposito
 import com.racket.delivery.common.enums.DeliveryCompanyType
 import com.racket.delivery.domain.DeliveryApiLog
 import org.springframework.stereotype.Repository
-import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
 

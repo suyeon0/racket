@@ -1,11 +1,10 @@
-package com.racket.delivery.adapter.out.databases.mongo
+package com.racket.delivery.consume.mongo
 
 import com.racket.delivery.common.enums.DeliveryCompanyType
-import com.racket.delivery.domain.DeliveryApiLog
+import com.racket.delivery.consume.domain.DeliveryApiLog
 import org.bson.json.JsonObject
 import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.mapping.Document
-import java.time.Instant
 import java.time.LocalDateTime
 import javax.persistence.Column
 import javax.persistence.Id

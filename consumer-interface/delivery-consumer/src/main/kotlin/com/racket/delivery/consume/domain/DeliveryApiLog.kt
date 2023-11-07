@@ -1,4 +1,4 @@
-package com.racket.delivery.domain
+package com.racket.delivery.consume.domain
 
 import com.racket.delivery.common.enums.DeliveryCompanyType
 import java.time.LocalDateTime

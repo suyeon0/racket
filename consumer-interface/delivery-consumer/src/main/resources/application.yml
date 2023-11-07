@@ -1,0 +1,60 @@
+server:
+  port: 28081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    properties:
+      hibernate:
+        format_sql: true
+        implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        hbm2ddl.auto: update
+    open-in-view: false
+    show-sql: true
+
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      username: root
+      password: 1234
+      connectionString: mongodb://root:1234@localhost:27017
+
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: racket
+      auto-offset-reset: latest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+
+#  kafka:
+#    bootstrap-servers: localhost:9092
+#    consumer:
+#      group-id: racket
+#      auto-offset-reset: latest # 마지막 읽은 부분부터 Read
+#      enable-auto-commit: false
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      properties:
+#        spring:
+#          json:
+#            trusted:
+#              packages: "*"
+#          deserializer:
+#            value:
+#              delegate:
+#                class: org.springframework.kafka.support.serializer.JsonDeserializer
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace

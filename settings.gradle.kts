@@ -14,3 +14,4 @@ include("shared:domain")
 include("shared:util")
 
 include("consumer-interface:cash-consumer")
+include("consumer-interface:delivery-consumer")
