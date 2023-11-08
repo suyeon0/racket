@@ -1,5 +1,6 @@
 package com.racket.delivery.adapter.out.client.feign.hanjin
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.racket.delivery.adapter.`in`.rest.response.TrackingDeliveryResponseView
 import com.racket.delivery.adapter.out.kafka.DeliveryApiLogPayloadVO
 import com.racket.delivery.adapter.out.kafka.DeliveryApiLogProducer
@@ -17,7 +18,8 @@ import java.time.Instant
 @Component
 class HanjinClientAdapter(
     @Qualifier("hanjinFakeFeignClient") private val client: HanjinDeliveryApiFeignClient,
-    private val deliveryApiLogProducer: DeliveryApiLogProducer
+    private val deliveryApiLogProducer: DeliveryApiLogProducer,
+    private val objectMapper: ObjectMapper
 ) : DeliveryRequestClientPort {
 
     private val log = KotlinLogging.logger { }
@@ -30,7 +32,7 @@ class HanjinClientAdapter(
         return when (response.statusCode) {
             HttpStatus.OK -> {
                 val result = response.body as HanjinDeliveryApiResponse
-                callLogProducer(result)
+                this.callLogProducer(result)
                 result.toCommonView()
             }
             else -> throw TrackingClientFailException()
@@ -46,7 +48,7 @@ class HanjinClientAdapter(
                 companyType = DeliveryCompanyType.HANJIN,
                 invoiceNo = response.invoice,
                 responseTime = Instant.now(),
-                response = response.toString()
+                response = this.objectMapper.writeValueAsString(response)
             )
             this.deliveryApiLogProducer.produce(payload)
         } catch (e: Exception) {

@@ -1,5 +1,6 @@
 package com.racket.delivery.adapter.out.client.feign.cj
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.racket.delivery.adapter.`in`.rest.response.TrackingDeliveryResponseView
 import com.racket.delivery.adapter.out.kafka.DeliveryApiLogPayloadVO
 import com.racket.delivery.adapter.out.kafka.DeliveryApiLogProducer
@@ -17,7 +18,8 @@ import java.time.Instant
 @Component
 class CjClientAdapter(
     @Qualifier("cjFakeFeignClient") private val client: CJDeliveryApiFeignClient,
-    private val deliveryApiLogProducer: DeliveryApiLogProducer
+    private val deliveryApiLogProducer: DeliveryApiLogProducer,
+    private val objectMapper: ObjectMapper
 ) : DeliveryRequestClientPort {
 
     private val log = KotlinLogging.logger { }
@@ -45,7 +47,7 @@ class CjClientAdapter(
                 companyType = DeliveryCompanyType.CJ,
                 invoiceNo = response.invoice,
                 responseTime = Instant.now(),
-                response = response.toString()
+                response = this.objectMapper.writeValueAsString(response)
             )
             this.deliveryApiLogProducer.produce(payload)
         } catch (e: Exception) {

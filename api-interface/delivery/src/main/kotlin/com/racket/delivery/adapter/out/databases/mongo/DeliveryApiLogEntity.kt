@@ -2,10 +2,8 @@ package com.racket.delivery.adapter.out.databases.mongo
 
 import com.racket.delivery.common.enums.DeliveryCompanyType
 import com.racket.delivery.domain.DeliveryApiLog
-import org.bson.json.JsonObject
 import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.mapping.Document
-import java.time.Instant
 import java.time.LocalDateTime
 import javax.persistence.Column
 import javax.persistence.Id
@@ -27,7 +25,7 @@ class DeliveryApiLogEntity(
     val responseTime: LocalDateTime,
 
     @Column(name = "response", nullable = true)
-    val response: JsonObject
+    val response: String
 
 ) {
 
@@ -35,7 +33,7 @@ class DeliveryApiLogEntity(
         fun of(deliveryApiLog: DeliveryApiLog) = DeliveryApiLogEntity(
             companyType = deliveryApiLog.companyType,
             invoiceNo = deliveryApiLog.invoiceNo,
-            response = JsonObject(deliveryApiLog.response),
+            response = deliveryApiLog.response,
             responseTime = deliveryApiLog.responseTime
         )
     }

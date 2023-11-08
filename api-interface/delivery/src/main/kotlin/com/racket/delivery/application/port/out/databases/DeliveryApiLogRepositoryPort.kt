@@ -14,6 +14,4 @@ interface DeliveryApiLogRepositoryPort {
         end: LocalDateTime
     ): Optional<DeliveryApiLog>
 
-    fun save(entity: DeliveryApiLog): Optional<DeliveryApiLog>
-
 }

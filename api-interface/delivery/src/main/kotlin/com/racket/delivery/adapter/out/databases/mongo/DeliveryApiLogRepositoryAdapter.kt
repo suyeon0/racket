@@ -26,10 +26,4 @@ class DeliveryApiLogRepositoryAdapter(
         )
         return Optional.ofNullable(entity).map { it.toDomain() }
     }
-
-    override fun save(log: DeliveryApiLog): Optional<DeliveryApiLog> {
-        val result = this.deliveryApiLogMongoRepository.save(DeliveryApiLogEntity.of(log))
-        return Optional.of(result.toDomain())
-    }
-
 }

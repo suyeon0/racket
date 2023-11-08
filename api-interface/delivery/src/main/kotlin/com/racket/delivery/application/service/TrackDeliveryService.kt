@@ -1,37 +1,79 @@
 package com.racket.delivery.application.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.racket.delivery.adapter.`in`.rest.response.TrackingDeliveryResponseView
+import com.racket.delivery.adapter.out.client.feign.cj.CjDeliveryApiResponse
+import com.racket.delivery.adapter.out.client.feign.hanjin.HanjinDeliveryApiResponse
 import com.racket.delivery.application.port.`in`.TrackDeliveryUseCase
 import com.racket.delivery.application.port.out.databases.DeliveryApiLogRepositoryPort
 import com.racket.delivery.common.enums.DeliveryCompanyType
 import com.racket.delivery.common.vo.TrackingVO
 import com.racket.delivery.domain.DeliveryApiLog
+import mu.KotlinLogging
 import org.springframework.stereotype.Service
+import java.lang.RuntimeException
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.streams.toList
 
 @Service
 class TrackDeliveryService(
     private val deliveryClientFactoryService: DeliveryClientFactoryService,
-    private val deliveryApiLogRepositoryPort: DeliveryApiLogRepositoryPort
+    private val deliveryApiLogRepositoryPort: DeliveryApiLogRepositoryPort,
+    private val objectMapper: ObjectMapper
 ) : TrackDeliveryUseCase {
 
+    private val log = KotlinLogging.logger { }
+
     override fun trackDelivery(deliveryCompany: DeliveryCompanyType, invoiceNumber: String): TrackingDeliveryResponseView {
-        // 1시간 이내 조회 로그 있는지 확인
-        val recentLogOpt = this.getRecentCallLog(
+        val recentLogOpt: Optional<DeliveryApiLog> = getRecentCallLog(
             companyType = deliveryCompany,
             invoiceNo = invoiceNumber
         )
 
         return if (recentLogOpt.isEmpty) {
-            val client = this.deliveryClientFactoryService.getClientAdapterByDeliveryCompanyType(deliveryCompany)
+            log.info { "1시간 이내 조회 로그 없음. API 호출." }
+            val client = deliveryClientFactoryService.getClientAdapterByDeliveryCompanyType(deliveryCompany)
             client.call(invoiceNumber)
+
         } else {
+            log.info { "1시간 이내 조회 로그 사용" }
+            val deliveryApiLogResponseString = recentLogOpt.get().response
+            val timeLine = parseTimeLine(deliveryCompany, deliveryApiLogResponseString)
             TrackingDeliveryResponseView(
                 deliveryCompany = deliveryCompany,
                 invoiceNumber = invoiceNumber,
-                timeLine = recentLogOpt.get().response as List<TrackingVO>
+                timeLine = timeLine
             )
+        }
+    }
+
+    private fun parseTimeLine(deliveryCompany: DeliveryCompanyType, responseString: String): List<TrackingVO> {
+        return when (deliveryCompany) {
+            DeliveryCompanyType.HANJIN -> {
+                val response = objectMapper.readValue(responseString, HanjinDeliveryApiResponse::class.java)
+                response.timeLine.map { v ->
+                    TrackingVO(
+                        timestamp = v.timestamp,
+                        currentLocation = v.currentLocation,
+                        driver = v.driver,
+                        deliveryStatus = v.deliveryStatus
+                    )
+                }
+            }
+            DeliveryCompanyType.CJ -> {
+                val response = objectMapper.readValue(responseString, CjDeliveryApiResponse::class.java)
+                response.timeLine.map { v ->
+                    TrackingVO(
+                        timestamp = v.timestamp,
+                        currentLocation = v.currentLocation,
+                        driver = v.driver,
+                        deliveryStatus = v.deliveryStatus
+                    )
+                }
+            }
+            else -> throw RuntimeException("Unsupported delivery company")
         }
     }
 
