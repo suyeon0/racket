@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.springframework.kafka:spring-kafka:2.8.1")
     implementation("com.h2database:h2")
     implementation ("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation(project(mapOf("path" to ":api-interface:delivery")))

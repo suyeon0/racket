@@ -26,7 +26,7 @@ class DeliveryApiLogEntity(
     val responseTime: LocalDateTime,
 
     @Column(name = "response", nullable = true)
-    val response: JsonObject
+    val response: String
 
 ) {
 
@@ -34,7 +34,7 @@ class DeliveryApiLogEntity(
         fun of(deliveryApiLog: DeliveryApiLog) = DeliveryApiLogEntity(
             companyType = deliveryApiLog.companyType,
             invoiceNo = deliveryApiLog.invoiceNo,
-            response = JsonObject(deliveryApiLog.response),
+            response = deliveryApiLog.response,
             responseTime = deliveryApiLog.responseTime
         )
     }
@@ -44,7 +44,7 @@ class DeliveryApiLogEntity(
         companyType = companyType,
         invoiceNo = invoiceNo,
         responseTime = responseTime,
-        response = response.toString()
+        response = response
     )
 
 }

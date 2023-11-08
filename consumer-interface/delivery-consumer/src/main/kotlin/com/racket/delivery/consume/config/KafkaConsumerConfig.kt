@@ -2,6 +2,7 @@ package com.racket.delivery.consume.config
 
 import com.racket.delivery.consume.vo.DeliveryApiLogPayloadVO
 import org.apache.kafka.clients.consumer.ConsumerConfig
+import org.apache.kafka.common.serialization.StringDeserializer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -9,6 +10,8 @@ import org.springframework.kafka.annotation.EnableKafka
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.core.ConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
+import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+import org.springframework.kafka.support.serializer.JsonDeserializer
 
 @EnableKafka
 @Configuration
@@ -27,20 +30,29 @@ class KafkaConsumerConfig {
     private val autoOffSet: String? = null
 
     @Bean
-    fun logConsumerFactory(): ConsumerFactory<String, DeliveryApiLogPayloadVO> {
+    fun consumerFactory(): ConsumerFactory<String, String> {
+//        val deserializer = JsonDeserializer<DeliveryApiLogPayloadVO>()
+//        deserializer.addTrustedPackages("com.racket.delivery.consume.vo")
+
         val config: MutableMap<String, Any> = HashMap()
         config[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers!!
-        config[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = keyDeserializer as Any
-        config[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = DeliveryApiLogPayloadVO::class
+        config[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = ErrorHandlingDeserializer::class.java
+        config[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = ErrorHandlingDeserializer::class.java
         config[ConsumerConfig.GROUP_ID_CONFIG] = groupId!!
         config[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = autoOffSet!!
-        return DefaultKafkaConsumerFactory(config)
+
+
+        return DefaultKafkaConsumerFactory(
+            config,
+            ErrorHandlingDeserializer(StringDeserializer()),
+            ErrorHandlingDeserializer(StringDeserializer())
+        )
     }
 
     @Bean
-    fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, DeliveryApiLogPayloadVO> {
-        val factory = ConcurrentKafkaListenerContainerFactory<String, DeliveryApiLogPayloadVO>()
-        factory.consumerFactory = logConsumerFactory()
+    fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, String> {
+        val factory = ConcurrentKafkaListenerContainerFactory<String, String>()
+        factory.consumerFactory = consumerFactory()
         return factory
     }
 

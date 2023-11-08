@@ -36,7 +36,6 @@ spring:
       enable-auto-commit: false
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
-
 #  kafka:
 #    bootstrap-servers: localhost:9092
 #    consumer:

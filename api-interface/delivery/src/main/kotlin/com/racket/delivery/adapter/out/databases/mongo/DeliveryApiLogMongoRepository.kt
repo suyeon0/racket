@@ -13,6 +13,6 @@ interface DeliveryApiLogMongoRepository : MongoRepository<DeliveryApiLogEntity, 
         invoiceNo: String,
         start: LocalDateTime,
         end: LocalDateTime
-    ): DeliveryApiLogEntity
+    ): DeliveryApiLogEntity?
 
 }

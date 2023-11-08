@@ -1,5 +1,6 @@
 package com.racket.delivery.consume.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.racket.delivery.consume.domain.DeliveryApiLog
 import com.racket.delivery.consume.mongo.DeliveryApiLogRepositoryAdapter
 import com.racket.delivery.consume.vo.DeliveryApiLogPayloadVO
@@ -8,30 +9,41 @@ import org.apache.kafka.clients.consumer.Consumer
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.ZoneId
 
 @Service
 class DeliveryLogConsumer(
-    private val deliveryApiLogRepositoryAdapter: DeliveryApiLogRepositoryAdapter
+    private val deliveryApiLogRepositoryAdapter: DeliveryApiLogRepositoryAdapter,
+    private val objectMapper: ObjectMapper
 ) {
 
     private val log = KotlinLogging.logger { }
 
     @KafkaListener(
-        topics = ["delivery-log"], groupId = "racket"
+        topics = ["delivery-log"],
+        groupId = "racket"
     )
-    fun consumeSaveLog(@Payload message: DeliveryApiLogPayloadVO, consumer: Consumer<String, DeliveryApiLogPayloadVO>) {
+    @Transactional
+    fun consumeSaveLog(
+        @Payload payload: String,
+        consumer: Consumer<String, String>
+    ) {
         try {
-            val log = DeliveryApiLog(
-                companyType = message.companyType,
-                invoiceNo = message.invoiceNo,
-                responseTime = LocalDateTime.ofInstant(message.responseTime, ZoneId.systemDefault()),
-                response = message.response
+            val payload = this.objectMapper.readValue(payload, DeliveryApiLogPayloadVO::class.java)
+            val deliveryApiLog = DeliveryApiLog(
+                companyType = payload.companyType,
+                invoiceNo = payload.invoiceNo,
+                responseTime = LocalDateTime.ofInstant(payload.responseTime, ZoneId.systemDefault()),
+                response = payload.response
             )
-            this.deliveryApiLogRepositoryAdapter.save(log)
+            this.deliveryApiLogRepositoryAdapter.save(deliveryApiLog)
+            consumer.commitSync()
+
+            log.info { "cash consume offset commit!" }
         } catch (e: Exception) {
-            log.error { e.message }
+            log.error { "Consumer Failed. ${e.message}" }
         }
     }
 

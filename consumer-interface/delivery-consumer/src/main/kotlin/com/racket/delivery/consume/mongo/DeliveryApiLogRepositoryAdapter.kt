@@ -10,7 +10,8 @@ class DeliveryApiLogRepositoryAdapter(
 ) {
 
     fun save(log: DeliveryApiLog): Optional<DeliveryApiLog> {
-        val result = this.deliveryApiLogMongoRepository.save(DeliveryApiLogEntity.of(log))
+        val entity = DeliveryApiLogEntity.of(log)
+        val result = this.deliveryApiLogMongoRepository.save(entity)
         return Optional.of(result.toDomain())
     }
 
