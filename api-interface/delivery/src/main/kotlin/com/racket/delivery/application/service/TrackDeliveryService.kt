@@ -34,13 +34,13 @@ class TrackDeliveryService(
 
         return if (recentLogOpt.isEmpty) {
             log.info { "1시간 이내 조회 로그 없음. API 호출." }
-            val client = deliveryClientFactoryService.getClientAdapterByDeliveryCompanyType(deliveryCompany)
+            val client = this.deliveryClientFactoryService.getClientAdapterByDeliveryCompanyType(deliveryCompany)
             client.call(invoiceNumber)
 
         } else {
             log.info { "1시간 이내 조회 로그 사용" }
             val deliveryApiLogResponseString = recentLogOpt.get().response
-            val timeLine = parseTimeLine(deliveryCompany, deliveryApiLogResponseString)
+            val timeLine = deliveryCompany.parseTimeLine(timeLineString = deliveryApiLogResponseString)
             TrackingDeliveryResponseView(
                 deliveryCompany = deliveryCompany,
                 invoiceNumber = invoiceNumber,
