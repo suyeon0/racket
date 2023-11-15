@@ -31,11 +31,11 @@ class UpdateProductServiceImpl(
         return this.makeProductResponseViewFromProduct(product)
     }
 
-    override fun updateProductStatus(id: Long, status: ProductStatusType): ProductResponseView =
-        this.makeProductResponseViewFromProduct(
-            this.getProductEntity(id)
-                .updateStatus(status = status)
-        )
+    override fun updateProductStatus(id: Long, status: ProductStatusType): ProductResponseView {
+        val entity = this.getProductEntity(id).updateStatus(status = status)
+        this.productRepository.save(entity)
+        return this.makeProductResponseViewFromProduct(entity)
+    }
 
     private fun getProductEntity(id: Long) =
         this.productRepository.findById(id).orElseThrow { NotFoundProductException() }

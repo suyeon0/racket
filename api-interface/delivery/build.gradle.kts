@@ -21,8 +21,9 @@ dependencies {
     // util
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+")
-
+    //swagger
+    implementation("org.springdoc:springdoc-openapi-ui:1.7.0")
+    implementation("org.springdoc:springdoc-openapi-kotlin:1.7.0")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")

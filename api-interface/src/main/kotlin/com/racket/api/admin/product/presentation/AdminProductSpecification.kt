@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
-@Tag(name = "Admin-Product API")
+@Tag(name = "Admin - 상품 API")
 interface AdminProductSpecification {
 
     @Operation(summary = "상품 등록")
@@ -19,7 +19,7 @@ interface AdminProductSpecification {
 
     @Operation(summary = "상품 수정")
     @PatchMapping("/info/{id}")
-    fun put(@PathVariable id: Long, @RequestBody request: ProductUpdateRequestCommand): ResponseEntity<ProductResponseView>
+    fun updateProduct(@PathVariable id: Long, @RequestBody request: ProductUpdateRequestCommand): ResponseEntity<ProductResponseView>
 
 
     @Operation(summary = "상품 상태 변경")

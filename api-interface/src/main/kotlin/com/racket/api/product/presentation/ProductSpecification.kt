@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 
-@Tag(name = "Product-API", description = "상품/옵션 API")
 interface ProductSpecification {
 
     @LongTypeIdInputValidator
@@ -42,7 +41,7 @@ interface ProductSpecification {
     @Operation(
         summary = "상품 옵션 리스트 조회",
         description = "상품 ID로 상품 옵션 리스트 조회",
-        parameters = [Parameter(name = "productId", description = "상품 ID", example = "10")],
+        parameters = [Parameter(name = "productId", description = "상품 ID", example = "32")],
         responses = [
             ApiResponse(
                 responseCode = "200",
@@ -75,9 +74,9 @@ interface ProductSpecification {
 
     @GetMapping("/list")
     @SwaggerFailResponse
-    @Parameter(name = "cursorId", description = "조회할 페이지 번호")
+    @Parameter(name = "cursorId", description = "조회 결과의 마지막 product id")
     @Operation(
-        summary = "상품 리스트 조회 (페이징)",
+        summary = "상품 리스트 조회 (10건 단위 페이징)",
         description = "cursor ID 에 해당하는 페이지 내 상품 리스트 리턴. 최초 조회시 cursorId null",
         responses = [
             ApiResponse(

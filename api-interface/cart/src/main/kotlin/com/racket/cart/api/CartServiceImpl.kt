@@ -74,8 +74,11 @@ class CartServiceImpl(
         this.cartRepository.delete(
             this.cartRepository.findById(cartItemId).orElseThrow { NotFoundCartItemException(cartItemId = cartItemId) })
 
-    override fun getItemListByUserId(userId: Long): List<CartResponseView> =
-        this.cartRepository.findAllByUserId(userId).stream().map { item -> CartResponseView.makeView(item) }.toList()
+    override fun getItemListByUserId(userId: Long): List<CartResponseView> {
+        val list = this.cartRepository.findAllByUserId(userId)
+        return list.map { item -> CartResponseView.makeView(item) }.toList()
+    }
+       // this.cartRepository.findAllByUserId(userId).stream().map { item -> CartResponseView.makeView(item) }.toList()
 
     @Transactional
     override fun updateOrderQuantity(cartItemId: Long, orderQuantity: Long): CartResponseView {

@@ -28,7 +28,7 @@ class AdminProductController(
             .body(this.createProductService.registerProduct(productRegisterDTO))
     }
 
-    override fun put(
+    override fun updateProduct(
         @PathVariable id: Long,
         @RequestBody request: ProductUpdateRequestCommand
     ): ResponseEntity<ProductResponseView> {

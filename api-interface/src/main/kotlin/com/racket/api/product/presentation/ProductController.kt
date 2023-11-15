@@ -1,20 +1,8 @@
 package com.racket.api.product.presentation
 
 import com.racket.api.product.GetProductService
-import com.racket.api.shared.annotation.LongTypeIdInputValidator
 import com.racket.api.product.option.OptionService
-import com.racket.api.product.option.reponse.OptionResponseView
-import com.racket.api.product.presentation.response.ProductResponseView
-import com.racket.api.product.vo.ProductCursorResultVO
-import com.racket.api.shared.annotation.SwaggerFailResponse
-import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.Parameter
-import io.swagger.v3.oas.annotations.media.ArraySchema
-import io.swagger.v3.oas.annotations.media.Content
-import io.swagger.v3.oas.annotations.media.Schema
-import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
-import lombok.extern.slf4j.Slf4j
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

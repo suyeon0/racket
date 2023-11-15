@@ -1,5 +1,6 @@
 package com.racket.cash
 
+import com.racket.api.shared.annotation.SwaggerFailResponse
 import com.racket.api.shared.payment.BasePaymentComponent
 import com.racket.api.shared.user.BaseUserComponent
 import com.racket.cash.enums.CashTransactionStatusType
@@ -8,6 +9,10 @@ import com.racket.cash.request.CashChargeCommand
 import com.racket.cash.response.CashBalanceResponseView
 import com.racket.cash.response.ChargeResponseView
 import com.racket.cash.vo.ChargeVO
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -21,6 +26,19 @@ class CashController(
     private val baseUserComponent: BaseUserComponent,
     private val basePaymentComponent: BasePaymentComponent
 )  {
+
+    @SwaggerFailResponse
+    @Operation(
+        summary = "캐시 충전 요청",
+        description = "캐시 충전 요청",
+        responses = [
+            ApiResponse(
+                responseCode = "201",
+                description = "Success",
+                content = [Content(schema = Schema(implementation = ChargeResponseView::class))]
+            )
+        ]
+    )
     @PostMapping("/charge/request")
     fun postToCharge(@RequestBody chargeCommand: CashChargeCommand): ResponseEntity<ChargeResponseView> {
         this.validateToCharge(chargeCommand)
@@ -54,6 +72,19 @@ class CashController(
         }
     }
 
+
+    @SwaggerFailResponse
+    @Operation(
+        summary = "캐시 충전 DB 반영",
+        description = "캐시 충전 DB 반영",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Success",
+                content = [Content(schema = Schema(implementation = CashBalanceResponseView::class))]
+            )
+        ]
+    )
     @PostMapping("/charge/complete")
     fun completeCharge(@RequestBody chargeCommand: CashChargeCommand): ResponseEntity<CashBalanceResponseView> {
         return ResponseEntity.ok().body(
@@ -70,6 +101,18 @@ class CashController(
         )
     }
 
+    @SwaggerFailResponse
+    @Operation(
+        summary = "캐시 조회",
+        description = "캐시 조회",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Success",
+                content = [Content(schema = Schema(implementation = CashBalanceResponseView::class))]
+            )
+        ]
+    )
     @GetMapping("/balance/{userId}")
     fun getBalanceByUserId(@PathVariable userId: Long) = ResponseEntity.ok().body(this.cashService.getBalanceByUserId(userId))
 

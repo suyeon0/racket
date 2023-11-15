@@ -37,7 +37,7 @@ class Cart(
     val deliveryCost: Long,
 
     @Column(name = "estimated_delivery_day")
-    val estimatedDeliveryDay: LocalDate
+    val estimatedDeliveryDay: LocalDate?
 
 ) {
 
