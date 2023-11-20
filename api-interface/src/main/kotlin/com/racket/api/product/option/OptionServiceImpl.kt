@@ -27,11 +27,28 @@ class OptionServiceImpl(
         return this.makeOptionResponseViewFromOption(option)
     }
 
+    override fun addOption(optionCreateDTO: OptionService.OptionCreateDTO): OptionResponseView {
+        val option = this.optionRepository.save(
+            Option(
+                id = optionCreateDTO.id,
+                productId = optionCreateDTO.productId!!,
+                name = optionCreateDTO.name!!,
+                sort = optionCreateDTO.sort!!,
+                price = optionCreateDTO.price!!,
+                stock = optionCreateDTO.stock!!,
+                status = optionCreateDTO.status!!,
+                description = optionCreateDTO.description!!,
+                displayYn = optionCreateDTO.displayYn!!
+            )
+        )
+        return this.makeOptionResponseViewFromOption(option)
+    }
+
     private fun getOptionEntity(id: String) = this.optionRepository.findById(id).orElseThrow{ NotFoundOptionException() }
 
     private fun makeOptionResponseViewFromOption(option: Option) =
         OptionResponseView(
-            id = option.id!!,
+            id = option.id,
             productId = option.productId,
             name = option.name,
             price = option.price,

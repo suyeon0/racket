@@ -1,5 +1,7 @@
 package com.racket.api.admin.product.presentation
 
+import com.racket.api.admin.product.presentation.request.OptionCreateRequestCommand
+import com.racket.api.admin.product.presentation.request.OptionUpdateRequestCommand
 import com.racket.api.admin.product.presentation.request.ProductCreateRequestCommand
 import com.racket.api.admin.product.presentation.request.ProductUpdateRequestCommand
 import com.racket.api.product.domain.enums.ProductStatusType
@@ -15,7 +17,7 @@ interface AdminProductSpecification {
 
     @Operation(summary = "상품 등록")
     @PostMapping
-    fun post(@RequestBody request: ProductCreateRequestCommand): ResponseEntity<ProductResponseView>
+    fun postProduct(@RequestBody request: ProductCreateRequestCommand): ResponseEntity<ProductResponseView>
 
 
     @Operation(summary = "상품 수정")
@@ -26,4 +28,13 @@ interface AdminProductSpecification {
     @Operation(summary = "상품 상태 변경")
     @PatchMapping("/{id}/status")
     fun patchStatus(@PathVariable id: String, @RequestParam status: ProductStatusType): ResponseEntity<ProductResponseView>
+
+    @Operation(summary = "옵션 등록")
+    @PostMapping("/option")
+    fun postOption(@RequestBody request: OptionCreateRequestCommand): ResponseEntity<OptionResponseView>
+
+
+    @Operation(summary = "옵션 수정")
+    @PatchMapping("/option/info/{id}")
+    fun updateProduct(@PathVariable id: String, @RequestBody request: OptionUpdateRequestCommand): ResponseEntity<OptionResponseView>
 }

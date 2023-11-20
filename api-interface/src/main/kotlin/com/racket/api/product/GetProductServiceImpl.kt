@@ -33,7 +33,7 @@ class GetProductServiceImpl(
         this.getProductVOFromCache(productId = productId)
             .map { ProductRedisHashVO.makeEntity(it) }
             .orElseGet {
-                val productEntity = getProductEntity(id = productId)
+                val productEntity = this.getProductEntity(id = productId)
                 this.setProductCache(productEntity)
                 productEntity
             }
