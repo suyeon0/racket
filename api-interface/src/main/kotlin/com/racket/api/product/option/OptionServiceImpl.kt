@@ -12,7 +12,7 @@ class OptionServiceImpl(
     val optionRepository: OptionRepository
 ) : OptionService {
     override fun getListByProductId(productId: String): List<OptionResponseView> {
-        val optionList = optionRepository.findByProductId(productId)
+        val optionList = optionRepository.findByProductIdOrderBySortAscPriceAsc(productId)
         require(optionList.isNotEmpty()) { throw NotFoundOptionException() }
 
         val resultList = ArrayList<OptionResponseView>()

@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface OptionRepository: CrudRepository<Option, String> {
-    fun findByProductId(productId: String): List<Option>
+    fun findByProductIdOrderBySortAscPriceAsc(productId: String): List<Option>
 }
