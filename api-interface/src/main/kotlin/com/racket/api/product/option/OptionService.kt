@@ -6,18 +6,34 @@ import org.bson.types.ObjectId
 
 interface OptionService {
 
-    // 옵션 리스트 조회
-    // 옵션 리스트에는 옵션의 이름과 가격이 나와야 함
-
     //  - 상품 아이디로 리스트 조회
     fun getListByProductId(productId: String): List<OptionResponseView>
 
     //  - 옵션 아이디로 단건 조회
     fun getByOptionId(optionId: String): OptionResponseView
+
+    // 옵션 추가
     fun addOption(option: OptionCreateDTO): OptionResponseView
+
+    // 옵션 수정
+    fun patchOption(id: String, option: OptionUpdateDTO): OptionResponseView
+
+    // 옵션 사용 여부 변경
+    fun patchDisplayYn(id: String, displayYn: Boolean?): OptionResponseView
 
     data class OptionCreateDTO(
         val id: String = ObjectId().toHexString(),
+        val productId: String?,
+        val name: String?,
+        val sort: Int?,
+        val price: Long?,
+        val stock: Int?,
+        val status: ProductStatusType?,
+        val description: String?,
+        val displayYn: Boolean?
+    )
+
+    data class OptionUpdateDTO(
         val productId: String?,
         val name: String?,
         val sort: Int?,

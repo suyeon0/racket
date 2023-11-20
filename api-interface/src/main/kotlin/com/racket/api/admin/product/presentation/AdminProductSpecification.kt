@@ -15,20 +15,25 @@ import org.springframework.web.bind.annotation.*
 @Tag(name = "Admin - 상품 API")
 interface AdminProductSpecification {
 
+    /**
+     * 상품
+     */
     @Operation(summary = "상품 등록")
     @PostMapping
     fun postProduct(@RequestBody request: ProductCreateRequestCommand): ResponseEntity<ProductResponseView>
 
-
     @Operation(summary = "상품 수정")
     @PatchMapping("/info/{id}")
-    fun updateProduct(@PathVariable id: String, @RequestBody request: ProductUpdateRequestCommand): ResponseEntity<ProductResponseView>
+    fun patchProduct(@PathVariable id: String, @RequestBody request: ProductUpdateRequestCommand): ResponseEntity<ProductResponseView>
 
 
     @Operation(summary = "상품 상태 변경")
     @PatchMapping("/{id}/status")
     fun patchStatus(@PathVariable id: String, @RequestParam status: ProductStatusType): ResponseEntity<ProductResponseView>
 
+    /**
+     * 옵션
+     */
     @Operation(summary = "옵션 등록")
     @PostMapping("/option")
     fun postOption(@RequestBody request: OptionCreateRequestCommand): ResponseEntity<OptionResponseView>
@@ -36,5 +41,9 @@ interface AdminProductSpecification {
 
     @Operation(summary = "옵션 수정")
     @PatchMapping("/option/info/{id}")
-    fun updateProduct(@PathVariable id: String, @RequestBody request: OptionUpdateRequestCommand): ResponseEntity<OptionResponseView>
+    fun patchOption(@PathVariable id: String, @RequestBody request: OptionUpdateRequestCommand): ResponseEntity<OptionResponseView>
+
+    @Operation(summary = "옵션 사용 여부 변경")
+    @PatchMapping("/option/{id}/display-flag")
+    fun patchOptionDisplay(@PathVariable id: String, @RequestParam displayYn: Boolean?): ResponseEntity<OptionResponseView>
 }

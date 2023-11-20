@@ -12,24 +12,50 @@ class Option(
     var id: String,
 
     @Column(name = "product_id")
-    val productId: String,   // 상품 ID
+    var productId: String,   // 상품 ID
 
-    val name: String,   // 옵션명
+    var name: String,   // 옵션명
 
-    val sort: Int,  // 옵션 정렬
+    var sort: Int,  // 옵션 정렬
 
-    val price: Long,  // 옵션 가격
+    var price: Long,  // 옵션 가격
 
-    val stock: Int, // 재고 수량
+    var stock: Int, // 재고 수량
 
-    val status: ProductStatusType = ProductStatusType.INITIATED, // 판매 상태
+    var status: ProductStatusType = ProductStatusType.INITIATED, // 판매 상태
 
-    val description: String? = null, // 비고
+    var description: String? = null, // 비고
 
     @Column(name = "display_yn")
-    val displayYn: Boolean
+    var displayYn: Boolean
 ) {
 
     fun isAvailable() = stock > 0
+
+    fun updateInfo(
+        productId: String,
+        name: String,
+        sort: Int,
+        price: Long,
+        stock: Int,
+        status: ProductStatusType,
+        description: String?,
+        displayYn: Boolean
+    ): Option {
+        this.productId = productId
+        this.name = name
+        this.sort = sort
+        this.price = price
+        this.stock = stock
+        this.status = status
+        this.description = description
+        this.displayYn = displayYn
+        return this
+    }
+
+    fun updateDisplayYn(displayYn: Boolean): Option {
+        this.displayYn = displayYn
+        return this
+    }
 
 }

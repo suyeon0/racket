@@ -19,10 +19,6 @@ class Product(
     var status: ProductStatusType = ProductStatusType.ACTIVE
 ) {
 
-    companion object {
-
-    }
-
     /* 상태 */
     fun isDeletedStatus() = this.status == ProductStatusType.INACTIVE
 

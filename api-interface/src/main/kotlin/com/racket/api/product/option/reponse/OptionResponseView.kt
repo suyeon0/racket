@@ -16,5 +16,7 @@ data class OptionResponseView(
     @Schema(title = "부가설명", example = "부가설명입니다")
     val description: String?,
     @Schema(title = "정렬순서", example = "0", minimum = "0")
-    val sort: Int
+    val sort: Int,
+    @Schema(title = "사용여부", example = "true")
+    val displayYn: Boolean,
 )

@@ -16,7 +16,7 @@ class OptionServiceImpl(
         require(optionList.isNotEmpty()) { throw NotFoundOptionException() }
 
         val resultList = ArrayList<OptionResponseView>()
-        for(option in optionList) {
+        for (option in optionList) {
             resultList.add(this.makeOptionResponseViewFromOption(option))
         }
         return resultList
@@ -44,7 +44,30 @@ class OptionServiceImpl(
         return this.makeOptionResponseViewFromOption(option)
     }
 
-    private fun getOptionEntity(id: String) = this.optionRepository.findById(id).orElseThrow{ NotFoundOptionException() }
+    override fun patchOption(id: String, optionUpdateDTO: OptionService.OptionUpdateDTO): OptionResponseView {
+        val option: Option = this.optionRepository.findById(id).orElseThrow { NotFoundOptionException() }
+        option.updateInfo(
+            productId = optionUpdateDTO.productId!!,
+            name = optionUpdateDTO.name!!,
+            sort = optionUpdateDTO.sort!!,
+            price = optionUpdateDTO.price!!,
+            stock = optionUpdateDTO.stock!!,
+            status = optionUpdateDTO.status!!,
+            description = optionUpdateDTO.description!!,
+            displayYn = optionUpdateDTO.displayYn!!
+        )
+        return this.makeOptionResponseViewFromOption(this.optionRepository.save(option))
+    }
+
+    override fun patchDisplayYn(id: String, displayYn: Boolean?): OptionResponseView {
+        require(displayYn != null) { "displayYn must be not null" }
+        val option: Option = this.optionRepository.findById(id).orElseThrow { NotFoundOptionException() }
+
+        option.updateDisplayYn(displayYn)
+        return this.makeOptionResponseViewFromOption(this.optionRepository.save(option))
+    }
+
+    private fun getOptionEntity(id: String) = this.optionRepository.findById(id).orElseThrow { NotFoundOptionException() }
 
     private fun makeOptionResponseViewFromOption(option: Option) =
         OptionResponseView(
@@ -54,6 +77,7 @@ class OptionServiceImpl(
             price = option.price,
             stock = option.stock,
             description = option.description,
-            sort = option.sort
+            sort = option.sort,
+            displayYn = option.displayYn
         )
 }

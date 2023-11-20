@@ -27,6 +27,7 @@ class AdminProductController(
 
     override fun postProduct(@RequestBody request: ProductCreateRequestCommand): ResponseEntity<ProductResponseView> {
         request.validate()
+
         val productRegisterDTO = CreateProductService.ProductRegisterDTO(
             name = request.productName,
             price = request.productPrice
@@ -35,9 +36,34 @@ class AdminProductController(
             .body(this.createProductService.registerProduct(productRegisterDTO))
     }
 
+    override fun patchProduct(
+        @PathVariable id: String,
+        @RequestBody request: ProductUpdateRequestCommand
+    ): ResponseEntity<ProductResponseView> {
+        request.validate()
+        this.validateProductIdAndThenThrowException(id)
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(
+                this.updateProductService.updateProductInfo(
+                    id = id,
+                    name = request.productName,
+                    price = request.productPrice
+                )
+            )
+    }
+
+    override fun patchStatus(@PathVariable id: String, @RequestParam status: ProductStatusType): ResponseEntity<ProductResponseView> {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(this.updateProductService.updateProductStatus(id = id, status = status))
+    }
+
+    /**
+     * 옵션
+     */
     override fun postOption(request: OptionCreateRequestCommand): ResponseEntity<OptionResponseView> {
         request.validate()
-        this.getProductService.getByProductId(request.productId!!)
+        this.validateProductIdAndThenThrowException(request.productId!!)
 
         val optionRegisterDTO = OptionService.OptionCreateDTO(
             productId = request.productId,
@@ -53,28 +79,41 @@ class AdminProductController(
             .body(this.optionService.addOption(optionRegisterDTO))
     }
 
-    override fun updateProduct(
-        @PathVariable id: String,
-        @RequestBody request: ProductUpdateRequestCommand
-    ): ResponseEntity<ProductResponseView> {
+    override fun patchOption(id: String, request: OptionUpdateRequestCommand): ResponseEntity<OptionResponseView> {
         request.validate()
+        this.validateOptionIdAndThenThrowException(id)
+        this.validateProductIdAndThenThrowException(request.productId!!)
+
+        val optionUpdateDTO = OptionService.OptionUpdateDTO(
+            productId = request.productId,
+            name = request.name,
+            sort = request.sort,
+            price = request.price,
+            stock = request.stock,
+            status = request.status,
+            description = request.description,
+            displayYn = request.displayYn
+        )
         return ResponseEntity.status(HttpStatus.OK)
-            .body(
-                this.updateProductService.updateProductInfo(
-                    id = id,
-                    name = request.productName,
-                    price = request.productPrice
-                )
-            )
+            .body(this.optionService.patchOption(id = id, option = optionUpdateDTO))
     }
 
-    override fun updateProduct(id: String, request: OptionUpdateRequestCommand): ResponseEntity<OptionResponseView> {
-        TODO("Not yet implemented")
+    override fun patchOptionDisplay(id: String, displayYn: Boolean?): ResponseEntity<OptionResponseView> {
+        if (displayYn == null) {
+            throw IllegalArgumentException("displayYn is null.")
+        }
+        this.validateOptionIdAndThenThrowException(id)
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(this.optionService.patchDisplayYn(id = id, displayYn = displayYn))
     }
 
-    override fun patchStatus(@PathVariable id: String, @RequestParam status: ProductStatusType): ResponseEntity<ProductResponseView> {
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(this.updateProductService.updateProductStatus(id = id, status = status))
+    private fun validateOptionIdAndThenThrowException(id: String) {
+        this.optionService.getByOptionId(id)
+    }
+
+    private fun validateProductIdAndThenThrowException(id: String) {
+        this.getProductService.getByProductId(id)
     }
 
 }
