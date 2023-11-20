@@ -53,18 +53,22 @@ class ProductControllerTest {
         val savedProduct = this.saveProduct()
         val options = listOf(
             Option(
-                productId = savedProduct.id!!,
+                productId = savedProduct.id,
                 name = "Option 2",
                 price = 2000,
                 stock = 200,
-                sort = 1
+                sort = 1,
+                displayYn = true,
+                id = ObjectId().toHexString()
             ),
             Option(
-                productId = savedProduct.id!!,
+                productId = savedProduct.id,
                 name = "Option 3",
                 price = 3000,
                 stock = 300,
-                sort = 2
+                sort = 2,
+                displayYn = true,
+                id = ObjectId().toHexString()
             )
         )
         return optionRepository.saveAll(options)

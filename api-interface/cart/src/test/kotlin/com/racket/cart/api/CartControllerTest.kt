@@ -270,11 +270,13 @@ class CartControllerTest {
         for (i in 1 until 3) {   // product
             for (j in 1 until 3) {   // option
                 val option = Option(
+                    id = ObjectId().toHexString(),
                     productId = ObjectId().toHexString(),
                     name = "product${i} - option${j}",
                     price = 1000 * j.toLong(),
                     stock = 200,
-                    sort = j
+                    sort = j,
+                    displayYn = true
                 )
                 optionList.add(this.optionRepository.save(option))
             }

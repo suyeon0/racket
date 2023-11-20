@@ -24,9 +24,10 @@ class Option(
 
     val status: ProductStatusType = ProductStatusType.INITIATED, // 판매 상태
 
-    val description: String? = null // 비고
+    val description: String? = null, // 비고
 
-
+    @Column(name = "display_yn")
+    val displayYn: Boolean
 ) {
 
     fun isAvailable() = stock > 0
