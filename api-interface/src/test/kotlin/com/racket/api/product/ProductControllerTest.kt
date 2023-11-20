@@ -12,6 +12,7 @@ import com.racket.api.product.exception.NotFoundProductException
 import com.racket.api.product.option.reponse.OptionResponseView
 import com.racket.api.product.presentation.response.ProductResponseView
 import com.racket.api.product.vo.ProductCursorResultVO
+import org.bson.types.ObjectId
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -44,7 +45,7 @@ class ProductControllerTest {
     private val cursorSize = 10
 
     private fun saveProduct(): Product {
-        val savedProduct = Product(price = 10000, name = "TestProduct", customerProductCode = "customerProductCode")
+        val savedProduct = Product(price = 10000, name = "TestProduct", id = ObjectId().toHexString())
         return this.productRepository.save(savedProduct)
     }
 
@@ -53,17 +54,15 @@ class ProductControllerTest {
         val options = listOf(
             Option(
                 productId = savedProduct.id!!,
-                optionNo = "Option 2",
                 name = "Option 2",
-                optionAdditionalPrice = 2000,
+                price = 2000,
                 stock = 200,
                 sort = 1
             ),
             Option(
                 productId = savedProduct.id!!,
-                optionNo = "Option 3",
                 name = "Option 3",
-                optionAdditionalPrice = 3000,
+                price = 3000,
                 stock = 300,
                 sort = 2
             )
@@ -140,7 +139,7 @@ class ProductControllerTest {
         Assertions.assertTrue(responseViewList.isNotEmpty())
         Assertions.assertTrue(responseViewList.size == options.count())
         Assertions.assertEquals(options.first().name, responseViewList[0].name)
-        Assertions.assertEquals(options.first().optionAdditionalPrice, responseViewList[0].additionalPrice)
+        Assertions.assertEquals(options.first().price, responseViewList[0].price)
     }
 
     @Test
@@ -164,7 +163,7 @@ class ProductControllerTest {
     fun `Product Test - 상품 정보 리스트 조회시 페이징 처리되어 조회한다 최초 조회시(cursorId가 null) cursorSize 만큼 조회되어야 한다`() {
         // given
         for (i in 1..25) {
-            this.productRepository.save(Product(price = 10000, name = "TestProduct", customerProductCode = i.toString()))
+            this.productRepository.save(Product(price = 10000, name = "TestProduct", id = ObjectId().toHexString()))
         }
 
         // when
@@ -208,7 +207,7 @@ class ProductControllerTest {
     fun `Product Test - 상품 리스트 조회시 cursorId 를 지정한 경우 결과 리스트 첫번째 인덱스의 상품 ID 는 cursorId - 1 값과 동일해야 한다`() {
         // given
         for (i in 1..30) {
-            productRepository.save(Product(price = 10000, name = "TestProduct", customerProductCode = i.toString()))
+            productRepository.save(Product(price = 10000, name = "TestProduct", id = ObjectId().toHexString()))
         }
 
         // when

@@ -8,7 +8,6 @@ interface ProductService {
     fun makeProductResponseViewFromProduct(product: Product) =
         ProductResponseView(
             id = product.id!!,
-            customerProductCode = product.customerProductCode,
             name = product.name,
             price = product.price,
             statusType = product.status

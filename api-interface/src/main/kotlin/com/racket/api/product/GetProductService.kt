@@ -6,10 +6,8 @@ import org.springframework.data.domain.Pageable
 
 interface GetProductService: ProductService {
 
-    fun getByProductId(productId: Long): ProductResponseView
+    fun getByProductId(productId: String): ProductResponseView
 
-    fun getList(cursorId: Long?, page: Pageable): ProductCursorResultVO
-
-    fun getByProductIdAndOptionId(productId: Long, optionId: Long): ProductResponseView
+    fun getList(cursorId: String?, page: Pageable): ProductCursorResultVO
 
 }

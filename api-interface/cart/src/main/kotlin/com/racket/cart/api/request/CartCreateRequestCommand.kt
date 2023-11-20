@@ -4,8 +4,8 @@ import com.racket.cart.api.vo.DeliveryInformationVO
 
 data class CartCreateRequestCommand(
     val userId: Long,
-    val productId: Long,
-    val optionId: Long,
+    val productId: String,
+    val optionId: String,
     val optionName: String,
     val originalPrice: Long,
     val calculatedPrice: Long,

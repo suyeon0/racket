@@ -19,6 +19,7 @@ import com.racket.cart.mock.api.MockProductApi
 import com.racket.share.domain.user.User
 import com.racket.share.domain.user.UserRepository
 import com.racket.share.vo.MobileVO
+import org.bson.types.ObjectId
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -99,7 +100,7 @@ class CartControllerTest {
             productId = options[0].productId,
             optionId = options[0].id!!,
             optionName = options[0].name,
-            originalPrice = options[0].optionAdditionalPrice,
+            originalPrice = options[0].price,
             calculatedPrice = 10000,
             orderQuantity = 1,
             deliveryInformation = DeliveryInformationVO(deliveryCost = 3000, expectedDate = LocalDate.now())
@@ -136,7 +137,7 @@ class CartControllerTest {
             productId = options[0].productId,
             optionId = options[0].id!!,
             optionName = options[0].name,
-            originalPrice = options[0].optionAdditionalPrice,
+            originalPrice = options[0].price,
             calculatedPrice = 10000,
             orderQuantity = 0,
             deliveryInformation = DeliveryInformationVO(deliveryCost = 3000, expectedDate = LocalDate.now())
@@ -168,7 +169,7 @@ class CartControllerTest {
             productId = options[0].productId,
             optionId = options[0].id!!,
             optionName = options[0].name,
-            originalPrice = options[0].optionAdditionalPrice,
+            originalPrice = options[0].price,
             calculatedPrice = 10000,
             orderQuantity = 20,
             deliveryInformation = DeliveryInformationVO(deliveryCost = 3000, expectedDate = LocalDate.now())
@@ -212,7 +213,7 @@ class CartControllerTest {
             productId = options[0].productId,
             optionId = options[0].id!!,
             optionName = options[0].name,
-            originalPrice = options[0].optionAdditionalPrice,
+            originalPrice = options[0].price,
             calculatedPrice = 10000,
             orderQuantity = 20,
             deliveryInformation = DeliveryInformationVO(deliveryCost = 3000, expectedDate = LocalDate.now())
@@ -258,7 +259,7 @@ class CartControllerTest {
         val productList = ArrayList<Product>()
         for (i in 1 until 3) {
             val product =
-                Product(price = 1000 * i.toLong(), name = "product${i}", customerProductCode = "customerProductCode${i}")
+                Product(price = 1000 * i.toLong(), name = "product${i}", id = ObjectId().toHexString())
             productList.add(this.productRepository.save(product))
         }
         return productList
@@ -269,10 +270,9 @@ class CartControllerTest {
         for (i in 1 until 3) {   // product
             for (j in 1 until 3) {   // option
                 val option = Option(
-                    productId = i.toLong(),
-                    optionNo = "product${i} - option${j}",
+                    productId = ObjectId().toHexString(),
                     name = "product${i} - option${j}",
-                    optionAdditionalPrice = 1000 * j.toLong(),
+                    price = 1000 * j.toLong(),
                     stock = 200,
                     sort = j
                 )

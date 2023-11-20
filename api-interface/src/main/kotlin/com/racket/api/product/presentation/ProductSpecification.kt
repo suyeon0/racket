@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
-import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -33,7 +32,7 @@ interface ProductSpecification {
             )
         ]
     )
-    fun getProduct(@PathVariable productId: Long): ResponseEntity<ProductResponseView>
+    fun getProduct(@PathVariable productId: String): ResponseEntity<ProductResponseView>
 
     @LongTypeIdInputValidator
     @GetMapping("/options/{productId}")
@@ -50,7 +49,7 @@ interface ProductSpecification {
             )
         ]
     )
-    fun getOptions(@PathVariable productId: Long): ResponseEntity<List<OptionResponseView>>
+    fun getOptions(@PathVariable productId: String): ResponseEntity<List<OptionResponseView>>
 
     @LongTypeIdInputValidator
     @GetMapping("/option/{optionId}")
@@ -70,7 +69,7 @@ interface ProductSpecification {
             ApiResponse(responseCode = "500", description = "Internal Server Error")
         ]
     )
-    fun getOption(@PathVariable optionId: Long): ResponseEntity<OptionResponseView>
+    fun getOption(@PathVariable optionId: String): ResponseEntity<OptionResponseView>
 
     @GetMapping("/list")
     @SwaggerFailResponse
@@ -89,5 +88,5 @@ interface ProductSpecification {
             ApiResponse(responseCode = "500", description = "Internal Server Error")
         ]
     )
-    fun getProductList(@RequestParam cursorId: Long?): ResponseEntity<ProductCursorResultVO>
+    fun getProductList(@RequestParam cursorId: String?): ResponseEntity<ProductCursorResultVO>
 }

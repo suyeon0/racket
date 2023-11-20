@@ -6,6 +6,7 @@ dependencies {
 	implementation(project(mapOf("path" to ":shared:domain")))
 	// DB
 	implementation ("com.mysql:mysql-connector-j")
+	implementation ("org.springframework.boot:spring-boot-starter-data-mongodb")
 
 	//Redis
 	implementation("org.springframework.boot:spring-boot-starter-data-redis:2.5.4")

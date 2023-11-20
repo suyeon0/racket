@@ -18,16 +18,16 @@ class ProductController(
         private const val CURSOR_SIZE = 10
     }
 
-    override fun getProduct(@PathVariable productId: Long) = ResponseEntity.ok(this.productService.getByProductId(productId))
+    override fun getProduct(@PathVariable productId: String) = ResponseEntity.ok(this.productService.getByProductId(productId))
 
-    override fun getOptions(@PathVariable productId: Long) = ResponseEntity.ok(this.optionServiceImpl.getListByProductId(productId))
+    override fun getOptions(@PathVariable productId: String) = ResponseEntity.ok(this.optionServiceImpl.getListByProductId(productId))
 
-    override fun getOption(@PathVariable optionId: Long) = ResponseEntity.ok(this.optionServiceImpl.getByOptionId(optionId))
+    override fun getOption(@PathVariable optionId: String) = ResponseEntity.ok(this.optionServiceImpl.getByOptionId(optionId))
 
-    override fun getProductList(@RequestParam cursorId: Long?) =
+    override fun getProductList(@RequestParam cursorId: String?) =
         ResponseEntity.ok(this.productService.getList(cursorId = cursorId, page = PageRequest.of(0, CURSOR_SIZE)))
 
-    fun getAvailableStock(@PathVariable productId: Long, @PathVariable optionId: Long) =
+    fun getAvailableStock(@PathVariable productId: String, @PathVariable optionId: String) =
         ResponseEntity.ok(this.productService.getByProductId(productId))
 
 }

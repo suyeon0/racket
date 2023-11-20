@@ -21,15 +21,14 @@ class AdminProductController(
         request.validate()
         val productRegisterDTO = CreateProductService.ProductRegisterDTO(
             name = request.productName,
-            price = request.productPrice,
-            customerProductCode = request.customerProductCode
+            price = request.productPrice
         )
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(this.createProductService.registerProduct(productRegisterDTO))
     }
 
     override fun updateProduct(
-        @PathVariable id: Long,
+        @PathVariable id: String,
         @RequestBody request: ProductUpdateRequestCommand
     ): ResponseEntity<ProductResponseView> {
         request.validate()
@@ -43,7 +42,7 @@ class AdminProductController(
             )
     }
 
-    override fun patchStatus(@PathVariable id: Long, @RequestParam status: ProductStatusType): ResponseEntity<ProductResponseView> {
+    override fun patchStatus(@PathVariable id: String, @RequestParam status: ProductStatusType): ResponseEntity<ProductResponseView> {
         return ResponseEntity.status(HttpStatus.OK)
             .body(this.updateProductService.updateProductStatus(id = id, status = status))
     }

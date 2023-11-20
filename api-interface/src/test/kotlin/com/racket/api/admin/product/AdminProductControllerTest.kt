@@ -35,7 +35,6 @@ class AdminProductControllerTest {
 
     companion object {
         private val productCreateRequestCommand = ProductCreateRequestCommand(
-            customerProductCode = "TestProductCode",
             productName = "productName",
             productPrice = 100000
         )
@@ -44,7 +43,7 @@ class AdminProductControllerTest {
     private fun saveProduct(): ProductResponseView =
         this.createProductService.registerProduct(
             CreateProductService.ProductRegisterDTO(
-                customerProductCode = "TestProductCode", name = "TestName", price = 10000
+                name = "TestName", price = 10000
             )
         )
 

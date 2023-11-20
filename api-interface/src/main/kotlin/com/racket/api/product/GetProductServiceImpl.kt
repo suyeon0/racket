@@ -23,14 +23,14 @@ class GetProductServiceImpl(
     /**
      * 상품 단건 조회
      */
-    override fun getByProductId(productId: Long): ProductResponseView {
+    override fun getByProductId(productId: String): ProductResponseView {
         val product: Product = this.getProductFromCacheOrDatabase(productId)
         this.validateProductStatus(product)
         return this.makeProductResponseViewFromProduct(product)
     }
 
-    private fun getProductFromCacheOrDatabase(productId: Long): Product =
-        this.getProductVOFromCache(productId = productId.toString())
+    private fun getProductFromCacheOrDatabase(productId: String): Product =
+        this.getProductVOFromCache(productId = productId)
             .map { ProductRedisHashVO.makeEntity(it) }
             .orElseGet {
                 val productEntity = getProductEntity(id = productId)
@@ -53,7 +53,7 @@ class GetProductServiceImpl(
     /**
      * 상품 리스트 조회
      */
-    override fun getList(cursorId: Long?, page: Pageable): ProductCursorResultVO {
+    override fun getList(cursorId: String?, page: Pageable): ProductCursorResultVO {
         val productList: List<Product> = if (cursorId == null) {
             this.productRepository.findAllByOrderByIdDesc(page) // 최초 조회
         } else {
@@ -61,7 +61,7 @@ class GetProductServiceImpl(
         }
 
         val productResponseViewList = ArrayList<ProductResponseView>()
-        var newCursorId: Long? = null
+        var newCursorId: String? = null
         if (productList.isNotEmpty()) {
             for (product in productList) {
                 productResponseViewList.add(this.makeProductResponseViewFromProduct(product))
@@ -74,14 +74,10 @@ class GetProductServiceImpl(
         )
     }
 
-    override fun getByProductIdAndOptionId(productId: Long, optionId: Long): ProductResponseView {
-        TODO("Not yet implemented")
-    }
-
-    private fun hasNextCursor(id: Long?): Boolean {
+    private fun hasNextCursor(id: String?): Boolean {
         if (id == null) return false // 조회 결과가 없는 경우
         return this.productRepository.existsByIdLessThan(id)
     }
 
-    private fun getProductEntity(id: Long) = this.productRepository.findById(id).orElseThrow { NotFoundProductException() }
+    private fun getProductEntity(id: String) = this.productRepository.findById(id).orElseThrow { NotFoundProductException() }
 }

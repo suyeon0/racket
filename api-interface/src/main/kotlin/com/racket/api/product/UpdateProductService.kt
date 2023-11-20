@@ -5,8 +5,8 @@ import com.racket.api.product.presentation.response.ProductResponseView
 
 interface UpdateProductService: ProductService {
 
-    fun updateProductInfo(id: Long, name: String, price: Long): ProductResponseView
+    fun updateProductInfo(id: String, name: String, price: Long): ProductResponseView
 
-    fun updateProductStatus(id: Long, status: ProductStatusType): ProductResponseView
+    fun updateProductStatus(id: String, status: ProductStatusType): ProductResponseView
 
 }

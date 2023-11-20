@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service
 class OptionServiceImpl(
     val optionRepository: OptionRepository
 ) : OptionService {
-    override fun getListByProductId(productId: Long): List<OptionResponseView> {
+    override fun getListByProductId(productId: String): List<OptionResponseView> {
         val optionList = optionRepository.findByProductId(productId)
         require(optionList.isNotEmpty()) { throw NotFoundOptionException() }
 
@@ -22,22 +22,21 @@ class OptionServiceImpl(
         return resultList
     }
 
-    override fun getByOptionId(optionId: Long): OptionResponseView {
+    override fun getByOptionId(optionId: String): OptionResponseView {
         val option = this.getOptionEntity(optionId)
         return this.makeOptionResponseViewFromOption(option)
     }
 
-    private fun getOptionEntity(id: Long) = this.optionRepository.findById(id).orElseThrow{ NotFoundOptionException() }
+    private fun getOptionEntity(id: String) = this.optionRepository.findById(id).orElseThrow{ NotFoundOptionException() }
 
     private fun makeOptionResponseViewFromOption(option: Option) =
         OptionResponseView(
             id = option.id!!,
-            optionNo = option.optionNo,
             productId = option.productId,
             name = option.name,
-            additionalPrice = option.optionAdditionalPrice,
+            price = option.price,
             stock = option.stock,
-            remark = option.remark,
+            description = option.description,
             sort = option.sort
         )
 }

@@ -5,10 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 
 data class ProductResponseView(
     @Schema(title = "상품 ID", example = "1234567")
-    val id: Long,
-
-    @Schema(title = "고객사 상품 코드", example = "WILSON-13456")
-    val customerProductCode: String,
+    val id: String,
 
     @Schema(title = "상품명", example = "윌슨 테니스라켓 2023 프로스태프 V14 골드")
     val name: String,

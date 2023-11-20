@@ -8,11 +8,8 @@ import javax.persistence.*
 class Product(
 
     @Id
-    @GeneratedValue
     @Column(name = "product_id")
-    var id: Long? = null,
-
-    val customerProductCode: String,
+    var id: String,
 
     var name: String,
 
@@ -21,6 +18,10 @@ class Product(
     @Enumerated(EnumType.STRING)
     var status: ProductStatusType = ProductStatusType.ACTIVE
 ) {
+
+    companion object {
+
+    }
 
     /* 상태 */
     fun isDeletedStatus() = this.status == ProductStatusType.INACTIVE

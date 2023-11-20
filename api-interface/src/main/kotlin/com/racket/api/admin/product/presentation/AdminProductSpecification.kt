@@ -3,6 +3,7 @@ package com.racket.api.admin.product.presentation
 import com.racket.api.admin.product.presentation.request.ProductCreateRequestCommand
 import com.racket.api.admin.product.presentation.request.ProductUpdateRequestCommand
 import com.racket.api.product.domain.enums.ProductStatusType
+import com.racket.api.product.option.reponse.OptionResponseView
 import com.racket.api.product.presentation.response.ProductResponseView
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -19,11 +20,10 @@ interface AdminProductSpecification {
 
     @Operation(summary = "상품 수정")
     @PatchMapping("/info/{id}")
-    fun updateProduct(@PathVariable id: Long, @RequestBody request: ProductUpdateRequestCommand): ResponseEntity<ProductResponseView>
+    fun updateProduct(@PathVariable id: String, @RequestBody request: ProductUpdateRequestCommand): ResponseEntity<ProductResponseView>
 
 
     @Operation(summary = "상품 상태 변경")
     @PatchMapping("/{id}/status")
-    fun patchStatus(@PathVariable id: Long, @RequestParam status: ProductStatusType): ResponseEntity<ProductResponseView>
-
+    fun patchStatus(@PathVariable id: String, @RequestParam status: ProductStatusType): ResponseEntity<ProductResponseView>
 }
