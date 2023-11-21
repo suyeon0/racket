@@ -1,7 +1,7 @@
 package com.racket.api.product.presentation
 
 import com.racket.api.product.option.response.OptionResponseView
-import com.racket.api.product.presentation.response.OptionWithProductView
+import com.racket.api.product.option.response.OptionWithProductView
 import com.racket.api.product.presentation.response.ProductResponseView
 import com.racket.api.product.vo.ProductCursorResultVO
 import com.racket.api.shared.annotation.LongTypeIdInputValidator

@@ -3,12 +3,10 @@ package com.racket.cart.api.vo
 data class CartItemRequestVO(
 
     val userId: Long,
-    val productId: Long,
-    val optionId: Long,
-    val optionName: String,
+    val productId: String,
+    val optionId: String,
     val originalPrice: Long,
     val calculatedPrice: Long,
-    val orderQuantity: Long,
-    val deliveryInformation: DeliveryInformationVO
+    val orderQuantity: Long
 
 )

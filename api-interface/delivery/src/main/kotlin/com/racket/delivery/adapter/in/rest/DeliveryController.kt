@@ -1,7 +1,5 @@
 package com.racket.delivery.adapter.`in`.rest
 
-import com.racket.api.product.option.reponse.OptionResponseView
-import com.racket.api.product.presentation.response.ProductResponseView
 import com.racket.api.shared.annotation.SwaggerFailResponse
 import com.racket.delivery.adapter.`in`.rest.response.OptionDeliveryInformationResponseView
 import com.racket.delivery.adapter.`in`.rest.response.TrackingDeliveryResponseView

@@ -41,17 +41,16 @@ class CartController(
     )
     fun postItem(@RequestBody request: CartCreateRequestCommand): ResponseEntity<CartResponseView> {
         request.validate()
+
         return ResponseEntity.status(HttpStatus.CREATED).body(
             this.cartService.addItem(
                 item = CartItemRequestVO(
-                    userId = request.userId,
-                    productId = request.productId,
-                    optionId = request.optionId,
-                    optionName = request.optionName,
-                    originalPrice = request.originalPrice,
-                    calculatedPrice = request.calculatedPrice,
-                    orderQuantity = request.orderQuantity,
-                    deliveryInformation = request.deliveryInformation
+                    userId = request.userId!!,
+                    productId = request.productId!!,
+                    optionId = request.optionId!!,
+                    originalPrice = request.originalPrice!!,
+                    calculatedPrice = request.calculatedPrice!!,
+                    orderQuantity = request.orderQuantity!!
                 )
             )
         )

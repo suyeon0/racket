@@ -8,11 +8,14 @@ data class CartItemVO (
 
     val optionId: Long,
 
+    val productName: String?,
+
+    val optionName: String?,
+
     val originalPrice: Long,
 
     val calculatedPrice: Long,
 
-    var orderQuantity: Long,
+    var orderQuantity: Long
 
-    val deliveryInformationVO: DeliveryInformationVO
 )

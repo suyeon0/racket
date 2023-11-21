@@ -1,6 +1,5 @@
 package com.racket.cart.api.domain
 
-import java.time.LocalDate
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -19,10 +18,19 @@ class Cart(
     val userId: Long,
 
     @Column(name = "product_id")
-    val productId: Long,
+    val productId: String,
 
     @Column(name = "option_id")
-    val optionId: Long,
+    val optionId: String,
+
+    @Column(name = "product_name")
+    val productName: String,
+
+    @Column(name = "option_name")
+    val optionName: String,
+
+    @Column(name = "product_representative_image")
+    val productRepresentativeImage: String,
 
     @Column(name = "original_price")
     val originalPrice: Long,
@@ -34,11 +42,7 @@ class Cart(
     var orderQuantity: Long,
 
     @Column(name = "delivery_cost")
-    val deliveryCost: Long,
-
-    @Column(name = "estimated_delivery_day")
-    val estimatedDeliveryDay: LocalDate?
-
+    val deliveryCost: Long
 ) {
 
     fun updateOrderQuantity(quantity: Long) {

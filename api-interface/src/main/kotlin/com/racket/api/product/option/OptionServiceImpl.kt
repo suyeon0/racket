@@ -5,7 +5,7 @@ import com.racket.api.product.domain.Option
 import com.racket.api.product.domain.OptionRepository
 import com.racket.api.product.exception.NotFoundOptionException
 import com.racket.api.product.option.response.OptionResponseView
-import com.racket.api.product.presentation.response.OptionWithProductView
+import com.racket.api.product.option.response.OptionWithProductView
 import org.springframework.stereotype.Service
 
 

@@ -2,7 +2,7 @@ package com.racket.api.product.option
 
 import com.racket.api.product.domain.enums.ProductStatusType
 import com.racket.api.product.option.response.OptionResponseView
-import com.racket.api.product.presentation.response.OptionWithProductView
+import com.racket.api.product.option.response.OptionWithProductView
 import org.bson.types.ObjectId
 
 interface OptionService {

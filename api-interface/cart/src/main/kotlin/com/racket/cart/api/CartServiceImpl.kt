@@ -5,6 +5,7 @@ import com.racket.cart.api.domain.Cart
 import com.racket.cart.api.domain.CartRepository
 import com.racket.cart.api.vo.CartItemRequestVO
 import com.racket.api.product.exception.NotFoundOptionException
+import com.racket.api.product.option.response.OptionWithProductView
 import com.racket.api.shared.user.BaseUserComponent
 import com.racket.cart.api.exception.*
 import com.racket.cart.api.response.CartResponseView
@@ -22,7 +23,7 @@ class CartServiceImpl(
     private val log = KotlinLogging.logger { }
 
     /**
-     * 장바구니에는 그 시점 시냅샷 데이터를 담는다 (가용재고 체크, 상품 가격, 배송 정보)
+     * 장바구니에는 그 시점 시냅샷 데이터를 담는다 (가용재고 체크, 상품 가격 포함한 상품 정보, 상품 이미지)
      * -> val deliveryResponse = this.getDeliveryInfoByOptionId(optionId = optionId) 삭제
      * -> 주문서 작성 시점에 데이터 재조회 : 가용재고 체크, 상품 가격, 배송 정보
      * - 품절 반영 일배치
@@ -34,8 +35,12 @@ class CartServiceImpl(
         // 1. validate user
         this.validateUser(userId = item.userId)
 
-        // 2. stock
-        this.validateAvailableStock(optionId = optionId, orderQuantity = item.orderQuantity)
+        // 2. product, stock validation
+        val itemInformation = this.getItemInformationAndValidateStock(
+            productId = item.productId,
+            optionId = item.optionId,
+            orderQuantity = item.orderQuantity
+        )
 
         val cart = Cart(
             userId = item.userId,
@@ -44,10 +49,32 @@ class CartServiceImpl(
             originalPrice = item.originalPrice,
             calculatedPrice = item.calculatedPrice,
             orderQuantity = item.orderQuantity,
-            deliveryCost = item.deliveryInformation.deliveryCost,
-            estimatedDeliveryDay = item.deliveryInformation.expectedDate
+            productName = itemInformation.productName,
+            optionName = itemInformation.name,
+            productRepresentativeImage = "",
+            deliveryCost = 0L
         )
         return CartResponseView.makeView(this.cartRepository.save(cart))
+    }
+
+    private fun getItemInformationAndValidateStock(
+        productId: String,
+        optionId: String,
+        orderQuantity: Long
+    ): OptionWithProductView {
+        try {
+            val itemInformation =
+                this.productClient.getOptionWithProduct(
+                    productId = productId,
+                    optionId = optionId
+                ).body
+                    ?: throw NotFoundOptionException()
+            require(itemInformation.stock >= orderQuantity) { throw CartStockException(optionId = optionId) }
+            return itemInformation
+        } catch (e: Exception) {
+            log.error { "error:::${e}" }
+            throw CartProductFeignException("product api call fail!")
+        }
     }
 
     private fun validateUser(userId: Long) {
@@ -55,17 +82,6 @@ class CartServiceImpl(
             this.baseUserComponent.validateUserByUserId(userId = userId)
         } catch (e: Exception) {
             throw CartInvalidException(e.message)
-        }
-    }
-
-    private fun validateAvailableStock(optionId: Long, orderQuantity: Long) {
-        try {
-            val availableStock =
-                this.productClient.getOption(optionId).body?.stock ?: throw Exception("option not found")
-            require(availableStock >= orderQuantity) { throw CartStockException(optionId = optionId) }
-        } catch (e: Exception) {
-            log.error { "error:::${e}" }
-            throw CartProductFeignException("product api call fail!")
         }
     }
 
@@ -78,7 +94,7 @@ class CartServiceImpl(
         val list = this.cartRepository.findAllByUserId(userId)
         return list.map { item -> CartResponseView.makeView(item) }.toList()
     }
-       // this.cartRepository.findAllByUserId(userId).stream().map { item -> CartResponseView.makeView(item) }.toList()
+    // this.cartRepository.findAllByUserId(userId).stream().map { item -> CartResponseView.makeView(item) }.toList()
 
     @Transactional
     override fun updateOrderQuantity(cartItemId: Long, orderQuantity: Long): CartResponseView {

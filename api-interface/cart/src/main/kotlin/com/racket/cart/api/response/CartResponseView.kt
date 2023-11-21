@@ -8,9 +8,15 @@ data class CartResponseView(
 
     val userId: Long,
 
-    val productId: Long,
+    val productId: String,
 
-    val optionId: Long,
+    val optionId: String,
+
+    val productName: String,
+
+    val optionName: String,
+
+    val productRepresentativeImage: String,
 
     val originalPrice: Long,
 
@@ -18,7 +24,7 @@ data class CartResponseView(
 
     var orderQuantity: Long,
 
-    val deliveryInformationVO: DeliveryInformationVO
+    val deliveryCost: Long
 ) {
 
     companion object {
@@ -31,10 +37,10 @@ data class CartResponseView(
                 originalPrice = cart.originalPrice,
                 calculatedPrice = cart.calculatedPrice,
                 orderQuantity = cart.orderQuantity,
-                deliveryInformationVO = DeliveryInformationVO(
-                    deliveryCost = cart.deliveryCost,
-                    expectedDate = cart.estimatedDeliveryDay
-                )
+                productName = cart.productName,
+                optionName = cart.optionName,
+                productRepresentativeImage = cart.productRepresentativeImage,
+                deliveryCost = cart.deliveryCost
             )
     }
 
