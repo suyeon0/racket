@@ -8,9 +8,8 @@ import com.racket.api.product.CreateProductService
 import com.racket.api.product.GetProductService
 import com.racket.api.product.UpdateProductService
 import com.racket.api.product.domain.enums.ProductStatusType
-import com.racket.api.product.exception.NotFoundProductException
 import com.racket.api.product.option.OptionService
-import com.racket.api.product.option.reponse.OptionResponseView
+import com.racket.api.product.option.response.OptionResponseView
 import com.racket.api.product.presentation.response.ProductResponseView
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

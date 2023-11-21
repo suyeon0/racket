@@ -1,4 +1,4 @@
-package com.racket.api.product.option.reponse
+package com.racket.api.product.option.response
 
 import io.swagger.v3.oas.annotations.media.Schema
 

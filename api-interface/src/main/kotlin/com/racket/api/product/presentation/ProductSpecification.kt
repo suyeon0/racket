@@ -1,6 +1,7 @@
 package com.racket.api.product.presentation
 
-import com.racket.api.product.option.reponse.OptionResponseView
+import com.racket.api.product.option.response.OptionResponseView
+import com.racket.api.product.presentation.response.OptionWithProductView
 import com.racket.api.product.presentation.response.ProductResponseView
 import com.racket.api.product.vo.ProductCursorResultVO
 import com.racket.api.shared.annotation.LongTypeIdInputValidator
@@ -89,4 +90,25 @@ interface ProductSpecification {
         ]
     )
     fun getProductList(@RequestParam cursorId: String?): ResponseEntity<ProductCursorResultVO>
+
+    @LongTypeIdInputValidator
+    @GetMapping("/option-product")
+    @SwaggerFailResponse
+    @Operation(
+        summary = "상품+옵션 정보 단건 조회",
+        description = "상품 ID, 옵션 ID로 상품+옵션 단건 조회",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Success",
+                content = [Content(schema = Schema(implementation = OptionResponseView::class))]
+            ),
+            ApiResponse(responseCode = "400", description = "Bad Request"),
+            ApiResponse(responseCode = "401", description = "Unauthorized"),
+            ApiResponse(responseCode = "404", description = "Not Found Option"),
+            ApiResponse(responseCode = "500", description = "Internal Server Error")
+        ]
+    )
+    fun getOptionWithProduct(@RequestParam productId: String, @RequestParam optionId: String): ResponseEntity<OptionWithProductView>
+
 }

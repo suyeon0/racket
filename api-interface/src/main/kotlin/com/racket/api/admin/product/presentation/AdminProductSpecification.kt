@@ -5,7 +5,7 @@ import com.racket.api.admin.product.presentation.request.OptionUpdateRequestComm
 import com.racket.api.admin.product.presentation.request.ProductCreateRequestCommand
 import com.racket.api.admin.product.presentation.request.ProductUpdateRequestCommand
 import com.racket.api.product.domain.enums.ProductStatusType
-import com.racket.api.product.option.reponse.OptionResponseView
+import com.racket.api.product.option.response.OptionResponseView
 import com.racket.api.product.presentation.response.ProductResponseView
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag

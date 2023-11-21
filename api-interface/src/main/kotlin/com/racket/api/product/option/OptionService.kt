@@ -1,7 +1,8 @@
 package com.racket.api.product.option
 
 import com.racket.api.product.domain.enums.ProductStatusType
-import com.racket.api.product.option.reponse.OptionResponseView
+import com.racket.api.product.option.response.OptionResponseView
+import com.racket.api.product.presentation.response.OptionWithProductView
 import org.bson.types.ObjectId
 
 interface OptionService {
@@ -20,6 +21,9 @@ interface OptionService {
 
     // 옵션 사용 여부 변경
     fun patchDisplayYn(id: String, displayYn: Boolean?): OptionResponseView
+
+    // 옵션(+상품) 정보 조회
+    fun getOptionWithProduct(optionId: String, productId: String): OptionWithProductView
 
     data class OptionCreateDTO(
         val id: String = ObjectId().toHexString(),

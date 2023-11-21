@@ -1,14 +1,17 @@
 package com.racket.api.product.option
 
+import com.racket.api.product.GetProductService
 import com.racket.api.product.domain.Option
 import com.racket.api.product.domain.OptionRepository
 import com.racket.api.product.exception.NotFoundOptionException
-import com.racket.api.product.option.reponse.OptionResponseView
+import com.racket.api.product.option.response.OptionResponseView
+import com.racket.api.product.presentation.response.OptionWithProductView
 import org.springframework.stereotype.Service
 
 
 @Service
 class OptionServiceImpl(
+    val productService: GetProductService,
     val optionRepository: OptionRepository
 ) : OptionService {
     override fun getListByProductId(productId: String): List<OptionResponseView> {
@@ -65,6 +68,12 @@ class OptionServiceImpl(
 
         option.updateDisplayYn(displayYn)
         return this.makeOptionResponseViewFromOption(this.optionRepository.save(option))
+    }
+
+    override fun getOptionWithProduct(optionId: String, productId: String): OptionWithProductView {
+        val product = this.productService.getByProductId(productId)
+        val option = this.makeOptionResponseViewFromOption(this.optionRepository.findById(optionId).get())
+        return OptionWithProductView.of(product, option)
     }
 
     private fun getOptionEntity(id: String) = this.optionRepository.findById(id).orElseThrow { NotFoundOptionException() }
