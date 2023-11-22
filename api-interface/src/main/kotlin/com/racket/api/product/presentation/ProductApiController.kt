@@ -1,22 +1,36 @@
 package com.racket.api.product.presentation
 
 import com.racket.api.product.GetProductService
+import com.racket.api.product.ProductDetailService
+import com.racket.api.product.exception.NotFoundProductException
 import com.racket.api.product.option.OptionService
+import com.racket.api.product.presentation.response.ProductDetailResponseView
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.data.domain.PageRequest
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+
 
 @RestController
 @Tag(name = "상품 API")
 @RequestMapping("/api/v1/product")
-class ProductController(
+class ProductApiController(
     val optionServiceImpl: OptionService,
-    val productService: GetProductService
+    val productService: GetProductService,
+    val productDetailService: ProductDetailService
 ): ProductSpecification {
     companion object {
         private const val CURSOR_SIZE = 10
     }
+
+    @GetMapping("/detail/{productId}")
+    fun getProductDetail(@PathVariable productId: String): ResponseEntity<ProductDetailResponseView> =
+        try {
+            ResponseEntity.ok(this.productDetailService.getProductDetail(productId))
+        } catch (e: NotFoundProductException) {
+            ResponseEntity<ProductDetailResponseView>(HttpStatus.NOT_FOUND)
+        }
 
     override fun getProduct(@PathVariable productId: String) = ResponseEntity.ok(this.productService.getByProductId(productId))
 

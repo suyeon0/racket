@@ -25,6 +25,7 @@ interface ProductSpecification {
     @Operation(
         summary = "상품 단건 조회",
         description = "상품 ID로 상품 단건 조회",
+        parameters = [Parameter(name = "productId", description = "상품 ID", example = "655b5c491466bd2fdddfba50")],
         responses = [
             ApiResponse(
                 responseCode = "200",
@@ -41,7 +42,7 @@ interface ProductSpecification {
     @Operation(
         summary = "상품 옵션 리스트 조회",
         description = "상품 ID로 상품 옵션 리스트 조회",
-        parameters = [Parameter(name = "productId", description = "상품 ID", example = "32")],
+        parameters = [Parameter(name = "productId", description = "상품 ID", example = "655b5c491466bd2fdddfba50")],
         responses = [
             ApiResponse(
                 responseCode = "200",

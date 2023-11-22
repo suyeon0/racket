@@ -15,7 +15,7 @@ class ProductImageServiceImpl(
 ) : ProductImageService {
 
     companion object {
-        const val baseUrl = "classpath:/images/"
+        const val baseUrl = "resources/images/"
     }
 
     override fun getImageListByProductId(productId: String): List<ProductImageResponseView> {

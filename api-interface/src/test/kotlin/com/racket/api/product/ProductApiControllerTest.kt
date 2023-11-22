@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
-class ProductControllerTest {
+class ProductApiControllerTest {
 
     val objectMapper = jacksonObjectMapper()
 

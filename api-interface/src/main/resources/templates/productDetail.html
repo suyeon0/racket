@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="/js/productDetailView.js"></script>
+  <script th:inline="javascript">
+    $(document).ready(function() {
+        var productId = window.location.pathname.split('/').pop();
+        loadProductDetail(productId);
+    });
+  </script>
+</head>
+<body>
+
+<h1>Product Detail Page</h1>
+
+<section id="productDetailContainer"></section>
+<section id="optionListContainer"></section>
+
+
+</body>
+</html>
