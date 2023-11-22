@@ -7,6 +7,7 @@ import com.racket.api.product.exception.NotFoundOptionException
 import com.racket.api.product.option.response.OptionResponseView
 import com.racket.api.product.option.response.OptionWithProductView
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 
 @Service
@@ -30,6 +31,7 @@ class OptionServiceImpl(
         return this.makeOptionResponseViewFromOption(option)
     }
 
+    @Transactional
     override fun addOption(optionCreateDTO: OptionService.OptionCreateDTO): OptionResponseView {
         val option = this.optionRepository.save(
             Option(
@@ -47,6 +49,7 @@ class OptionServiceImpl(
         return this.makeOptionResponseViewFromOption(option)
     }
 
+    @Transactional
     override fun patchOption(id: String, optionUpdateDTO: OptionService.OptionUpdateDTO): OptionResponseView {
         val option: Option = this.optionRepository.findById(id).orElseThrow { NotFoundOptionException() }
         option.updateInfo(
@@ -62,6 +65,7 @@ class OptionServiceImpl(
         return this.makeOptionResponseViewFromOption(this.optionRepository.save(option))
     }
 
+    @Transactional
     override fun patchDisplayYn(id: String, displayYn: Boolean?): OptionResponseView {
         require(displayYn != null) { "displayYn must be not null" }
         val option: Option = this.optionRepository.findById(id).orElseThrow { NotFoundOptionException() }
