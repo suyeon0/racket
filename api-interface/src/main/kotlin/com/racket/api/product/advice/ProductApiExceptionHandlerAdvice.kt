@@ -2,6 +2,7 @@ package com.racket.api.product.advice
 
 import com.racket.api.shared.response.ApiError
 import com.racket.api.product.exception.NotFoundOptionException
+import com.racket.api.product.exception.NotFoundProductCatalogException
 import com.racket.api.product.exception.NotFoundProductException
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
@@ -27,7 +28,7 @@ class ProductApiExceptionHandlerAdvice : ResponseEntityExceptionHandler() {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(
-        value = [NotFoundProductException::class, NotFoundOptionException::class]
+        value = [NotFoundProductException::class, NotFoundOptionException::class, NotFoundProductCatalogException::class]
     )
     fun productNotFoundException(e: RuntimeException, httpServletRequest: HttpServletRequest) =
         ApiError(

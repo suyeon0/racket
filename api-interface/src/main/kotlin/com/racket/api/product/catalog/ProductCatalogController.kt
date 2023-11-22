@@ -1,6 +1,7 @@
-package com.racket.api.product.image
+package com.racket.api.product.catalog
 
-import com.racket.api.product.image.request.ProductImageCreateRequestCommand
+import com.racket.api.product.catalog.request.ProductCatalogCreateRequestCommand
+import com.racket.api.product.catalog.response.ProductCatalogResponseView
 import com.racket.api.product.image.response.ProductImageResponseView
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -13,16 +14,16 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@Tag(name = "상품 이미지 API")
-@RequestMapping("/api/v1/product/image")
-class ProductImageController(
-    val productImageService: ProductImageService
+@Tag(name = "상품 카탈로그 API")
+@RequestMapping("/api/v1/product/catalog")
+class ProductCatalogController(
+    val productCatalogService: ProductCatalogService
 ) {
 
     @PostMapping
     @Operation(
-        summary = "상품 이미지 추가",
-        description = "상품 이미지 추가",
+        summary = "상품 카탈로그 추가",
+        description = "상품 카탈로그 추가",
         responses = [
             ApiResponse(
                 responseCode = "201",
@@ -31,15 +32,18 @@ class ProductImageController(
             )
         ]
     )
-    fun postImage(@RequestBody request: ProductImageCreateRequestCommand): ResponseEntity<List<ProductImageResponseView>> {
+    fun postProductCatalog(@RequestBody request: ProductCatalogCreateRequestCommand): ResponseEntity<ProductCatalogResponseView> {
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(this.productImageService.addProductImages(request))
+            .body(this.productCatalogService.addProductCatalog(
+                productId = request.productId,
+                contents = request.contents)
+            )
     }
 
     @Operation(
-        summary = "상품 이미지 리스트 조회",
-        description = "상품 이미지 리스트 조회",
+        summary = "상품 카탈로그 조회",
+        description = "상품 카탈로그 조회",
         parameters = [Parameter(name = "productId", description = "상품 ID", example = "655b5c491466bd2fdddfba50")],
         responses = [
             ApiResponse(
@@ -50,8 +54,8 @@ class ProductImageController(
         ]
     )
     @GetMapping("/{productId}")
-    fun getImagesByProductId(@PathVariable productId: String): ResponseEntity<List<ProductImageResponseView>> {
-        return ResponseEntity.ok().body(this.productImageService.getImageListByProductId(productId = productId))
+    fun getProductCatalog(@PathVariable productId: String): ResponseEntity<ProductCatalogResponseView> {
+        return ResponseEntity.ok().body(this.productCatalogService.getCatalogByProductId(productId = productId))
     }
 
 }
