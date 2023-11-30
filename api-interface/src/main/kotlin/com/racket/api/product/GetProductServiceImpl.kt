@@ -32,7 +32,7 @@ class GetProductServiceImpl(
     /**
      * 상품 단건 조회
      */
-    override fun getByProductId(productId: String): ProductResponseView {
+    override fun getProductResponseView(productId: String): ProductResponseView {
         val product: Product = this.getProductFromCacheOrDatabase(productId)
         this.validateProductStatus(product)
         return this.makeProductResponseViewFromProduct(product)
@@ -66,17 +66,17 @@ class GetProductServiceImpl(
         val productList: List<Product> = if (cursorId == null) {
             this.productRepository.findAllByOrderByIdDesc(page) // 최초 조회
         } else {
-            this.productRepository.findByIdLessThanOrderByIdDesc(id = cursorId, page = page)
+            this.productRepository.findAllByIdLessThanOrderByIdDesc(id = cursorId, page = page)
         }
 
-        val productResponseViewList = ArrayList<ProductResponseView>()
         var newCursorId: String? = null
-        if (productList.isNotEmpty()) {
-            for (product in productList) {
-                productResponseViewList.add(this.makeProductResponseViewFromProduct(product))
-            }
+        val productResponseViewList = if (productList.isEmpty()) {
+            listOf()
+        } else {
             newCursorId = productList[productList.size - 1].id
+            productList.map { this.makeProductResponseViewFromProduct(it) }.toList()
         }
+
         return ProductCursorResultVO(
             productResponseViewList = productResponseViewList,
             hasNextCursor = this.hasNextCursor(id = newCursorId)

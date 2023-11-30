@@ -20,7 +20,7 @@ class ProductCatalogServiceImpl(
 
     @Transactional
     override fun addProductCatalog(productId: String, contents: ProductCatalogContents): ProductCatalogResponseView {
-        this.productService.getByProductId(productId)
+        this.productService.getProductResponseView(productId)
 
         val contentsJson: String = this.objectMapper.writeValueAsString(contents)
         val catalog = productCatalogRepository.save(

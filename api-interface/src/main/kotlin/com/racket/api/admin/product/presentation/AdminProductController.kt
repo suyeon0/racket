@@ -108,11 +108,11 @@ class AdminProductController(
     }
 
     private fun validateOptionIdAndThenThrowException(id: String) {
-        this.optionService.getByOptionId(id)
+        this.optionService.getById(id)
     }
 
     private fun validateProductIdAndThenThrowException(id: String) {
-        this.getProductService.getByProductId(id)
+        this.getProductService.getProductResponseView(id)
     }
 
 }

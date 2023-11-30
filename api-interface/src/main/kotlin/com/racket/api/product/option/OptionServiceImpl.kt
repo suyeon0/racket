@@ -15,7 +15,7 @@ class OptionServiceImpl(
     val productService: GetProductService,
     val optionRepository: OptionRepository
 ) : OptionService {
-    override fun getListByProductId(productId: String): List<OptionResponseView> {
+    override fun getOptionList(productId: String): List<OptionResponseView> {
         val optionList = optionRepository.findByProductIdOrderBySortAscPriceAsc(productId)
         require(optionList.isNotEmpty()) { throw NotFoundOptionException() }
 
@@ -26,7 +26,7 @@ class OptionServiceImpl(
         return resultList
     }
 
-    override fun getByOptionId(optionId: String): OptionResponseView {
+    override fun getById(optionId: String): OptionResponseView {
         val option = this.getOptionEntity(optionId)
         return this.makeOptionResponseViewFromOption(option)
     }
@@ -74,8 +74,8 @@ class OptionServiceImpl(
         return this.makeOptionResponseViewFromOption(this.optionRepository.save(option))
     }
 
-    override fun getOptionWithProduct(optionId: String, productId: String): OptionWithProductView {
-        val product = this.productService.getByProductId(productId)
+    override fun getOptionWithProductView(optionId: String, productId: String): OptionWithProductView {
+        val product = this.productService.getProductResponseView(productId)
         val option = this.makeOptionResponseViewFromOption(this.optionRepository.findById(optionId).get())
         return OptionWithProductView.of(product, option)
     }

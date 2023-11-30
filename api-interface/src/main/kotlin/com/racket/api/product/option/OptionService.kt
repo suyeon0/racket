@@ -8,10 +8,10 @@ import org.bson.types.ObjectId
 interface OptionService {
 
     //  - 상품 아이디로 리스트 조회
-    fun getListByProductId(productId: String): List<OptionResponseView>
+    fun getOptionList(productId: String): List<OptionResponseView>
 
     //  - 옵션 아이디로 단건 조회
-    fun getByOptionId(optionId: String): OptionResponseView
+    fun getById(optionId: String): OptionResponseView
 
     // 옵션 추가
     fun addOption(option: OptionCreateDTO): OptionResponseView
@@ -23,7 +23,7 @@ interface OptionService {
     fun patchDisplayYn(id: String, displayYn: Boolean?): OptionResponseView
 
     // 옵션(+상품) 정보 조회
-    fun getOptionWithProduct(optionId: String, productId: String): OptionWithProductView
+    fun getOptionWithProductView(optionId: String, productId: String): OptionWithProductView
 
     data class OptionCreateDTO(
         val id: String = ObjectId().toHexString(),

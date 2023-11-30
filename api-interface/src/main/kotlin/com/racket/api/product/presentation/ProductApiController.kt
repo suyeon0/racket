@@ -32,18 +32,18 @@ class ProductApiController(
             ResponseEntity<ProductDetailResponseView>(HttpStatus.NOT_FOUND)
         }
 
-    override fun getProduct(@PathVariable productId: String) = ResponseEntity.ok(this.productService.getByProductId(productId))
+    override fun getProduct(@PathVariable productId: String) = ResponseEntity.ok(this.productService.getProductResponseView(productId))
 
-    override fun getOptions(@PathVariable productId: String) = ResponseEntity.ok(this.optionServiceImpl.getListByProductId(productId))
+    override fun getOptions(@PathVariable productId: String) = ResponseEntity.ok(this.optionServiceImpl.getOptionList(productId))
 
-    override fun getOption(@PathVariable optionId: String) = ResponseEntity.ok(this.optionServiceImpl.getByOptionId(optionId))
+    override fun getOption(@PathVariable optionId: String) = ResponseEntity.ok(this.optionServiceImpl.getById(optionId))
 
     override fun getProductList(@RequestParam cursorId: String?) =
         ResponseEntity.ok(this.productService.getList(cursorId = cursorId, page = PageRequest.of(0, CURSOR_SIZE)))
 
-    override fun getOptionWithProduct(productId: String, optionId: String) = ResponseEntity.ok(this.optionServiceImpl.getOptionWithProduct(optionId, productId))
+    override fun getOptionWithProduct(productId: String, optionId: String) = ResponseEntity.ok(this.optionServiceImpl.getOptionWithProductView(optionId, productId))
 
     fun getAvailableStock(@PathVariable productId: String, @PathVariable optionId: String) =
-        ResponseEntity.ok(this.productService.getByProductId(productId))
+        ResponseEntity.ok(this.productService.getProductResponseView(productId))
 
 }

@@ -19,7 +19,7 @@ class ProductImageServiceImpl(
     }
 
     override fun getImageListByProductId(productId: String): List<ProductImageResponseView> {
-        this.productService.getByProductId(productId)
+        this.productService.getProductResponseView(productId)
 
         val images = this.productImageRepository.findByProductIdOrderByIdAsc(productId)
         return images.stream().map { image ->
@@ -33,7 +33,7 @@ class ProductImageServiceImpl(
 
     @Transactional
     override fun addProductImages(request: ProductImageCreateRequestCommand): List<ProductImageResponseView> {
-        val product = this.productService.getByProductId(request.productId)
+        val product = this.productService.getProductResponseView(request.productId)
 
         val productImages = request.imageUrls.map { imageUrl ->
             ProductImage(
