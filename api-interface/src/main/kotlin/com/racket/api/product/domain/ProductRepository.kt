@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository
 interface ProductRepository: CrudRepository<Product, String> {
     fun findAllByOrderByIdDesc(page: Pageable): List<Product>
 
-    fun findByIdLessThanOrderByIdDesc(id: String, page: Pageable): List<Product>
+    fun findAllByIdLessThanOrderByIdDesc(id: String, page: Pageable): List<Product>
 
     fun existsByIdLessThan(id: String): Boolean
 
