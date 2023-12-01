@@ -9,8 +9,10 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @Tag(name = "상품 이미지 API")
@@ -19,7 +21,7 @@ class ProductImageController(
     val productImageService: ProductImageService
 ) {
 
-    @PostMapping
+    @PostMapping("/{productId}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @Operation(
         summary = "상품 이미지 추가",
         description = "상품 이미지 추가",
@@ -31,11 +33,12 @@ class ProductImageController(
             )
         ]
     )
-    fun postImage(@RequestBody request: ProductImageCreateRequestCommand): ResponseEntity<List<ProductImageResponseView>> {
-        return ResponseEntity
+    fun postImage(
+        @PathVariable productId: String,
+        @RequestPart(value = "multipartFiles") multipartFiles: List<MultipartFile>
+    ) = ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(this.productImageService.addProductImages(request))
-    }
+            .body(this.productImageService.addProductImages(productId = productId, imageFiles = multipartFiles))
 
     @Operation(
         summary = "상품 이미지 리스트 조회",
@@ -50,8 +53,6 @@ class ProductImageController(
         ]
     )
     @GetMapping("/{productId}")
-    fun getImagesByProductId(@PathVariable productId: String): ResponseEntity<List<ProductImageResponseView>> {
-        return ResponseEntity.ok().body(this.productImageService.getImageListByProductId(productId = productId))
-    }
-
+    fun getImagesByProductId(@PathVariable productId: String) =
+        ResponseEntity.ok().body(this.productImageService.getImageListByProductId(productId = productId))
 }

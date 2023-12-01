@@ -3,20 +3,22 @@ package com.racket.api.product.image
 import com.racket.api.product.GetProductService
 import com.racket.api.product.domain.ProductImage
 import com.racket.api.product.domain.ProductImageRepository
-import com.racket.api.product.image.request.ProductImageCreateRequestCommand
 import com.racket.api.product.image.response.ProductImageResponseView
+import com.racket.api.shared.service.file.FileService
+import org.bson.types.ObjectId
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 
 @Service
 class ProductImageServiceImpl(
     private val productService: GetProductService,
-    private val productImageRepository: ProductImageRepository
+    private val productImageRepository: ProductImageRepository,
+    private val fileService: FileService,
+    @Value("\${uploadPath}") private val uploadPath: String
 ) : ProductImageService {
-
-    companion object {
-        const val baseUrl = "resources/images/"
-    }
 
     override fun getImageListByProductId(productId: String): List<ProductImageResponseView> {
         this.productService.getProductResponseView(productId)
@@ -26,34 +28,50 @@ class ProductImageServiceImpl(
             ProductImageResponseView(
                 id = image.id!!,
                 productId = image.productId,
-                imageUrl = "${baseUrl}${image.imageUrl}"
+                originFileName = image.originFileName
             )
         }.toList()
     }
 
     @Transactional
-    override fun addProductImages(request: ProductImageCreateRequestCommand): List<ProductImageResponseView> {
-        val product = this.productService.getProductResponseView(request.productId)
+    override fun addProductImages(productId: String, imageFiles: List<MultipartFile>): List<ProductImageResponseView> {
+        this.productService.getProductResponseView(productId)
 
-        val productImages = request.imageUrls.map { imageUrl ->
+        // file 저장
+        this.saveFile(imageFiles)
+
+        // DB 반영
+        this.deleteImage(productId = productId)
+        val productImages = imageFiles.map { image ->
             ProductImage(
-                productId = product.id,
-                imageUrl = imageUrl
+                id = ObjectId().toHexString(),
+                productId = productId,
+                originFileName = image.originalFilename.toString()
             )
         }
-        this.deleteImageByProductId(productId = product.id)
         val savedProductImages = this.productImageRepository.saveAll(productImages)
 
         return savedProductImages.map {
             ProductImageResponseView(
                 id = it.id!!,
                 productId = it.productId,
-                imageUrl = it.imageUrl
+                originFileName = it.originFileName
             )
         }
     }
 
-    private fun deleteImageByProductId(productId: String) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    fun saveFile(imageFiles: List<MultipartFile>) {
+        for (file in imageFiles) {
+            this.fileService.uploadFile(
+                uploadPath = uploadPath,
+                fileName = file.originalFilename.toString(),
+                fileData = file.bytes
+            )
+        }
+    }
+
+    private fun deleteImage(productId: String) {
         this.productImageRepository.deleteByProductId(productId)
     }
 }

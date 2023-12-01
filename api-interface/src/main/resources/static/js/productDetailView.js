@@ -21,7 +21,7 @@ function displayProductDetail(productDetail) {
                    '<h3>Product Images</h3>';
 
     for (var i = 0; i < productDetail.images.length; i++) {
-        template += '<img src="' + productDetail.images[i].imageUrl + '" alt="Product Image"/>';
+        template += '<img src="' + '/images/' + productDetail.images[i].originFileName + '" alt="Product Image"/ style="height="280" width="180">';
     }
 
     template += '<h3>Option List</h3>' +
@@ -53,14 +53,14 @@ function displayProductDetail(productDetail) {
                 '<th>Contact Number</th>' +
                 '</tr>';
 
-    var catalog = productDetail.catalog.contents;
-    template += '<tr>' +
-                '<td>' + catalog.origin + '</td>' +
-                '<td>' + catalog.asCenter + '</td>' +
-                '<td>' + catalog.manufacturer + '</td>' +
-                '<td>' + catalog.contactNumber + '</td>' +
-                '</tr>';
-    template += '</table>';
+//    var catalog = productDetail.catalog.contents;
+//    template += '<tr>' +
+//                '<td>' + catalog.origin + '</td>' +
+//                '<td>' + catalog.asCenter + '</td>' +
+//                '<td>' + catalog.manufacturer + '</td>' +
+//                '<td>' + catalog.contactNumber + '</td>' +
+//                '</tr>';
+//    template += '</table>';
 
     $('#productDetailContainer').html(template);
 }

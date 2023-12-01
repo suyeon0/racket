@@ -6,13 +6,12 @@ import javax.persistence.*
 @Table(name = "product_image")
 data class ProductImage(
     @Id
-    @GeneratedValue
-    val id: Long? = null,
+    @Column(name = "image_id")
+    val id: String,
 
     @Column(name = "product_id", nullable = false)
     val productId: String,
 
-    @Column(name = "image_url", nullable = false)
-    val imageUrl: String,
-
+    @Column(name = "origin_file_name", nullable = false)
+    val originFileName: String
 )
