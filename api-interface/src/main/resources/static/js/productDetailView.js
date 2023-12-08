@@ -15,6 +15,20 @@ function loadProductDetail(productId) {
     });
 }
 
+function loadCatalog(productId) {
+    $.ajax({
+        url: "/api/v1/product/catalog/" + productId,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            displayCatalog(data);
+        },
+        error: function(error) {
+            console.error('Error fetching catalog:', error);
+        }
+    });
+}
+
 function displayProductDetail(productDetail) {
     var template = '<h2>' + productDetail.name + '</h2>' +
                    '<p>Price: ' + productDetail.price + '</p>' +
@@ -44,7 +58,11 @@ function displayProductDetail(productDetail) {
     }
     template += '</table>';
 
-    template += '<h3>Product Catalogs</h3>' +
+    $('#productDetailContainer').html(template);
+}
+
+function displayCatalog(data) {
+    var template = '<h3>Product Catalogs</h3>' +
                 '<table border="1">' +
                 '<tr>' +
                 '<th>Origin</th>' +
@@ -53,14 +71,14 @@ function displayProductDetail(productDetail) {
                 '<th>Contact Number</th>' +
                 '</tr>';
 
-//    var catalog = productDetail.catalog.contents;
-//    template += '<tr>' +
-//                '<td>' + catalog.origin + '</td>' +
-//                '<td>' + catalog.asCenter + '</td>' +
-//                '<td>' + catalog.manufacturer + '</td>' +
-//                '<td>' + catalog.contactNumber + '</td>' +
-//                '</tr>';
-//    template += '</table>';
+    var catalog = data.contents;
+    template += '<tr>' +
+                '<td>' + catalog.origin + '</td>' +
+                '<td>' + catalog.asCenter + '</td>' +
+                '<td>' + catalog.manufacturer + '</td>' +
+                '<td>' + catalog.contactNumber + '</td>' +
+                '</tr>';
+    template += '</table>';
 
-    $('#productDetailContainer').html(template);
+    $('#productCatalogContainer').html(template);
 }
