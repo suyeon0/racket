@@ -208,19 +208,23 @@ class ProductApiControllerTest {
     }
 
     @Test
-    fun `Product Test - 상품 리스트 조회시 cursorId 를 지정한 경우 결과 리스트 첫번째 인덱스의 상품 ID 는 cursorId - 1 값과 동일해야 한다`() {
+    fun `Product Test - 상품 리스트 조회시 cursorId 를 지정한 경우, 결과 리스트 첫번째 인덱스의 상품 ID 는 cursorId 바로 앞에 있는 상품이어야 한다`() {
         // given
+        val productIdList = mutableListOf<String>()
         for (i in 1..30) {
-            productRepository.save(Product(price = 10000, name = "TestProduct", id = ObjectId().toHexString()))
+            val productId = ObjectId().toHexString()
+            productIdList.add(productId)
+            productRepository.save(Product(price = 10000, name = "TestProduct", id = productId))
         }
 
         // when
-        val cursorId = 21
+        val cursorIndex = 21
+        val cursorId = productIdList[cursorIndex]
         val cursorSize = 10
 
         val sut = this.mockMvc.get("/api/v1/product/list") {
             contentType = MediaType.APPLICATION_JSON
-            param("cursorId", cursorId.toString())
+            param("cursorId", cursorId)
         }.andExpect {
             status { isOk() }
         }.andReturn()
@@ -232,7 +236,7 @@ class ProductApiControllerTest {
         )
 
         Assertions.assertEquals(cursorSize, productList.productResponseViewList.size)
-        Assertions.assertEquals((cursorId - 1).toLong(), productList.productResponseViewList[0].id)
+        Assertions.assertEquals(productIdList[cursorIndex - 1], productList.productResponseViewList[0].id)
     }
 
 
