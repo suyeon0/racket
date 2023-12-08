@@ -38,7 +38,8 @@ class SlackMessageGenerator(
                 requestIP = requestIP,
                 userAgent = userAgent,
                 headers = headers,
-                body = body
+                body = body,
+                queryString = request.queryString
             )
         } catch (e: Exception) {
             throw RuntimeException("슬랙 메세지 추출 오류!", e)
@@ -53,7 +54,8 @@ class SlackMessageGenerator(
         userAgent: String,
         method: String,
         headers: String,
-        body: String
+        body: String,
+        queryString: String?
     ): String {
         return "${currentTime}\n" +
             "*Error*\n $exceptionMessage\n" +
@@ -62,7 +64,8 @@ class SlackMessageGenerator(
             "*Request IP*\n $requestIP\n" +
             "*Request User-Agent*\n $userAgent\n" +
             "*Request HEADERS*\n $headers\n" +
-            "*Request BODY*\n $body\n"
+            "*Request BODY*\n $body\n" +
+            "*queryString*\n $queryString\n"
     }
 
     private fun extractExceptionMessage(e: Exception): String {
