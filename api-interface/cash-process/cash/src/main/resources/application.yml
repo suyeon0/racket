@@ -44,3 +44,6 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+
+## TODO
+uploadPath: file:///Users/suyeon/Desktop/image/
