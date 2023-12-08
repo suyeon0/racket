@@ -1,4 +1,4 @@
-package com.racket.api.admin.product.presentation.request
+package com.racket.api.admin.product.request
 
 import com.racket.api.product.domain.enums.ProductStatusType
 

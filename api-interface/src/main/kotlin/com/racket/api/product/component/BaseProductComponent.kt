@@ -1,9 +1,11 @@
-package com.racket.api.product
+package com.racket.api.product.component
 
 import com.racket.api.product.domain.Product
-import com.racket.api.product.presentation.response.ProductResponseView
+import com.racket.api.product.response.ProductResponseView
+import org.springframework.stereotype.Component
 
-interface ProductService {
+@Component
+class BaseProductComponent {
 
     fun makeProductResponseViewFromProduct(product: Product) =
         ProductResponseView(
@@ -12,4 +14,5 @@ interface ProductService {
             price = product.price,
             statusType = product.status
         )
+
 }

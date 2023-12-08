@@ -1,19 +1,20 @@
 package com.racket.api.product.option
 
-import com.racket.api.product.GetProductService
 import com.racket.api.product.domain.Option
 import com.racket.api.product.domain.OptionRepository
 import com.racket.api.product.exception.NotFoundOptionException
 import com.racket.api.product.option.response.OptionResponseView
 import com.racket.api.product.option.response.OptionWithProductView
+import com.racket.api.product.service.ProductBaseService
+import com.racket.api.product.service.ProductService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 
 @Service
 class OptionServiceImpl(
-    val productService: GetProductService,
-    val optionRepository: OptionRepository
+    private val productBaseService: ProductBaseService,
+    private val optionRepository: OptionRepository
 ) : OptionService {
     override fun getOptionList(productId: String): List<OptionResponseView> {
         val optionList = optionRepository.findByProductIdOrderBySortAscPriceAsc(productId)
@@ -26,10 +27,7 @@ class OptionServiceImpl(
         return resultList
     }
 
-    override fun getById(optionId: String): OptionResponseView {
-        val option = this.getOptionEntity(optionId)
-        return this.makeOptionResponseViewFromOption(option)
-    }
+    override fun getById(optionId: String) = this.makeOptionResponseViewFromOption(this.getOptionEntity(optionId))
 
     @Transactional
     override fun addOption(optionCreateDTO: OptionService.OptionCreateDTO): OptionResponseView {
@@ -75,7 +73,7 @@ class OptionServiceImpl(
     }
 
     override fun getOptionWithProductView(optionId: String, productId: String): OptionWithProductView {
-        val product = this.productService.getProductResponseView(productId)
+        val product = this.productBaseService.get(productId)
         val option = this.makeOptionResponseViewFromOption(this.optionRepository.findById(optionId).get())
         return OptionWithProductView.of(product, option)
     }

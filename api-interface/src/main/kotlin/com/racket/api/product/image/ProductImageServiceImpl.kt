@@ -1,9 +1,10 @@
 package com.racket.api.product.image
 
-import com.racket.api.product.GetProductService
 import com.racket.api.product.domain.ProductImage
 import com.racket.api.product.domain.ProductImageRepository
 import com.racket.api.product.image.response.ProductImageResponseView
+import com.racket.api.product.service.ProductBaseService
+import com.racket.api.product.service.ProductService
 import com.racket.api.shared.service.file.FileService
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Value
@@ -14,19 +15,19 @@ import org.springframework.web.multipart.MultipartFile
 
 @Service
 class ProductImageServiceImpl(
-    private val productService: GetProductService,
+    private val productBaseService: ProductBaseService,
     private val productImageRepository: ProductImageRepository,
     private val fileService: FileService,
     @Value("\${uploadPath}") private val uploadPath: String
 ) : ProductImageService {
 
     override fun getImageListByProductId(productId: String): List<ProductImageResponseView> {
-        this.productService.getProductResponseView(productId)
+        this.productBaseService.get(productId)
 
         val images = this.productImageRepository.findByProductIdOrderByIdAsc(productId)
         return images.stream().map { image ->
             ProductImageResponseView(
-                id = image.id!!,
+                id = image.id,
                 productId = image.productId,
                 originFileName = image.originFileName
             )
@@ -35,7 +36,7 @@ class ProductImageServiceImpl(
 
     @Transactional
     override fun addProductImages(productId: String, imageFiles: List<MultipartFile>): List<ProductImageResponseView> {
-        this.productService.getProductResponseView(productId)
+        this.productBaseService.get(productId)
 
         // file 저장
         this.saveFile(imageFiles)
@@ -53,7 +54,7 @@ class ProductImageServiceImpl(
 
         return savedProductImages.map {
             ProductImageResponseView(
-                id = it.id!!,
+                id = it.id,
                 productId = it.productId,
                 originFileName = it.originFileName
             )
@@ -71,6 +72,7 @@ class ProductImageServiceImpl(
         }
     }
 
+    @Transactional
     private fun deleteImage(productId: String) {
         this.productImageRepository.deleteByProductId(productId)
     }

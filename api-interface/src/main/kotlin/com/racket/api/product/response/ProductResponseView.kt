@@ -1,4 +1,4 @@
-package com.racket.api.product.presentation.response
+package com.racket.api.product.response
 
 import com.racket.api.product.domain.enums.ProductStatusType
 import io.swagger.v3.oas.annotations.media.Schema

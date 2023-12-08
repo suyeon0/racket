@@ -1,4 +1,4 @@
-package com.racket.api.product.presentation.response
+package com.racket.api.product.response
 
 import com.racket.api.product.domain.enums.ProductStatusType
 import com.racket.api.product.image.response.ProductImageResponseView

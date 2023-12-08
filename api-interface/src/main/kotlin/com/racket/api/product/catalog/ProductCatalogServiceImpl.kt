@@ -1,18 +1,18 @@
 package com.racket.api.product.catalog
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.racket.api.product.GetProductService
 import com.racket.api.product.catalog.response.ProductCatalogResponseView
 import com.racket.api.product.domain.ProductCatalog
 import com.racket.api.product.domain.ProductCatalogRepository
 import com.racket.api.product.exception.NotFoundProductCatalogException
+import com.racket.api.product.service.ProductBaseService
 import com.racket.api.product.vo.ProductCatalogContents
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ProductCatalogServiceImpl(
-    private val productService: GetProductService,
+    private val productBaseService: ProductBaseService,
     private val productCatalogRepository: ProductCatalogRepository
 ) : ProductCatalogService {
 
@@ -20,10 +20,10 @@ class ProductCatalogServiceImpl(
 
     @Transactional
     override fun addProductCatalog(productId: String, contents: ProductCatalogContents): ProductCatalogResponseView {
-        this.productService.getProductResponseView(productId)
+        this.productBaseService.get(productId)
 
-        val contentsJson: String = this.objectMapper.writeValueAsString(contents)
-        val catalog = productCatalogRepository.save(
+        val contentsJson = this.objectMapper.writeValueAsString(contents)
+        val catalog = this.productCatalogRepository.save(
             ProductCatalog(
                 productId = productId,
                 contents = contentsJson

@@ -1,4 +1,4 @@
-package com.racket.api.admin.product.presentation.request
+package com.racket.api.admin.product.request
 
 data class ProductUpdateRequestCommand(
     val productName: String,

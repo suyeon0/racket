@@ -1,7 +1,7 @@
 package com.racket.api.payment.account
 
 import com.racket.api.payment.account.response.WithdrawAccountResponseView
-import com.racket.api.product.presentation.response.ProductResponseView
+import com.racket.api.product.response.ProductResponseView
 import com.racket.api.shared.annotation.SwaggerFailResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter

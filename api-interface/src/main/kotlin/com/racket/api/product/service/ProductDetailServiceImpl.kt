@@ -1,18 +1,18 @@
-package com.racket.api.product
+package com.racket.api.product.service
 
 import com.racket.api.product.catalog.ProductCatalogService
 import com.racket.api.product.exception.NotFoundProductException
 import com.racket.api.product.image.ProductImageService
 import com.racket.api.product.image.response.ProductImageResponseView
 import com.racket.api.product.option.OptionService
-import com.racket.api.product.presentation.response.ProductDetailResponseView
+import com.racket.api.product.response.ProductDetailResponseView
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 
 @Service
 class ProductDetailServiceImpl(
-    private val productService: GetProductService,
+    private val productBaseService: ProductBaseService,
     private val optionService: OptionService,
     private val catalogService: ProductCatalogService,
     private val imageService: ProductImageService
@@ -23,7 +23,7 @@ class ProductDetailServiceImpl(
     override fun getProductDetail(productId: String) =
         try {
             // Fetch
-            val product = this.productService.getProductResponseView(productId = productId)
+            val product = this.productBaseService.get(id = productId)
             val options =
                 this.optionService.getOptionList(productId = productId).filter { option -> !option.displayYn }.toList()
             val images: List<ProductImageResponseView> = this.imageService.getImageListByProductId(productId)

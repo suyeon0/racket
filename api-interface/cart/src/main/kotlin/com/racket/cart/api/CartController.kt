@@ -1,6 +1,5 @@
 package com.racket.cart.api
 
-import com.racket.api.product.presentation.response.ProductResponseView
 import com.racket.api.shared.annotation.SwaggerFailResponse
 import com.racket.cart.api.annotation.CartApiV1
 import com.racket.cart.api.request.CartCreateRequestCommand

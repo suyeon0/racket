@@ -1,7 +1,7 @@
-package com.racket.api.product
+package com.racket.api.product.service
 
 import com.racket.api.product.catalog.response.ProductCatalogResponseView
-import com.racket.api.product.presentation.response.ProductDetailResponseView
+import com.racket.api.product.response.ProductDetailResponseView
 
 interface ProductDetailService {
 

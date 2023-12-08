@@ -2,10 +2,9 @@ package com.racket.api.admin.product
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.racket.api.admin.product.presentation.request.ProductCreateRequestCommand
-import com.racket.api.admin.product.presentation.request.ProductUpdateRequestCommand
-import com.racket.api.product.CreateProductService
-import com.racket.api.product.presentation.response.ProductResponseView
+import com.racket.api.admin.product.request.ProductCreateRequestCommand
+import com.racket.api.admin.product.request.ProductUpdateRequestCommand
+import com.racket.api.product.response.ProductResponseView
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

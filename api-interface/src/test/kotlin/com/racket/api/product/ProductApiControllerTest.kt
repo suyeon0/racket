@@ -10,7 +10,7 @@ import com.racket.api.product.domain.ProductRepository
 import com.racket.api.product.exception.NotFoundOptionException
 import com.racket.api.product.exception.NotFoundProductException
 import com.racket.api.product.option.response.OptionResponseView
-import com.racket.api.product.presentation.response.ProductResponseView
+import com.racket.api.product.response.ProductResponseView
 import com.racket.api.product.vo.ProductCursorResultVO
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.Assertions
