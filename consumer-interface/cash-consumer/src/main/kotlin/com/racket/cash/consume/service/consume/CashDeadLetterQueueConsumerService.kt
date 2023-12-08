@@ -42,18 +42,18 @@ class CashDeadLetterQueueConsumerService(
         @Payload value: DeadLetterQueueVO,
         consumer: Consumer<String, DeadLetterQueueVO>
     ) {
-        val failTransactionId = value.payload
+        val failTransactionId = value.payload.toString()
         this.cashFailLogRepository.save(
             CashFailLog(
                 payload = failTransactionId,
-                errorMessage = value.errorMessage
+                errorMessage = value.errorMessage!!
             )
         )
 
         val requestCashTransaction = this.cashTransactionRepository.findAllByTransactionId(transactionId = failTransactionId)[0]
         this.cashTransactionRepository.save(
             CashTransaction(
-                transactionId = failTransactionId,
+                transactionId = failTransactionId.toString(),
                 amount = requestCashTransaction.amount,
                 userId = requestCashTransaction.userId,
                 eventType = requestCashTransaction.eventType,
@@ -74,7 +74,7 @@ class CashDeadLetterQueueConsumerService(
     ) {
         try {
             this.retryWithMaxAttempts(maxRetries = 2) {
-                val requestTransactionData = this.cashConsumerService.getRequestTransactionData(transactionId = value.payload)
+                val requestTransactionData = this.cashConsumerService.getRequestTransactionData(transactionId = value.payload.toString())
                 val response = this.paymentCallService.call(
                     accountId = requestTransactionData.accountId,
                     amount = requestTransactionData.amount
@@ -94,6 +94,8 @@ class CashDeadLetterQueueConsumerService(
             this.cashConsumerService.publishCashDeadLetterQueue(
                 topic = DeadLetterType.INSERT_DB,
                 value = DeadLetterQueueVO(
+                    topic = "CASH_DLQ",
+                    key = null,
                     payload = value.payload,
                     errorMessage = e.message ?: "Exception: ${e::class.simpleName}"
                 )

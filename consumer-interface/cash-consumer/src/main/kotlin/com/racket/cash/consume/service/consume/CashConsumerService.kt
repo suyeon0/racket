@@ -77,6 +77,8 @@ class CashConsumerService(
             this.publishCashDeadLetterQueue(
                 topic = deadLetterType,
                 value = DeadLetterQueueVO(
+                    topic = "cash",
+                    key = null,
                     payload = message,
                     errorMessage = e.message ?: "Exception: ${e::class.simpleName}"
                 )
