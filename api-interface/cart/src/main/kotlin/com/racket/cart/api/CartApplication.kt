@@ -7,10 +7,16 @@ import org.springframework.scheduling.annotation.EnableAsync
 
 @EnableAsync
 @ServletComponentScan
-@SpringBootApplication(scanBasePackages = ["com.racket.cart", "com.racket.api.shared", "com.racket.share"])
-class CashApplication {
+@SpringBootApplication(
+	scanBasePackages = [
+		"com.racket.cart",
+		"com.racket.api.shared",
+		"com.racket.shared",
+		"com.racket.core.config"
+	])
+class CartApplication {
 }
 
 fun main(args: Array<String>) {
-	runApplication<CashApplication>(*args)
+	runApplication<CartApplication>(*args)
 }

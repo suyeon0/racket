@@ -5,6 +5,10 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.racket.api.admin.product.request.ProductCreateRequestCommand
 import com.racket.api.admin.product.request.ProductUpdateRequestCommand
 import com.racket.api.product.response.ProductResponseView
+import com.racket.api.product.service.ProductBaseService
+import com.racket.api.product.service.ProductDetailService
+import com.racket.api.product.service.ProductService
+import com.racket.api.product.vo.ProductRegisterVO
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,6 +16,7 @@ import org.springframework.boot.jdbc.EmbeddedDatabaseConnection
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.patch
@@ -24,24 +29,23 @@ import org.springframework.transaction.annotation.Transactional
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 class AdminProductApiControllerTest {
 
-    val objectMapper = jacksonObjectMapper()
+    private val objectMapper = jacksonObjectMapper().registerModule(JavaTimeModule())
 
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var createProductService: CreateProductService
+    @Autowired lateinit var mockMvc: MockMvc
+    @MockBean lateinit var productDetailService: ProductDetailService
+    @Autowired lateinit var productBaseService: ProductBaseService
+    @Autowired lateinit var productService: ProductService
 
     companion object {
         private val productCreateRequestCommand = ProductCreateRequestCommand(
-            productName = "productName",
+            productName = "TEST_PRODUCT",
             productPrice = 100000
         )
     }
 
     private fun saveProduct(): ProductResponseView =
-        this.createProductService.registerProduct(
-            CreateProductService.ProductRegisterDTO(
+        this.productService.register(
+            ProductRegisterVO(
                 name = "TestName", price = 10000
             )
         )

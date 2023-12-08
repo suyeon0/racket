@@ -31,11 +31,11 @@ class ProductBaseServiceImpl(
     private val log = KotlinLogging.logger { }
 
     @Transactional
-    override fun register(productRegisterDTO: ProductRegisterVO): ProductResponseView {
+    override fun register(productRegisterVO: ProductRegisterVO): ProductResponseView {
         val product = Product(
-            id = productRegisterDTO.id,
-            name = productRegisterDTO.name,
-            price = productRegisterDTO.price
+            id = productRegisterVO.id,
+            name = productRegisterVO.name,
+            price = productRegisterVO.price
         )
         val productFromDb = this.productRepository.save(product)
 

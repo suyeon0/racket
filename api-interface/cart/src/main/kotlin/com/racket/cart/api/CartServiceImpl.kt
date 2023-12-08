@@ -72,7 +72,7 @@ class CartServiceImpl(
             require(itemInformation.stock >= orderQuantity) { throw CartStockException(optionId = optionId) }
             return itemInformation
         } catch (e: Exception) {
-            log.error { "error:::${e}" }
+            log.error { "getItemInformationAndValidateStock Fail! :${e}" }
             throw CartProductFeignException("product api call fail!")
         }
     }

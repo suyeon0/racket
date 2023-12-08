@@ -22,3 +22,6 @@ logging:
 client:
   serviceUrl:
     product: localhost:18081/api/v1/product
+
+## TODO
+uploadPath: file:///Users/suyeon/Desktop/image/

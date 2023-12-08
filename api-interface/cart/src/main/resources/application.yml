@@ -35,3 +35,6 @@ client:
   serviceUrl:
     product: localhost:18081/api/v1/product
     delivery: localhost:18083/api/v1/delivery
+
+## TODO
+uploadPath: file:///Users/suyeon/Desktop/image/

@@ -98,12 +98,10 @@ class CartControllerTest {
         val createCommand = CartCreateRequestCommand(
             userId = user.id!!,
             productId = options[0].productId,
-            optionId = options[0].id!!,
-            optionName = options[0].name,
+            optionId = options[0].id,
             originalPrice = options[0].price,
             calculatedPrice = 10000,
-            orderQuantity = 1,
-            deliveryInformation = DeliveryInformationVO(deliveryCost = 3000, expectedDate = LocalDate.now())
+            orderQuantity = 1
         )
 
         // 장바구니 아이템 추가
@@ -135,12 +133,10 @@ class CartControllerTest {
         val createCommand = CartCreateRequestCommand(
             userId = user.id!!,
             productId = options[0].productId,
-            optionId = options[0].id!!,
-            optionName = options[0].name,
+            optionId = options[0].id,
             originalPrice = options[0].price,
             calculatedPrice = 10000,
-            orderQuantity = 0,
-            deliveryInformation = DeliveryInformationVO(deliveryCost = 3000, expectedDate = LocalDate.now())
+            orderQuantity = 0
         )
         MockProductApi.setupGetOptionResponse(this.productWireMockServer)
 
@@ -160,22 +156,20 @@ class CartControllerTest {
     @Test
     fun `Cart Test - 장바구니 아이템 수량 수정이 성공하면 200 리턴 & 변경 수량으로 반영되어야 한다`() {
         // given
-        val updateQuantity = 30L
         this.saveProducts()
         val options = this.saveOptions()
         val user = this.saveUser()
+
+        // 장바구니 저장
+        MockProductApi.setupGetOptionResponse(this.productWireMockServer)
         val createCommand = CartCreateRequestCommand(
             userId = user.id!!,
             productId = options[0].productId,
-            optionId = options[0].id!!,
-            optionName = options[0].name,
+            optionId = options[0].id,
             originalPrice = options[0].price,
             calculatedPrice = 10000,
-            orderQuantity = 20,
-            deliveryInformation = DeliveryInformationVO(deliveryCost = 3000, expectedDate = LocalDate.now())
+            orderQuantity = 20
         )
-        MockProductApi.setupGetOptionResponse(this.productWireMockServer)
-
         val createdCartItem = this.mockMvc.post(cartRequestURL) {
             contentType = MediaType.APPLICATION_JSON
             content = objectMapper.registerModule(JavaTimeModule()).writeValueAsString(createCommand)
@@ -187,6 +181,7 @@ class CartControllerTest {
         val createdCartItemId = objectMapper.readValue(createdCartItem, CartResponseView::class.java).id
 
         // when
+        val updateQuantity = 30L
         val updateCommand = CartUpdateRequestCommand(orderQuantity = updateQuantity)
         val sut = this.mockMvc.patch("$cartRequestURL/{cartItemId}/quantity", createdCartItemId) {
             contentType = MediaType.APPLICATION_JSON
@@ -211,12 +206,10 @@ class CartControllerTest {
         val createCommand = CartCreateRequestCommand(
             userId = user.id!!,
             productId = options[0].productId,
-            optionId = options[0].id!!,
-            optionName = options[0].name,
+            optionId = options[0].id,
             originalPrice = options[0].price,
             calculatedPrice = 10000,
-            orderQuantity = 20,
-            deliveryInformation = DeliveryInformationVO(deliveryCost = 3000, expectedDate = LocalDate.now())
+            orderQuantity = 20
         )
         MockProductApi.setupGetOptionResponse(this.productWireMockServer)
 

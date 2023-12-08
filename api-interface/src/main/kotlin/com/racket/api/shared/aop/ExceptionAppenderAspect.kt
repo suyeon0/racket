@@ -6,6 +6,7 @@ import mu.KotlinLogging
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Before
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Aspect
@@ -15,7 +16,9 @@ class ExceptionAppenderAspect(
     private val slackMessageGenerator: SlackMessageGenerator
 ) {
 
-    private val log = KotlinLogging.logger { }
+    companion object {
+        private val log = KotlinLogging.logger { }
+    }
 
     @Before("@annotation(com.racket.api.shared.annotation.SlackNotification)")
     fun appendResponseBodyToSlackContent(joinPoint: JoinPoint) {
