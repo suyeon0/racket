@@ -35,9 +35,8 @@ class RetryTest {
 @Service
 class TestRequestExternalService {
 
-    companion object {
-        var callCount = 0
-    }
+    private var callCount = 0
+
     @Retryable(value = [IOException::class])
     fun callRequestExternalServer(): Int {
         callCount++

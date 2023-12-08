@@ -36,8 +36,6 @@ import org.springframework.transaction.annotation.Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UserControllerTest {
 
-    val objectMapper = jacksonObjectMapper()
-
     @Autowired
     lateinit var mockMvc: MockMvc
     @Autowired
@@ -45,14 +43,13 @@ class UserControllerTest {
     @Autowired
     lateinit var events: ApplicationEvents
 
-    companion object {
-        private val userCreateRequestCommand = UserCreateRequestCommand(
-            userName = "zibri",
-            email = "test@naver.com",
-            password = "1234567",
-            mobileVO = MobileVO(number = "01012341234")
-        )
-    }
+    private val objectMapper = jacksonObjectMapper()
+    private val userCreateRequestCommand = UserCreateRequestCommand(
+        userName = "zibri",
+        email = "test@naver.com",
+        password = "1234567",
+        mobileVO = MobileVO(number = "01012341234")
+    )
 
     // 변경 및 삭제할 유저 데이터 생성
     private fun saveTestUserAndReturnResponseView(): UserResponseView {

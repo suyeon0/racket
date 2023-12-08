@@ -33,16 +33,18 @@ import org.springframework.transaction.annotation.Transactional
 @RecordApplicationEvents
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CashControllerTest {
-    companion object {
-        const val cashRequestURL = "/api/v1/racket-cash"
-    }
 
-    val objectMapper = jacksonObjectMapper()
+    private val objectMapper = jacksonObjectMapper()
+
     @Autowired
     lateinit var mockMvc: MockMvc
     @Autowired
     lateinit var events: ApplicationEvents
 
+    companion object {
+        // 다른 테스트 클래스에서 사용함
+        const val cashRequestURL = "/api/v1/racket-cash"
+    }
 
     @Test
     fun `Cash - userID로 캐시 충전 총액 조회시 200 status와 데이터가 조회되어야 한다 캐시 충전 이력이 없으면 0원을 리턴한다`() {

@@ -12,13 +12,11 @@ import java.io.File
 @Qualifier("cjFakeFeignClient")
 class CjFakeFeignClient : CJDeliveryApiFeignClient {
 
-    companion object {
-        private val objectMapper = jacksonObjectMapper().registerModule(JavaTimeModule())
-        private val jsonFile = File("api-interface/delivery/src/main/resources/tracking-cj.json")
-        private val fakeResponseMap = objectMapper.readValue(jsonFile, CjFakeApiResponse::class.java)
-            .contents
-            .associateBy { it.invoice }
-    }
+    private val objectMapper = jacksonObjectMapper().registerModule(JavaTimeModule())
+    private val jsonFile = File("api-interface/delivery/src/main/resources/tracking-cj.json")
+    private val fakeResponseMap = objectMapper.readValue(jsonFile, CjFakeApiResponse::class.java)
+        .contents
+        .associateBy { it.invoice }
 
     override fun getTrackingDeliveryList(request: CjDeliveryApiRequest): ResponseEntity<CjDeliveryApiResponse> {
         return try {

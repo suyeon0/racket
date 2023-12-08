@@ -17,17 +17,14 @@ class LoginCheckFilter(
 ) : OncePerRequestFilter() {
 
     private val log = KotlinLogging.logger { }
-
-    companion object {
-        val excludeList = arrayOf(
-            "/",
-            "/view/auth/logout",
-            "/view/auth/login",
-            "/api/auth/login",
-            "/css/*", "/js/*", "/favicon.ico",
-            "/swagger-ui/index.html", "/v3/api-docs.yaml"
-        )
-    }
+    private val excludeList = arrayOf(
+        "/",
+        "/view/auth/logout",
+        "/view/auth/login",
+        "/api/auth/login",
+        "/css/*", "/js/*", "/favicon.ico",
+        "/swagger-ui/index.html", "/v3/api-docs.yaml"
+    )
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
         val requestURI = request.requestURI

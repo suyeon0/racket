@@ -16,9 +16,10 @@ class ExceptionAppenderAspect(
     private val slackMessageGenerator: SlackMessageGenerator
 ) {
 
-    companion object {
-        private val log = KotlinLogging.logger { }
-    }
+    /**
+     * bean 으로 등록하니까 static 일 필요 없음
+     */
+    private val log = KotlinLogging.logger { }
 
     @Before("@annotation(com.racket.api.shared.annotation.SlackNotification)")
     fun appendResponseBodyToSlackContent(joinPoint: JoinPoint) {

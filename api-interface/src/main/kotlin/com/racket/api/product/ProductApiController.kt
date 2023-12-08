@@ -29,9 +29,7 @@ class ProductApiController(
     val optionServiceImpl: OptionService,
     val productServiceImpl: ProductService
 ) {
-    companion object {
-        private const val CURSOR_SIZE = 10
-    }
+    private val cursorSize = 10
 
     @GetMapping("/detail/{productId}")
     fun getProductDetail(@PathVariable productId: String): ResponseEntity<ProductDetailResponseView> =
@@ -76,7 +74,7 @@ class ProductApiController(
         ]
     )
     fun getProductList(@RequestParam cursorId: String?) =
-        ResponseEntity.ok(this.productServiceImpl.getList(cursorId = cursorId, page = PageRequest.of(0, CURSOR_SIZE)))
+        ResponseEntity.ok(this.productServiceImpl.getList(cursorId = cursorId, page = PageRequest.of(0, cursorSize)))
 
 
     @LongTypeIdInputValidator

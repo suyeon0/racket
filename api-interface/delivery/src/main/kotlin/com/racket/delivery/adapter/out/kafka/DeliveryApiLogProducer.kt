@@ -15,15 +15,13 @@ class DeliveryApiLogProducer(
     private val objectMapper: ObjectMapper
 ) {
 
-    companion object {
-        private const val TOPIC: String = "delivery-log"
-        private val log = KotlinLogging.logger { }
-    }
+    private val topic: String = "delivery-log"
+    private val log = KotlinLogging.logger { }
 
     fun produce(@Payload payload: DeliveryApiLogPayloadVO) {
         val key = payload.invoiceNo
         val payloadString = this.objectMapper.writeValueAsString(payload)
-        val listenableFuture: ListenableFuture<SendResult<String, String>> = kafkaTemplate.send(TOPIC, key, payloadString)
+        val listenableFuture: ListenableFuture<SendResult<String, String>> = kafkaTemplate.send(topic, key, payloadString)
         listenableFuture.addCallback(object : ListenableFutureCallback<SendResult<String, String>> {
             override fun onFailure(e: Throwable) {
                 log.error { "ERROR Kafka error happened-${e}" }

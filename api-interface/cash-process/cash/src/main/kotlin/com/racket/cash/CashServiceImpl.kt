@@ -20,9 +20,7 @@ class CashServiceImpl(
 ) : CashService {
 
     private val log = KotlinLogging.logger { }
-    companion object {
-        val tempChargeUnitSet: Set<Long> = setOf(50_000, 100_000, 150_000)
-    }
+    private val tempChargeUnitSet: Set<Long> = setOf(50_000, 100_000, 150_000)
 
     @Transactional
     override fun requestCharge(chargeVO: ChargeVO): ChargeResponseView {

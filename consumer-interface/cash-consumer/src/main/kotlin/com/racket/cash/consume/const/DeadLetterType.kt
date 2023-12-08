@@ -1,10 +1,8 @@
 package com.racket.cash.consume.const
 
-class DeadLetterType {
+object DeadLetterType {
 
-    companion object {
-        const val INSERT_DB = "CASH-FAIL-DB"
-        const val RETRY = "CASH-RETRY"
-    }
+    const val INSERT_DB = "CASH-FAIL-DB"
+    const val RETRY = "CASH-RETRY"
 
 }

@@ -57,10 +57,7 @@ class CartControllerTest {
     lateinit var cartRepository: CartRepository
     @Autowired
     lateinit var productWireMockServer: WireMockServer
-
-    companion object {
-        const val cartRequestURL = "/api/v1/cart"
-    }
+    private val cartRequestURL = "/api/v1/cart"
 
     @AfterEach
     fun deleteAll() {

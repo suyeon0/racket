@@ -11,10 +11,8 @@ import kotlin.collections.HashMap
 class SlackMessageGenerator(
 ) {
 
-    companion object {
-        private const val EMPTY_BODY_MESSAGE = "{BODY IS EMPTY}"
-        private const val EXCEPTION_MESSAGE_FORMAT = "%s.%s:%d - %s"
-    }
+    private val emptyBodyMessage = "{BODY IS EMPTY}"
+    private val exceptionMessageFormat = "%s.%s:%d - %s"
 
     fun generate(request: ContentCachingRequestWrapper, exception: Exception): String {
         return try {
@@ -80,7 +78,7 @@ class SlackMessageGenerator(
                 .map(StackTraceElement::toString)
                 .collect(joining("\n"));
         } else {
-            String.format(EXCEPTION_MESSAGE_FORMAT, className, methodName, lineNumber, message);
+            String.format(exceptionMessageFormat, className, methodName, lineNumber, message);
         }
     }
 
@@ -98,7 +96,7 @@ class SlackMessageGenerator(
     private fun getBody(request: ContentCachingRequestWrapper): String {
         val body = String(request.contentAsByteArray)
         return body.ifEmpty {
-            EMPTY_BODY_MESSAGE
+            emptyBodyMessage
         }
     }
 

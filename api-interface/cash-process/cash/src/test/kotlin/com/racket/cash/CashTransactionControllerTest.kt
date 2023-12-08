@@ -37,12 +37,11 @@ import java.util.UUID
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CashTransactionControllerTest {
 
-    val objectMapper = jacksonObjectMapper()
-
     @Autowired
     lateinit var mockMvc: MockMvc
-
+    private val objectMapper = jacksonObjectMapper()
     companion object {
+        // 다른 테스트 클래스에서 사용함
         const val cashTransactionRequestURL = "/api/v1/racket-cash/transaction"
     }
 
