@@ -28,7 +28,6 @@ class GlobalApiExceptionHandlerAdvice : ResponseEntityExceptionHandler() {
     )
 }
 
-    @SlackNotification
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(value = [RuntimeException::class])
     fun runtimeException(e: RuntimeException, httpServletRequest: HttpServletRequest) =
