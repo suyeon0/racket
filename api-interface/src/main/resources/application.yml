@@ -34,6 +34,12 @@ spring:
     open-in-view: false
     show-sql: true
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
   redis:
     host: 127.0.0.1
     password: 1234
@@ -63,3 +69,5 @@ client:
     producer: http://localhost:18082/produce/v1
     product: localhost:18081/api/v1/product
     delivery: localhost:18083/api/v1/delivery
+    cj: localhost:9999
+    hanjin: localhost:8888

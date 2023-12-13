@@ -9,7 +9,10 @@ dependencies {
 	implementation ("org.springframework.boot:spring-boot-starter-data-mongodb")
 
 	//Redis
-	implementation("org.springframework.boot:spring-boot-starter-data-redis:2.5.4")
+	implementation("org.springframework.boot:spring-boot-starter-data-redis:3.0.4")
+
+	// kafka
+	implementation("org.springframework.kafka:spring-kafka")
 
 	//thymeleaf
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
