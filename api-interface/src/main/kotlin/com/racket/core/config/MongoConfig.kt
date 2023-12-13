@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 
 @Configuration
-@EnableMongoRepositories(basePackages = ["com.racket.api"])
+@EnableMongoRepositories(basePackages = ["com.racket.api", "com.racket.share.domain"])
 class MongoConfig (
 
     @Value("\${spring.data.mongodb.connectionString}")

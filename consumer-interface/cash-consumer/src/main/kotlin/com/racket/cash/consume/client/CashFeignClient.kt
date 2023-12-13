@@ -1,8 +1,8 @@
 package com.racket.cash.consume.client
 
-import com.racket.cash.request.CashChargeCommand
-import com.racket.cash.response.CashBalanceResponseView
-import com.racket.cash.response.CashTransactionResponseView
+import com.racket.api.cash.request.CashChargeCommand
+import com.racket.api.cash.response.CashBalanceResponseView
+import com.racket.api.cash.response.CashTransactionResponseView
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

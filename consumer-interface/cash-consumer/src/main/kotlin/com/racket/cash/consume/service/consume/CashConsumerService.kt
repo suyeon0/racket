@@ -2,15 +2,14 @@ package com.racket.cash.consume.service.consume
 
 import com.racket.api.payment.presentation.PaymentErrorCodeConstants
 import com.racket.api.payment.presentation.RetryPaymentCallRequiredException
-import com.racket.api.payment.presentation.response.PaymentApiResponse
 import com.racket.cash.consume.client.CashFeignClient
 import com.racket.cash.consume.const.DeadLetterType
 import com.racket.cash.consume.service.PaymentCallService
 import com.racket.cash.consume.vo.DeadLetterQueueVO
 import com.racket.cash.enums.CashTransactionStatusType
 import com.racket.cash.exception.*
-import com.racket.cash.request.CashChargeCommand
-import com.racket.cash.response.CashTransactionResponseView
+import com.racket.api.cash.request.CashChargeCommand
+import com.racket.api.cash.response.CashTransactionResponseView
 import mu.KotlinLogging
 import org.apache.kafka.clients.consumer.Consumer
 import org.springframework.http.HttpStatus

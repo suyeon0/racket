@@ -1,0 +1,12 @@
+package com.racket.share.domain.cash.repository
+
+import com.racket.share.domain.cash.entity.CashTransaction
+import org.bson.types.ObjectId
+import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.stereotype.Repository
+
+@Repository
+interface CashTransactionRepository: MongoRepository<CashTransaction, ObjectId> {
+    fun findAllByUserId(userId: Long): List<CashTransaction>
+    fun findAllByTransactionId(transactionId: String): List<CashTransaction>
+}
