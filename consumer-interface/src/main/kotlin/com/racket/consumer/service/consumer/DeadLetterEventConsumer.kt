@@ -42,20 +42,21 @@ class DeadLetterEventConsumer(
     ) {
         try {
             when(deadLetter.deadLetterType) {
-                DeadLetterType.INSERT_DB -> {
-                    val deadLetterEntity = DeadLetterEntity(
-                        failureTopic = deadLetter.failureTopic,
-                        key = deadLetter.key,
-                        payload = deadLetter.payload,
-                        createdAt = LocalDateTime.now(),
-                        isProcessed = false
-                    )
-                    val savedEntity = this.deadLetterRepository.save(deadLetterEntity)
-                    log.info { "DeadLetterEntity saved with ID: ${savedEntity.id}, event: $deadLetter" }
-                }
+//                DeadLetterType.INSERT_DB -> {
+//                    val deadLetterEntity = DeadLetterEntity(
+//                        failureTopic = deadLetter.failureTopic,
+//                        key = deadLetter.key,
+//                        payload = deadLetter.payload,
+//                        createdAt = LocalDateTime.now(),
+//                        isProcessed = false
+//                    )
+//                    val savedEntity = this.deadLetterRepository.save(deadLetterEntity)
+//                    log.info { "DeadLetterEntity saved with ID: ${savedEntity.id}, event: $deadLetter" }
+//                }
                 DeadLetterType.RETRY -> {
                     when(deadLetter.eventType) {
                         EventType.CASH -> {
+                            // 로직은 컴포넌트로 빼기. CashRetryComponent
                             try {
                                 this.retryWithMaxAttempts(maxRetries = 2) {
                                     val requestTransactionData = this.cashEventConsumer.getRequestTransactionData(transactionId = deadLetter.payload)
@@ -69,8 +70,8 @@ class DeadLetterEventConsumer(
                                             try {
                                                 this.cashEventConsumer.callCashApiToSaveData(requestTransactionData)
                                             } catch (e: ChargingProcessingException) {
-                                                this.cashClient.postTransaction(
-                                                    CashChargeCommand(
+                                                this.cashClient.postFailedTransaction(
+                                                    CashChargeCommand(// fail 이랑 같이 쓰지 말기. 아니면 base 만들어서 suc, fail 용으로 따로 쓰기
                                                         status = CashTransactionStatusType.FAILED,
                                                         transactionId = requestTransactionData.transactionId,
                                                         userId = requestTransactionData.userId,
@@ -97,6 +98,7 @@ class DeadLetterEventConsumer(
                 }
             }
         } catch (e: Exception) {
+            // insert db
             log.error("Error processing dead letter event: $deadLetter", e)
             throw e
         } finally {
