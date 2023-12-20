@@ -1,11 +1,12 @@
 package com.racket.consumer.service.consumer
 
 import com.racket.api.payment.presentation.PaymentErrorCodeConstants
-import com.racket.api.payment.presentation.RetryPaymentCallRequiredException
 import com.racket.api.cash.request.CashChargeCommand
 import com.racket.api.cash.response.CashTransactionResponseView
 import com.racket.consumer.client.CashFeignClient
 import com.racket.consumer.enums.DeadLetterType
+import com.racket.consumer.enums.EventType
+import com.racket.consumer.exception.RetryCallRequiredException
 import com.racket.consumer.service.PaymentCallService
 import com.racket.consumer.vo.DeadLetterQueueVO
 import com.racket.share.domain.cash.enums.CashTransactionStatusType
@@ -43,7 +44,7 @@ class CashEventConsumer(
             val requestTransactionData = this.getRequestTransactionData(transactionId = message)
             val response = this.paymentCallService.call(accountId = requestTransactionData.accountId, amount = requestTransactionData.amount)
             when (response.code) {
-                this.paymentRequestRetryCode -> throw RetryPaymentCallRequiredException()
+                this.paymentRequestRetryCode -> throw RetryCallRequiredException()
                 this.paymentRequestSuccessCode -> {
                     try {
                         this.callCashApiToSaveData(requestTransactionData)
@@ -60,18 +61,18 @@ class CashEventConsumer(
                         )
                     }
                 }
-
                 else -> throw ChargePayException("Payment Api Call Failed. - ${response.message}")
             }
         } catch (e: Exception) {
             val deadLetterType = when (e) {
-                is RetryPaymentCallRequiredException -> DeadLetterType.RETRY
+                is RetryCallRequiredException -> DeadLetterType.RETRY
                 else -> DeadLetterType.INSERT_DB
             }
 
             this.publishCashDeadLetterQueue(
                 value = DeadLetterQueueVO(
                     failureTopic = "cash",
+                    eventType = EventType.CASH,
                     deadLetterType = deadLetterType,
                     key = message,
                     payload = message,
