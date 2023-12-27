@@ -40,8 +40,8 @@ class CashEventConsumer(
     )
     fun consumeChargingProcess(
         @Payload message: String,
-        consumer: Consumer<String, String>,
-        record: ConsumerRecord<String, String>
+        consumer: Consumer<String, String>
+        //record: ConsumerRecord<String, String>
     ) {
         try {
             val requestTransactionData = this.getRequestTransactionData(transactionId = message)
@@ -73,7 +73,7 @@ class CashEventConsumer(
 
             this.publishCashDeadLetterQueue(
                 value = DeadLetterQueueVO(
-                    originEventTimestamp = Instant.ofEpochMilli(record.timestamp()),
+                    originEventTimestamp = Instant.now(), //Instant.ofEpochMilli(record.timestamp()),
                     failureTopic = "cash",
                     eventType = EventType.CASH,
                     deadLetterType = deadLetterType,

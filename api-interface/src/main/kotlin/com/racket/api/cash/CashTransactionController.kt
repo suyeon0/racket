@@ -73,7 +73,7 @@ class CashTransactionController(
         ]
     )
     @PostMapping
-    fun postTransaction(@RequestBody transactionCommand: CashChargeCommand) =
+    fun postTransaction(@RequestBody transactionCommand: CashChargeCommand.Request) =
         ResponseEntity.status(HttpStatus.CREATED)
             .body(
                 this.cashTransactionLogService.insertChargeTransaction(

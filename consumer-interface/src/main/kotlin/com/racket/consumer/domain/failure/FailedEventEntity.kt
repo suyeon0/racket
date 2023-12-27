@@ -1,12 +1,13 @@
 package com.racket.consumer.domain.failure
 
-import org.bson.types.ObjectId
 import java.time.Instant
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
+import javax.persistence.Table
 
 @Entity
+@Table(name = "failed_event")
 data class FailedEventEntity (
     @Id
     @Column(name = "id", nullable = false)
@@ -18,7 +19,7 @@ data class FailedEventEntity (
     @Column(name = "topic", nullable = false)
     val topic: String,
 
-    @Column(name = "key", nullable = false)
+    @Column(name = "message_key", nullable = false)
     val key: String,
 
     @Column(name = "payload", nullable = false)
@@ -30,6 +31,6 @@ data class FailedEventEntity (
     @Column(name = "updated_at", nullable = false)
     val updatedAt: Instant,
 
-    @Column(name = "is_processed", nullable = false)
+    @Column(name = "processed", nullable = false)
     val isProcessed: Boolean
 )

@@ -7,7 +7,6 @@ import com.racket.api.cash.request.CashChargeCommand
 import com.racket.api.cash.response.CashBalanceResponseView
 import com.racket.api.cash.response.ChargeResponseView
 import com.racket.api.cash.vo.ChargeVO
-import com.racket.share.domain.cash.enums.CashTransactionStatusType
 import com.racket.share.domain.cash.exception.InvalidChargingTransactionException
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/v1/racket-cash")
 @Tag(name = "RacketCash-API", description = "캐시 충전/사용, 총액 조회")
-class CashController(
+class CashApiController(
     private val cashService: CashService,
     private val baseUserComponent: BaseUserComponent,
     private val basePaymentComponent: BasePaymentComponent
@@ -60,8 +59,7 @@ class CashController(
         try {
             // 1. Amount - 충전 단위
             val validChargeUnitSet = this.cashService.getChargeUnitSet()
-            // TODO!
-            //chargeCommand.validate(validChargeUnitSet)
+            chargeCommand.validate(validChargeUnitSet)
 
             // 2. userId 유효 여부 확인
             this.baseUserComponent.validateUserByUserId(userId = chargeCommand.userId)

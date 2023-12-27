@@ -18,7 +18,7 @@ class DeadLetterEventConsumer(
     private val deliveryRetryComponent: DeliveryRetryComponent
 ) {
     @KafkaListener(
-        topics = ["dlq"], groupId = "racket", containerFactory = "kafkaDLQListenerContainerFactory"
+        topics = ["dlq"], groupId = "racket"
     )
     fun consumeDeadLetterEvent(
         @Payload deadLetter: DeadLetterQueueVO,
