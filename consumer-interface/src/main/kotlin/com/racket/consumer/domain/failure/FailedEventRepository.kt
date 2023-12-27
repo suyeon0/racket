@@ -1,8 +1,8 @@
-package com.racket.consumer.domain.dlq
+package com.racket.consumer.domain.failure
 
 import org.bson.types.ObjectId
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface DeadLetterRepository : CrudRepository<DeadLetterEntity, ObjectId>
+interface FailedEventRepository : CrudRepository<FailedEventEntity, ObjectId>

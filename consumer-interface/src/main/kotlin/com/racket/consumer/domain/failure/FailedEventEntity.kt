@@ -1,19 +1,22 @@
-package com.racket.consumer.domain.dlq
+package com.racket.consumer.domain.failure
 
 import org.bson.types.ObjectId
-import java.time.LocalDateTime
+import java.time.Instant
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
 
 @Entity
-data class DeadLetterEntity (
+data class FailedEventEntity (
     @Id
     @Column(name = "id", nullable = false)
-    var id: ObjectId? = null,
+    var id: String? = null,
 
-    @Column(name = "failure_topic", nullable = false)
-    val failureTopic: String,
+    @Column(name = "origin_event_timestamp", nullable = false)
+    var originEventTimestamp: Instant,
+
+    @Column(name = "topic", nullable = false)
+    val topic: String,
 
     @Column(name = "key", nullable = false)
     val key: String,
@@ -22,7 +25,10 @@ data class DeadLetterEntity (
     val payload: String,
 
     @Column(name = "created_at", nullable = false)
-    val createdAt: LocalDateTime,
+    val createdAt: Instant,
+
+    @Column(name = "updated_at", nullable = false)
+    val updatedAt: Instant,
 
     @Column(name = "is_processed", nullable = false)
     val isProcessed: Boolean
