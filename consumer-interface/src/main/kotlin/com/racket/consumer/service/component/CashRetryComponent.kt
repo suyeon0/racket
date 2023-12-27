@@ -28,7 +28,7 @@ class CashRetryComponent(
     fun handle(@Payload message: String, topic: String, key: String) {
         val originEventTimestamp = Instant.now()
         try {
-            val requestTransactionData = getRequestTransactionData(transactionId = message)
+            val requestTransactionData = this.getRequestTransactionData(transactionId = message)
             this.retryPaymentCall(requestTransactionData)
         } catch (e: Exception) {
             this.failedEventService.register(
