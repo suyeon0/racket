@@ -40,7 +40,7 @@ class CashController(
         ]
     )
     @PostMapping("/charge/request")
-    fun postToCharge(@RequestBody chargeCommand: CashChargeCommand): ResponseEntity<ChargeResponseView> {
+    fun postToCharge(@RequestBody chargeCommand: CashChargeCommand.Request): ResponseEntity<ChargeResponseView> {
         this.validateToCharge(chargeCommand)
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(
@@ -56,11 +56,12 @@ class CashController(
             )
     }
 
-    private fun validateToCharge(chargeCommand: CashChargeCommand) {
+    private fun validateToCharge(chargeCommand: CashChargeCommand.Request) {
         try {
             // 1. Amount - 충전 단위
             val validChargeUnitSet = this.cashService.getChargeUnitSet()
-            chargeCommand.validate(validChargeUnitSet)
+            // TODO!
+            //chargeCommand.validate(validChargeUnitSet)
 
             // 2. userId 유효 여부 확인
             this.baseUserComponent.validateUserByUserId(userId = chargeCommand.userId)
@@ -86,7 +87,7 @@ class CashController(
         ]
     )
     @PostMapping("/charge/complete")
-    fun completeCharge(@RequestBody chargeCommand: CashChargeCommand): ResponseEntity<CashBalanceResponseView> {
+    fun completeCharge(@RequestBody chargeCommand: CashChargeCommand.Success): ResponseEntity<CashBalanceResponseView> {
         return ResponseEntity.ok().body(
             this.cashService.completeCharge(
                 ChargeVO(
@@ -95,7 +96,7 @@ class CashController(
                     amount = chargeCommand.amount,
                     accountId = chargeCommand.accountId,
                     eventType = chargeCommand.eventType,
-                    status = CashTransactionStatusType.COMPLETED
+                    status = chargeCommand.status
                 )
             )
         )

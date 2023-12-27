@@ -13,6 +13,7 @@ import com.racket.share.domain.cash.enums.CashTransactionStatusType
 import com.racket.share.domain.cash.exception.*
 import mu.KotlinLogging
 import org.apache.kafka.clients.consumer.Consumer
+import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.springframework.http.HttpStatus
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.core.KafkaTemplate
@@ -21,6 +22,7 @@ import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.stereotype.Service
 import org.springframework.util.concurrent.ListenableFuture
 import org.springframework.util.concurrent.ListenableFutureCallback
+import java.time.Instant
 
 @Service
 class CashEventConsumer(
@@ -38,7 +40,8 @@ class CashEventConsumer(
     )
     fun consumeChargingProcess(
         @Payload message: String,
-        consumer: Consumer<String, String>
+        consumer: Consumer<String, String>,
+        record: ConsumerRecord<String, String>
     ) {
         try {
             val requestTransactionData = this.getRequestTransactionData(transactionId = message)
@@ -49,9 +52,8 @@ class CashEventConsumer(
                     try {
                         this.callCashApiToSaveData(requestTransactionData)
                     } catch (e: ChargingProcessingException) {
-                        this.cashClient.postTransaction(
-                            CashChargeCommand(
-                                status = CashTransactionStatusType.FAILED,
+                        this.cashClient.postFailedTransaction(
+                            CashChargeCommand.Failure(
                                 transactionId = requestTransactionData.transactionId,
                                 userId = requestTransactionData.userId,
                                 amount = requestTransactionData.amount,
@@ -71,6 +73,7 @@ class CashEventConsumer(
 
             this.publishCashDeadLetterQueue(
                 value = DeadLetterQueueVO(
+                    originEventTimestamp = Instant.ofEpochMilli(record.timestamp()),
                     failureTopic = "cash",
                     eventType = EventType.CASH,
                     deadLetterType = deadLetterType,
@@ -103,14 +106,13 @@ class CashEventConsumer(
 
     // 충전 결과 DB 반영을 위한 Cash Api 호출
     fun callCashApiToSaveData(chargeRequestTransactionData: CashTransactionResponseView) =
-        this.cashClient.completeCharge(
-            CashChargeCommand(
+        this.cashClient.postCompletedTransaction(
+            CashChargeCommand.Success(
                 userId = chargeRequestTransactionData.userId,
                 amount = chargeRequestTransactionData.amount,
                 transactionId = chargeRequestTransactionData.transactionId,
                 accountId = chargeRequestTransactionData.accountId,
-                eventType = chargeRequestTransactionData.eventType,
-                status = CashTransactionStatusType.COMPLETED
+                eventType = chargeRequestTransactionData.eventType
             )
         )
 

@@ -26,14 +26,19 @@ class DeadLetterEventConsumer(
     ) {
         try {
             when(deadLetter.eventType) {
-                EventType.CASH -> this.cashRetryComponent.handle(message = deadLetter.payload)
+                EventType.CASH -> this.cashRetryComponent.handle(message = deadLetter.payload, topic = deadLetter.failureTopic, key = deadLetter.key)
                 EventType.DELIVERY -> {
                     println()
                 }
             }
 
         } catch (e: Exception) {
-            this.failedEventService.register(deadLetter)
+            this.failedEventService.register(
+                originEventTimestamp = deadLetter.originEventTimestamp,
+                topic = deadLetter.failureTopic,
+                key = deadLetter.key,
+                payload = deadLetter.payload
+            )
             throw e
         } finally {
             consumer.commitAsync()

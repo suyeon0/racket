@@ -14,20 +14,25 @@ class FailedEventService(
 ) {
     private val log = KotlinLogging.logger { }
 
-    fun register(deadLetterQueueVO: DeadLetterQueueVO) {
+    fun register(originEventTimestamp: Instant,
+                 topic: String,
+                 key: String,
+                 payload: String
+    ) {
+        val id = ObjectId().toHexString()
         this.failedEventRepository.save(
             FailedEventEntity(
-                id = ObjectId().toHexString(),
-                originEventTimestamp = deadLetterQueueVO.originEventTimestamp,
-                topic = deadLetterQueueVO.failureTopic,
-                key = deadLetterQueueVO.key,
-                payload = deadLetterQueueVO.payload,
+                id = id,
+                originEventTimestamp = originEventTimestamp,
+                topic = topic,
+                key = key,
+                payload = payload,
                 createdAt = Instant.now(),
                 updatedAt = Instant.now(),
                 isProcessed = false
             )
         )
-        log.info { "failed event register. [$deadLetterQueueVO]" }
+        log.info { "failed event register. [${topic}.${id}] : $payload" }
     }
 
 
