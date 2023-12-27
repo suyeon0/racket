@@ -17,8 +17,11 @@ interface CashFeignClient {
     fun getTransactionList(@PathVariable transactionId: String): ResponseEntity<List<CashTransactionResponseView>>
 
     @PostMapping("/charge/complete")
-    fun completeCharge(@RequestBody chargeCommand: CashChargeCommand): ResponseEntity<CashBalanceResponseView>
+    fun postCompletedTransaction(@RequestBody chargeCommand: CashChargeCommand): ResponseEntity<CashBalanceResponseView>
 
     @PostMapping("/transaction")
     fun postTransaction(@RequestBody transactionCommand: CashChargeCommand)
+
+    @PostMapping("/transaction/failure")
+    fun postFailedTransaction(@RequestBody transactionCommand: CashChargeCommand)
 }
